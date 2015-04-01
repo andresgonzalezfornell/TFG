@@ -46,19 +46,13 @@ function aplicar_Callback(hObject, eventdata, handles)
 clear handles.y
 
 % Delay
-memoria = [0 0];
-for n = 1:length(handles.x(:,1))
-    if n > handles.M
-        memoria(1) = handles.x(n-handles.M,1);
-        memoria(2) = handles.x(n-handles.M,2);
-    end
-    handles.y(n,1) = (handles.x(n,1) + handles.d*memoria(1))/(1+handles.d);
-    handles.y(n,2) = (handles.x(n,2) + handles.d*memoria(2))/(1+handles.d);
-end
-for n = length(handles.x(:,1)):(handles.M+length(handles.x(:,1)))
-    handles.y(n,1) = (handles.d*handles.x(n-handles.M,1))/(1+handles.d);
-    handles.y(n,2) = (handles.d*handles.x(n-handles.M,2))/(1+handles.d);
-end
+L = length(handles.x(:,1));
+original(1:L,:) = handles.x;
+original(L+1:L+handles.M,:) = zeros(handles.M,2);
+delay(1:handles.M,:) = zeros(handles.M,2);
+delay(handles.M+1:L+handles.M,:) = handles.x;
+handles.y = (original + handles.d.*delay)./(1+handles.d);
+
 z_interfaz_salida
 
 
