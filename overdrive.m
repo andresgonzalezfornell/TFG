@@ -362,6 +362,14 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 z_salida_espectro_open
 
 
+% --- Executes on button press in comparar.
+function comparar_Callback(hObject, eventdata, handles)
+% hObject    handle to salida_espectro_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_comparar
+
+
 %% Controles de parámetros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)

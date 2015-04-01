@@ -21,8 +21,8 @@ function varargout = autowah(varargin)
 %       autowah        por nombre del efecto siguiendo el formato (ej.: overdrive)
 %       Autowah        por nombre del efecto siguiendo el formato (ej.: Overdrive)
 %       AUTOWAH        por nombre del efecto siguiendo el formato (ej.: OVERDRIVE)
-%       <Descripción>   por la descripción del efecto
-%   Implementar el efecto en la función aplicar_callback.
+%       <Descripción>   por la descripci�n del efecto
+%   Implementar el efecto en la funci�n aplicar_callback.
 %   Inicializar los parámetros siguiendo el formato de ejemplo en la función autowah_OpeningFcn
 %   Implementar los parámetros en las funciones par_<#>_Callback
 %   Modificar en el archivo autowah.fig los callbacks de los botones
@@ -275,7 +275,7 @@ guidata(hObject, handles);
 function autowah_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripción del efecto
 set(handles.titulo,'String','Autowah')
-set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Puesto que es automático, la señal que controla la frecuencia central (LFO) es una señal triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'})
+set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Puesto que es autom�tico, la señal que controla la frecuencia central (LFO) es una señal triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'})
 % Inicialización de parámetros
 handles.BW = 200;
 handles.mix = 0.7;
@@ -306,7 +306,7 @@ for n = 1:40
     end
 end
 n = 1:1/handles.f_LFO/40:1/handles.f_LFO;
-plot(handles.LFO_plot,n,lfo)
+plot(handles.graf,n,lfo)
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes autowah wait for user response (see UIRESUME)
@@ -446,6 +446,14 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 z_salida_espectro_open
+
+
+% --- Executes on button press in comparar.
+function comparar_Callback(hObject, eventdata, handles)
+% hObject    handle to salida_espectro_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_comparar
 
 
 %% Controles de parámetros

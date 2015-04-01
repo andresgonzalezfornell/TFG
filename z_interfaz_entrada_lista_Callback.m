@@ -58,8 +58,6 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     if length(handles.x(1,:)) == 1
                         x(:,2) = 0;
                     end
-                    plot(handles.entrada_L,t,handles.x(:,1),'green')
-                    plot(handles.entrada_R,t,handles.x(:,2),'red')
                     X_L = fft(handles.x(:,1))/length(n);
                     X_R = fft(handles.x(:,2))/length(n);
                     handles.X_L = X_L(1:length(n)/2);
@@ -70,8 +68,6 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     stairs(handles.entrada_espectro,f,abs(handles.X_L),'green')
                     set(handles.entrada_espectro,'color',[0.05 0.05 0.1])
                     hold(handles.entrada_espectro,'off')
-                    xlabel(handles.entrada_L,'Tiempo [s] (canal L)')
-                    xlabel(handles.entrada_R,'Tiempo [s] (canal R)')
                     xlabel(handles.entrada_espectro,'Frecuencia [Hz]')
                     set(handles.entrada_archivo,'String',filename);
                 catch ex
