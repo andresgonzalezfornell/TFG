@@ -64,9 +64,9 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     handles.X_R = X_R(1:length(n)/2);
                     %handles.X = (handles.X_L+handles.X_R)/2;
                     hold(handles.entrada_espectro,'on')
-                    stairs(handles.entrada_espectro,f,abs(handles.X_R),'red')
-                    stairs(handles.entrada_espectro,f,abs(handles.X_L),'green')
-                    set(handles.entrada_espectro,'color',[0.05 0.05 0.1])
+                    loglog(handles.entrada_espectro,f,abs(handles.X_R),'red')
+                    loglog(handles.entrada_espectro,f,abs(handles.X_L),'green')
+                    set(handles.entrada_espectro,'XLim',[1.0 25000.0],'XGrid','on')
                     hold(handles.entrada_espectro,'off')
                     xlabel(handles.entrada_espectro,'Frecuencia [Hz]')
                     set(handles.entrada_archivo,'String',filename);

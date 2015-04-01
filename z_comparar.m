@@ -10,12 +10,12 @@ if isfield(handles,'Y_L') && isfield(handles,'Y_R') && isfield(handles,'X_L') &&
     f = 0+handles.fs/length(n):handles.fs/length(n):handles.fs/2;
     hold on
     subplot(2,1,1)
-	stairs(f,abs(handles.X_R),'red')
-	stairs(f,abs(handles.X_L),'green')
+	loglog(f,abs(handles.X_R),'red')
+	loglog(f,abs(handles.X_L),'green')
 	xlabel('Frecuencia [Hz] (entrada)')
     subplot(2,1,2)
-	stairs(f,abs(handles.Y_R),'red')
-	stairs(f,abs(handles.Y_L),'green')   
+	loglog(f,abs(handles.Y_R),'red')
+	loglog(f,abs(handles.Y_L),'green')   
 	xlabel('Frecuencia [Hz] (salida)')
     hold off
 end
