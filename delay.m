@@ -67,6 +67,7 @@ function par_1_Callback(hObject, eventdata, handles)
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 handles.d = get(hObject,'Value');
 set(handles.par_1_value,'String',handles.d)
+set(handles.par_1_LFO,'Value',0)
 % Update handles structure
 guidata(hObject, handles);
 
@@ -81,6 +82,7 @@ if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
 else
     set(handles.par_1_value,'String',handles.d)
 end
+set(handles.par_1_LFO,'Value',0)
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_1_value as text
@@ -232,6 +234,7 @@ set(handles.par_1,'Visible','on','Value',0.3)
 set(handles.par_1_value,'Visible','on','String',0.3)
 set(handles.par_1_title,'Visible','on','String','Nivel de delay')
 set(handles.par_1_LFO,'Visible','on')
+handles.par_limites(1) = struct('Min',0,'Max',1);
 set(handles.par_2,'Visible','on','Value',0.5,'Max',2)
 set(handles.par_2_value,'Visible','on','String',0.5)
 set(handles.par_2_title,'Visible','on','String','Tiempo de delay [s]')
@@ -411,12 +414,15 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on LFO checkbox
+% --- Executes on button press in par_1_LFO.
 function par_1_LFO_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1_LFO (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-z_LFO(1);
+handles = z_LFO(handles,1);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of checkbox1
 
 
 % --- Executes during object creation, after setting all properties.
