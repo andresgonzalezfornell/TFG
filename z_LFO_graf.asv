@@ -1,0 +1,9 @@
+tipo = get(handles.tipo,'SelectedObject');
+tipo.String
+handles.LFO.n = 0:res:5;
+switch tipo.String
+    case 'Sinusoidal'
+        handles.LFO.x = sin(2*pi*handles.LFO.frecuencia*handles.LFO.n);
+end
+plot(handles.LFO_graf,handles.
+        

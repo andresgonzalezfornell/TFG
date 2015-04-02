@@ -15,13 +15,13 @@ switch par
         checkbox = get(handles.par_6_LFO,'Value');
 end
 if checkbox
-    LFO = z_LFO_GUI(par,handles.par_limites(par));
-    LFO
-    if LFO.submit
+    [submit,LFO] = z_LFO_GUI(par,handles.par_limites(par));
+
+    if submit
         switch par
             case 1
                 set(handles.par_1_LFO,'Value');
-                set(handles.par_1_value,'String',strcat('[',num2str(LFO.offset-LFO.amplitud),',',num2str(LFO.offset+LFO.amplitud),'] (f = ',num2str(LFO.frecuencia),'Hz)'));
+                set(handles.par_1_value,'String',strcat('[',num2str(LFO.offset-LFO.Min),',',num2str(handles.par_limites(par).Max),'] (f = ',num2str(LFO.frecuencia),'Hz)'));
             case 2
                 checkbox = set(handles.par_2_LFO,'Value');
             case 3
