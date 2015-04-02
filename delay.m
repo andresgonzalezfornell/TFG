@@ -211,6 +211,14 @@ end
 %        str2double(get(hObject,'String')) returns contents of par_6_value as a double
 
 
+%% Gráfica del efecto
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
 %% Controles de interfaz
 % --- Executes just before delay is made visible.
 function delay_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -223,9 +231,11 @@ handles.M = 0.5*44100;
 set(handles.par_1,'Visible','on','Value',0.3)
 set(handles.par_1_value,'Visible','on','String',0.3)
 set(handles.par_1_title,'Visible','on','String','Nivel de delay')
+set(handles.par_1_LFO,'Visible','on')
 set(handles.par_2,'Visible','on','Value',0.5,'Max',2)
 set(handles.par_2_value,'Visible','on','String',0.5)
 set(handles.par_2_title,'Visible','on','String','Tiempo de delay [s]')
+set(handles.par_2_LFO,'Visible','on')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes delay wait for user response (see UIRESUME)
@@ -369,7 +379,7 @@ z_salida_espectro_open
 
 % --- Executes on button press in comparar.
 function comparar_Callback(hObject, eventdata, handles)
-% hObject    handle to salida_espectro_open (see GCBO)
+% hObject    handle to comparar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 z_comparar
@@ -399,6 +409,14 @@ function par_1_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on LFO checkbox
+function par_1_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO(1);
 
 
 % --- Executes during object creation, after setting all properties.

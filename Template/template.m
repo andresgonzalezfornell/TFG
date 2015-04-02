@@ -21,10 +21,12 @@ function varargout = <efecto>(varargin)
 %       <efecto>        por nombre del efecto siguiendo el formato (ej.: overdrive)
 %       <Efecto>        por nombre del efecto siguiendo el formato (ej.: Overdrive)
 %       <EFECTO>        por nombre del efecto siguiendo el formato (ej.: OVERDRIVE)
-%       <Descripci贸n>   por la descripci贸n del efecto
+%       <Descripci髇>   por la descripci贸n del efecto
 %   Implementar el efecto en la funci贸n aplicar_callback.
-%   Inicializar los par谩metros siguiendo el formato de ejemplo en la funci贸n <efecto>_OpeningFcn
 %   Implementar los par谩metros en las funciones par_<#>_Callback
+%   Implementar la descripci髇 del efecto en la funci髇 <efecto>_OpeningFcn
+%   Implementar la ampliaci髇 del gr醘ico de representaci髇 del efecto en la funci髇 graf_open_Callback
+%   Inicializar los par谩metros siguiendo el formato de ejemplo en la funci贸n <efecto>_OpeningFcn
 %   Modificar en el archivo <efecto>.fig los callbacks de los botones
 
 % Begin initialization code - DO NOT EDIT
@@ -203,6 +205,14 @@ end
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_6_value as text
 %        str2double(get(hObject,'String')) returns contents of par_6_value as a double
+
+
+%% Gr醘ica del efecto
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 
 
 %% Controles de interfaz
@@ -514,3 +524,11 @@ function par_6_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on LFO checkbox
+function par_6_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO(6);
