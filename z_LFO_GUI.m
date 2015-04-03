@@ -66,14 +66,12 @@ set(handles.amplitud_value,'String',handles.LFO.amplitud)
 handles.LFO.offset = handles.delta+handles.limites.Min;
 set(handles.offset,'Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
 set(handles.offset_value,'String',handles.LFO.offset)
-handles.LFO.submit = 0;
-handles.output = handles.LFO;
 % Gráfico
 set(handles.graf,'YLim',[handles.limites.Min handles.limites.Max])
 xlabel(handles.graf,'Tiempo [s]')
 % Update handles structure
 guidata(hObject, handles);
-%uiwait
+uiwait
 % UIWAIT makes z_LFO_GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -85,7 +83,10 @@ function varargout = z_LFO_GUI_OutputFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Get default command line output from handles structure
-varargout{1} = handles.output;
+if ~isfield(handles,'LFO')
+    handles.LFO.submit = 0;
+end
+varargout{1} = handles.LFO;
 
 
 % --- Executes on button press in submit.
@@ -95,9 +96,9 @@ function submit_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.LFO.tipo = get(handles.tipo,'SelectedObject');
 handles.LFO.submit = 1;
-handles.output = handles.LFO;
-%uiresume
-
+% Update handles structure
+guidata(hObject, handles);
+uiresume
 
 % --- Executes on slider movement.
 function frecuencia_Callback(hObject, eventdata, handles)
