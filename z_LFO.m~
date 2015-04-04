@@ -15,6 +15,7 @@ switch par
         checkbox = get(handles.par_6_LFO,'Value');
 end
 if checkbox
+    handles
     LFO = z_LFO_GUI(par,handles.par_limites(par));
     if LFO.submit
         switch par
@@ -36,7 +37,7 @@ if checkbox
     else
         switch par
             case 1
-                handles.par_1_LFO
+                handles.par_1_
                 set(handles.par_1_LFO,'Value',0);
             case 2
                 checkbox = set(handles.par_2_LFO,'Value');

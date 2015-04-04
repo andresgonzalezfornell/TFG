@@ -87,6 +87,7 @@ if ~isfield(handles,'LFO')
     handles.LFO.submit = 0;
 end
 varargout{1} = handles.LFO;
+close()
 
 
 % --- Executes on button press in submit.
