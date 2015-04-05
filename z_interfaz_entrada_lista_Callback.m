@@ -54,6 +54,18 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     n = 1:length(handles.x(:,1));
                     t = n/file.fs;
                     f = 0+file.fs/length(n):file.fs/length(n):file.fs/2;
+                    
+                    % LFO
+                    set(handles.par_1_LFO,'Enable','on')
+                    set(handles.par_2_LFO,'Enable','on')
+                    set(handles.par_3_LFO,'Enable','on')
+                    set(handles.par_4_LFO,'Enable','on')
+                    set(handles.par_5_LFO,'Enable','on')
+                    set(handles.par_6_LFO,'Enable','on')
+                    for i = 1:6
+                        handles.limites(i).longitud = length(handles.x(:,1))/handles.fs;
+                    end
+                    
                     % Mono
                     if length(handles.x(1,:)) == 1
                         x(:,2) = 0;

@@ -1,0 +1,25 @@
+tipo = get(handles.tipo,'SelectedObject');
+Ts = 0.001;                     % Periodo de muestreo
+T = 1/handles.LFO.frecuencia    % Periodo de señal
+L = floor(T/Ts)                 % Número de muestras de un periodo de señal
+handles.LFO.n = Ts:Ts:handles.limites.longitud;
+switch tipo.String
+    case 'Sinusoidal'
+        handles.LFO.x = handles.LFO.amplitud*sin(2*pi*handles.LFO.frecuencia*handles.LFO.n)+handles.LFO.offset;
+    case 'Triangular'
+        n = 1:L/4;
+        i = 1;
+        m = -1;
+        handles.LFO.x(1:L/4) = handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts;
+        n = -L/4+1:L/4;
+        while (i+1)*L/4 < handles.LFO.length(handles.LFO.n)
+            handles.LFO.x(i*L/4+1:(i+2)*L/4) = m*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts;
+            i = i+2;
+            m = -m;
+        end
+        n = -L/4+1:length(handles.LFO.n)-i*L/4+1;
+        handles.LFO.x(i*L/4+1:length(handles.LFO.n) = m*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts;
+end
+plot(handles.graf,handles.LFO.n,handles.LFO.x)
+set(handles.graf,'YLim',[handles.limites.Min handles.limites.Max])
+xlabel(handles.graf,'Tiempo [s]')

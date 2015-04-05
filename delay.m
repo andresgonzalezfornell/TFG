@@ -234,7 +234,7 @@ set(handles.par_1,'Visible','on','Value',0.3)
 set(handles.par_1_value,'Visible','on','String',0.3)
 set(handles.par_1_title,'Visible','on','String','Nivel de delay')
 set(handles.par_1_LFO,'Visible','on')
-handles.par_limites(1) = struct('Min',0,'Max',1);
+handles.limites(1) = struct('Min',0,'Max',1);
 set(handles.par_2,'Visible','on','Value',0.5,'Max',2)
 set(handles.par_2_value,'Visible','on','String',0.5)
 set(handles.par_2_title,'Visible','on','String','Tiempo de delay [s]')

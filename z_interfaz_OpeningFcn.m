@@ -27,6 +27,14 @@ if isfield(handles,'y')
     clear handles.y
 end
 
+% LFO
+set(handles.par_1_LFO,'Enable','off')
+set(handles.par_2_LFO,'Enable','off')
+set(handles.par_3_LFO,'Enable','off')
+set(handles.par_4_LFO,'Enable','off')
+set(handles.par_5_LFO,'Enable','off')
+set(handles.par_6_LFO,'Enable','off')
+
 % Cargador de ficheros de entrada
 dir_struct = dir(handles.path);
 [sorted_names,sorted_index] = sortrows({dir_struct.name}');

@@ -22,7 +22,7 @@ function varargout = z_LFO_GUI(varargin)
 
 % Edit the above text to modify the response to help z_LFO_GUI
 
-% Last Modified by GUIDE v2.5 02-Apr-2015 21:46:07
+% Last Modified by GUIDE v2.5 05-Apr-2015 15:04:05
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,7 +56,7 @@ handles.limites = varargin{2};
 % Inicialización de parámetros
 handles.LFO.frecuencia = 2;
 set(handles.title,'String',strcat('Aplicar LFO al parámetro ',num2str(handles.par)))
-set(handles.tipo,'SelectedObject',handles.sinusoidal)
+set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
 set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',0.1,'Max',10)
 set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
@@ -66,9 +66,12 @@ set(handles.amplitud_value,'String',handles.LFO.amplitud)
 handles.LFO.offset = handles.delta+handles.limites.Min;
 set(handles.offset,'Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
 set(handles.offset_value,'String',handles.LFO.offset)
+handles.LFO.submit = 0;
 % Gráfico
-set(handles.graf,'YLim',[handles.limites.Min handles.limites.Max])
 xlabel(handles.graf,'Tiempo [s]')
+set(handles.graf,'XLim',[0 handles.limites.longitud])
+set(handles.graf,'YLim',[handles.limites.Min handles.limites.Max])
+z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
 uiwait
@@ -95,10 +98,19 @@ function submit_Callback(hObject, eventdata, handles)
 % hObject    handle to submit (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.LFO.tipo = get(handles.tipo,'SelectedObject');
+tipo = get(handles.tipo_panel,'SelectedObject');
+handles.LFO.tipo = tipo.String;
 handles.LFO.submit = 1;
 % Update handles structure
 guidata(hObject, handles);
+uiresume
+
+
+% --- Executes on button press in cancel.
+function cancel_Callback(hObject, eventdata, handles)
+% hObject    handle to cancel (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 uiresume
 
 % --- Executes on slider movement.
@@ -291,3 +303,46 @@ function offset_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+% --- Executes on button press in sinusoidal.
+function sinusoidal_Callback(hObject, eventdata, handles)
+% hObject    handle to sinusoidal (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of triangular
+
+
+% --- Executes on button press in triangular.
+function triangular_Callback(hObject, eventdata, handles)
+% hObject    handle to triangular (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of triangular
+
+
+% --- Executes on button press in sierra_asc.
+function sierra_asc_Callback(hObject, eventdata, handles)
+% hObject    handle to sierra_asc (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of sierra_asc
+
+
+% --- Executes on button press in sierra_desc.
+function sierra_desc_Callback(hObject, eventdata, handles)
+% hObject    handle to sierra_desc (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of sierra_desc

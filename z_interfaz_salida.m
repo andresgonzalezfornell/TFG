@@ -4,7 +4,7 @@
 handles.y_audio = audioplayer(handles.y,handles.fs);
 % Gráficos
 n = 1:length(handles.y(:,1));
-t = n/44100;
+t = n/handles.fs;
 f = 0+handles.fs/length(n):handles.fs/length(n):handles.fs/2;
 plot(handles.salida_L,t,handles.y(:,1),'green')
 plot(handles.salida_R,t,handles.y(:,2),'red')

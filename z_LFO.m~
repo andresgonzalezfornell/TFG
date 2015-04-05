@@ -15,14 +15,27 @@ switch par
         checkbox = get(handles.par_6_LFO,'Value');
 end
 if checkbox
-    handles
-    LFO = z_LFO_GUI(par,handles.par_limites(par));
-    if LFO.submit
+    handles.LFO(par) = z_LFO_GUI(par,handles.limites(par));
+    if handles.LFO(par).submit
+        switch handles.LFO(par).tipo
+            case '(S) Sinusoidal'
+                tipo_abreviado = '(S)';
+            case '(T) Triangular'
+                tipo_abreviado = '(S)';
+            case '(DA) Diente dierra ascendente'
+                tipo_abreviado = '(S)';
+            case '(DD) Diente sierra descendente'
+                tipo_abreviado = '(S)';
+        end
         switch par
             case 1
                 set(handles.par_1,'Enable','off')
                 set(handles.par_1_value,'Enable','off')
-                set(handles.par_1_value,'String',strcat('[',num2str(LFO.offset-LFO.amplitud,2),',',num2str(LFO.offset+LFO.amplitud,2),'] f = ',num2str(LFO.frecuencia,2),'Hz'));
+                set(handles.par_1_value,'String',strcat(tipo_abreviado,...
+                    ' [',num2str(handles.LFO(par).offset-handles.LFO(par).amplitud,2),...
+                    ',',num2str(handles.LFO(par).offset+handles.LFO(par).amplitud,2),...
+                    '] f = ',num2str(handles.LFO(par).frecuencia,2),...
+                    'Hz'))
             case 2
                 checkbox = set(handles.par_2_LFO,'Value');
             case 3
@@ -37,7 +50,6 @@ if checkbox
     else
         switch par
             case 1
-                handles.par_1_
                 set(handles.par_1_LFO,'Value',0);
             case 2
                 checkbox = set(handles.par_2_LFO,'Value');
