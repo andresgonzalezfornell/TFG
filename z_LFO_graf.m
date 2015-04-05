@@ -26,6 +26,26 @@ switch tipo.String
             m = -m;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
+    case '(DA) Diente sierra ascendente'
+        n = 1:floor(L/2);
+        i = 1;
+        x(1:floor(L/2)) = 2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
+        n = -floor(L/2)+1:floor(L/2);
+        while i*floor(L/2) < length(handles.LFO.n)
+            x(i*floor(L/2)+1:(i+2)*floor(L/2)) = 2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
+            i = i+2;
+        end
+        handles.LFO.x = x(1:length(handles.LFO.n));
+    case '(DD) Diente sierra descendente'
+        n = 1:floor(L/2);
+        i = 1;
+        x(1:floor(L/2)) = -2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
+        n = -floor(L/2)+1:floor(L/2);
+        while i*floor(L/2) < length(handles.LFO.n)
+            x(i*floor(L/2)+1:(i+2)*floor(L/2)) = -2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
+            i = i+2;
+        end
+        handles.LFO.x = x(1:length(handles.LFO.n));
 end
 plot(handles.graf,handles.LFO.n,handles.LFO.x)
 xlabel(handles.graf,'Tiempo [s]')
