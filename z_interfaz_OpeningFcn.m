@@ -28,7 +28,12 @@ if isfield(handles,'y')
 end
 
 % LFO
-handles.LFO = [struct('checkbox',0) struct('checkbox',0) struct('checkbox',0) struct('checkbox',0) struct('checkbox',0) struct('checkbox',0)];
+handles.LFO_1.checkbox = 0;
+handles.LFO_2.checkbox = 0;
+handles.LFO_3.checkbox = 0;
+handles.LFO_4.checkbox = 0;
+handles.LFO_5.checkbox = 0;
+handles.LFO_6.checkbox = 0;
 set(handles.par_1_LFO,'Enable','off')
 set(handles.par_2_LFO,'Enable','off')
 set(handles.par_3_LFO,'Enable','off')

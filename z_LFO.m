@@ -57,6 +57,7 @@ if checkbox        % Si LFO habilitado
         switch par
             case 1
                 handles.LFO_1.checkbox = 1;
+                handles.LFO_N = length(handles.LFO_1.x);
                 set(handles.par_1,'Enable','off')
                 set(handles.par_1_value,'Enable','off')
                 set(handles.par_1_value,'String',strcat(tipo_abreviado,...
@@ -66,6 +67,7 @@ if checkbox        % Si LFO habilitado
                     'Hz'))
             case 2
                 handles.LFO_2.checkbox = 1;
+                handles.LFO_N = length(handles.LFO_2.x);
                 set(handles.par_2,'Enable','off')
                 set(handles.par_2_value,'Enable','off')
                 set(handles.par_2_value,'String',strcat(tipo_abreviado,...
@@ -75,6 +77,7 @@ if checkbox        % Si LFO habilitado
                     'Hz'))
             case 3
                 handles.LFO_3.checkbox = 1;
+                handles.LFO_N = length(handles.LFO_3.x);
                 set(handles.par_3,'Enable','off')
                 set(handles.par_3_value,'Enable','off')
                 set(handles.par_3_value,'String',strcat(tipo_abreviado,...
@@ -84,6 +87,7 @@ if checkbox        % Si LFO habilitado
                     'Hz'))
             case 4
                 handles.LFO_4.checkbox = 1;
+                handles.LFO_N = length(handles.LFO_4.x);
                 set(handles.par_4,'Enable','off')
                 set(handles.par_4_value,'Enable','off')
                 set(handles.par_4_value,'String',strcat(tipo_abreviado,...
@@ -93,6 +97,7 @@ if checkbox        % Si LFO habilitado
                     'Hz'))
             case 5
                 handles.LFO_5.checkbox = 1;
+                handles.LFO_N = length(handles.LFO_5.x);
                 set(handles.par_5,'Enable','off')
                 set(handles.par_5_value,'Enable','off')
                 set(handles.par_5_value,'String',strcat(tipo_abreviado,...
@@ -102,6 +107,7 @@ if checkbox        % Si LFO habilitado
                     'Hz'))
             case 6
                 handles.LFO_6.checkbox = 1;
+                handles.LFO_N = length(handles.LFO_6.x);
                 set(handles.par_6,'Enable','off')
                 set(handles.par_6_value,'Enable','off')
                 set(handles.par_6_value,'String',strcat(tipo_abreviado,...
@@ -142,27 +148,27 @@ else                                % Si LFO deshabilitado
             set(handles.par_1_value,'Enable','on')
         case 2
             handles.LFO_2.checkbox = 0;
-            set(handles.par_2_value,'String',get(handles.par_1,'Value'))
+            set(handles.par_2_value,'String',get(handles.par_2,'Value'))
             set(handles.par_2,'Enable','on')
             set(handles.par_2_value,'Enable','on')
         case 3
             handles.LFO_3.checkbox = 0;
-            set(handles.par_3_value,'String',get(handles.par_1,'Value'))
+            set(handles.par_3_value,'String',get(handles.par_3,'Value'))
             set(handles.par_3,'Enable','on')
             set(handles.par_3_value,'Enable','on')
         case 4
             handles.LFO_4.checkbox = 0;
-            set(handles.par_4_value,'String',get(handles.par_1,'Value'))
+            set(handles.par_4_value,'String',get(handles.par_4,'Value'))
             set(handles.par_4,'Enable','on')
             set(handles.par_4_value,'Enable','on')
         case 5
             handles.LFO_5.checkbox = 0;
-            set(handles.par_5_value,'String',get(handles.par_1,'Value'))
+            set(handles.par_5_value,'String',get(handles.par_5,'Value'))
             set(handles.par_5,'Enable','on')
             set(handles.par_5_value,'Enable','on')
         case 6
             handles.LFO_6.checkbox = 0;
-            set(handles.par_6_value,'String',get(handles.par_1,'Value'))
+            set(handles.par_6_value,'String',get(handles.par_6,'Value'))
             set(handles.par_6,'Enable','on')
             set(handles.par_6_value,'Enable','on')
     end

@@ -51,7 +51,16 @@ original(1:L,:) = handles.x;
 original(L+1:L+handles.M,:) = zeros(handles.M,2);
 delay(1:handles.M,:) = zeros(handles.M,2);
 delay(handles.M+1:L+handles.M,:) = handles.x;
-handles.y = (original + handles.d.*delay)./(1+handles.d);
+if handles.LFO_1.checkbox                               % Con LFO
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    for n = 1:res.LFO:handles.LFO_N
+        d = handles.LFO_1.x(n);
+        handles.y = (original + d.*delay)./(1+d);
+    end
+else                                                    % Sin LFO
+    handles.y = (original + handles.d.*delay)./(1+handles.d);
+end
 
 z_interfaz_salida
 
@@ -230,15 +239,15 @@ set(handles.des,'String','Rango de efectos basados en conjunto de ecualizadores 
 % Inicialización de parámetros
 handles.d = 0.3;
 handles.M = 0.5*44100;
+handles.limites(1).Min = 0;
+handles.limites(1).Max = 1;
 set(handles.par_1,'Visible','on','Value',0.3)
 set(handles.par_1_value,'Visible','on','String',0.3)
 set(handles.par_1_title,'Visible','on','String','Nivel de delay')
 set(handles.par_1_LFO,'Visible','on')
-handles.limites(1) = struct('Min',0,'Max',1);
 set(handles.par_2,'Visible','on','Value',0.5,'Max',2)
 set(handles.par_2_value,'Visible','on','String',0.5)
 set(handles.par_2_title,'Visible','on','String','Tiempo de delay [s]')
-set(handles.par_2_LFO,'Visible','on')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes delay wait for user response (see UIRESUME)

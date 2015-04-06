@@ -56,12 +56,30 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     f = 0+file.fs/length(n):file.fs/length(n):file.fs/2;
                     
                     % LFO
-                    set(handles.par_1_LFO,'Enable','on')
-                    set(handles.par_2_LFO,'Enable','on')
-                    set(handles.par_3_LFO,'Enable','on')
-                    set(handles.par_4_LFO,'Enable','on')
-                    set(handles.par_5_LFO,'Enable','on')
-                    set(handles.par_6_LFO,'Enable','on')
+                    handles.LFO_1.checkbox = 0;
+                    handles.LFO_2.checkbox = 0;
+                    handles.LFO_3.checkbox = 0;
+                    handles.LFO_4.checkbox = 0;
+                    handles.LFO_5.checkbox = 0;
+                    handles.LFO_6.checkbox = 0;
+                    set(handles.par_1,'Enable','on')
+                    set(handles.par_2,'Enable','on')
+                    set(handles.par_3,'Enable','on')
+                    set(handles.par_4,'Enable','on')
+                    set(handles.par_5,'Enable','on')
+                    set(handles.par_6,'Enable','on')
+                    set(handles.par_1_value,'String',get(handles.par_1,'Value'),'Enable','on')
+                    set(handles.par_2_value,'String',get(handles.par_2,'Value'),'Enable','on')
+                    set(handles.par_3_value,'String',get(handles.par_3,'Value'),'Enable','on')
+                    set(handles.par_4_value,'String',get(handles.par_4,'Value'),'Enable','on')
+                    set(handles.par_5_value,'String',get(handles.par_5,'Value'),'Enable','on')
+                    set(handles.par_6_value,'String',get(handles.par_6,'Value'),'Enable','on')
+                    set(handles.par_1_LFO,'Enable','on','Value',0)
+                    set(handles.par_2_LFO,'Enable','on','Value',0)
+                    set(handles.par_3_LFO,'Enable','on','Value',0)
+                    set(handles.par_4_LFO,'Enable','on','Value',0)
+                    set(handles.par_5_LFO,'Enable','on','Value',0)
+                    set(handles.par_6_LFO,'Enable','on','Value',0)
                     for i = 1:6
                         handles.limites(i).longitud = length(handles.x(:,1))/handles.fs;
                     end

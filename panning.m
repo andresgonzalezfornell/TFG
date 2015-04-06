@@ -58,15 +58,37 @@ function aplicar_Callback(hObject, eventdata, handles)
 clear handles.y
 
 % Panning
-k = (tand(handles.az_altavoz)-tand(handles.az_virtual)) / (tand(handles.az_altavoz)+tand(handles.az_virtual));
 g = [1 1];
-if k>1
-    g(2) = 1/k;
-else
-    g(1) = k;
+if handles.LFO_1.checkbox                               % Con LFO
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    for n = 1:res.LFO:handles.LFO_N
+        az_virtual = handles.LFO_1.x(n);
+        k = (tand(handles.az_altavoz)-tand(az_virtual)) / (tand(handles.az_altavoz)+tand(az_virtual));
+        if k>1
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,1) = 1;
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,2) = 1/k;
+        else
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,1) = k;
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,2) = 1;
+        end
+    end
+    if k>1
+        g(n*res.y/res.LFO:length(handles.x(:,1)),1) = 1;
+        g(n*res.y/res.LFO:length(handles.x(:,1)),2) = 1/k;
+    else
+        g(n*res.y/res.LFO:length(handles.x(:,1)),1) = k;
+        g(n*res.y/res.LFO:length(handles.x(:,1)),2) = 1;
+    end
+else                                                    % Sin LFO
+    k = (tand(handles.az_altavoz)-tand(handles.az_virtual)) / (tand(handles.az_altavoz)+tand(handles.az_virtual));
+    if k>1
+        g(2) = 1/k;
+    else
+        g(1) = k;
+    end
 end
-handles.y(:,1) = g(1)*handles.x(:,1);
-handles.y(:,2) = g(2)*handles.x(:,2);
+handles.y = g.*handles.x;
 
 z_interfaz_salida
 
@@ -261,15 +283,18 @@ function graf_open_Callback(hObject, eventdata, handles)
 %% Controles de interfaz
 % --- Executes just before panning is made visible.
 function panning_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripci贸n del efecto
+% Descripci髇 del efecto
 set(handles.titulo,'String','Panning')
 set(handles.des,'String','Produce la ilusi贸n al oyente de una direcci贸n determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales est茅reo y dos fuentes separadas suficientemente rodeando al oyente.')
-% Inicializaci贸n de par谩metros
+% Inicializaci髇 de par醡etros
 handles.az_virtual = 0;
 handles.az_altavoz = 60;
-set(handles.par_1,'Visible','on','Value',0,'Min',-60,'Max',60)
+handles.limites(1).Min = -60;
+handles.limites(1).Max = 60;
+set(handles.par_1,'Visible','on','Value',0,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
 set(handles.par_1_value,'Visible','on','String',0)
 set(handles.par_1_title,'Visible','on','String','Acimut virtual [潞]')
+set(handles.par_1_LFO,'Visible','on')
 set(handles.par_2,'Visible','on','Value',60,'Min',1,'Max',89)
 set(handles.par_2_value,'Visible','on','String',60)
 set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [潞]')
