@@ -18,7 +18,7 @@ handles.Y = (handles.Y_L+handles.Y_R)/2;
 hold(handles.salida_espectro,'on')
 loglog(handles.salida_espectro,f,abs(handles.Y_R),'red')
 loglog(handles.salida_espectro,f,abs(handles.Y_L),'green')
-set(handles.salida_espectro,'XLim',[1.0 25000.0],'XGrid','on')
+set(handles.salida_espectro,'XLim',[20 20000],'XGrid','on')
 hold(handles.salida_espectro,'off')
 xlabel(handles.salida_L,'Tiempo [s] (canal L)')
 xlabel(handles.salida_R,'Tiempo [s] (canal R)')

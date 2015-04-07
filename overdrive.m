@@ -42,29 +42,47 @@ function aplicar_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Limpieza de salida
-clear handles.y
+z_interfaz_limpieza
 
 % Overdrive
-for n = 1:length(handles.x(:,1))
-    % Overdrive canal L
-    if abs(handles.x(n,1)) < handles.k
-        handles.y(n,1) = handles.x(n,1)/1.5;
-    else
-        handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
+if handles.LFO_1.checkbox                               % Con LFO
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    for n = 1:handles.LFO_N
+        if mod(n,res.LFO) == 1
+            k = 1-handles.LFO_1.x(n);
+        end
+        % Overdrive canal L
+        if abs(handles.x(n,1)) < k
+            handles.y(n,1) = handles.x(n,1)/1.5;
+        else
+            handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
+        end
+        % Overdrive canal R
+        if abs(handles.x(n,2)) < k
+            handles.y(n,2) = handles.x(n,2)/1.5;
+        else
+            handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
+        end
     end
-    if abs(handles.y(n,1)) > 1
-        handles.y(n,1) = 1;
-    end
-    % Overdrive canal R
-    if abs(handles.x(n,2)) < handles.k
-        handles.y(n,2) = handles.x(n,2)/1.5;
-    else
-        handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
-    end
-    if abs(handles.y(n,2)) > 1
-        handles.y(n,2) = 1;
+else                                                    % Sin LFO
+    for n = 1:length(handles.x(:,1))
+        % Overdrive canal L
+        if abs(handles.x(n,1)) < handles.k
+            handles.y(n,1) = handles.x(n,1)/1.5;
+        else
+            handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
+        end
+        % Overdrive canal R
+        if abs(handles.x(n,2)) < handles.k
+            handles.y(n,2) = handles.x(n,2)/1.5;
+        else
+            handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
+        end
+
     end
 end
+
 z_interfaz_salida
 
 
@@ -78,7 +96,7 @@ function par_1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 handles.k = 1-get(hObject,'Value');
-set(handles.par_1_value,'String',handles.k)
+set(handles.par_1_value,'String',get(hObject,'Value'))
 % Update handles structure
 guidata(hObject, handles);
 
@@ -89,9 +107,9 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
     handles.k = 1-str2double(get(hObject,'String'));
-    set(handles.par_1,'Value',handles.k)
+    set(handles.par_1,'Value',str2double(get(hObject,'String')))
 else
-    set(handles.par_1_value,'String',handles.k)
+    set(handles.par_1_value,'String',1-handles.k)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -227,9 +245,12 @@ set(handles.titulo,'String','Overdrive')
 set(handles.des,'String','Filtro no lineal')
 % Inicialización de parámetros
 handles.k = 0.3;
-set(handles.par_1,'Visible','on','Value',0.7)
-set(handles.par_1_value,'Visible','on','String',0.3)
+handles.limites(1).Min = 0;
+handles.limites(1).Max = 1;
+set(handles.par_1,'Visible','on','Value',0.7,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
+set(handles.par_1_value,'Visible','on','String',0.7)
 set(handles.par_1_title,'Visible','on','String','Umbral de no linealidad')
+set(handles.par_1_LFO,'Visible','on')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes overdrive wait for user response (see UIRESUME)

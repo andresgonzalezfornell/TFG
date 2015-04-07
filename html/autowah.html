@@ -1,0 +1,1484 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>autowah</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-07"><meta name="DC.source" content="autowah.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">EFECTO</a></li><li><a href="#6">Par&Atilde;&iexcl;metros</a></li><li><a href="#9">Gr&aacute;fica del efecto</a></li><li><a href="#12">Controles de interfaz</a></li><li><a href="#15">Controles de reproducci&Atilde;&sup3;n</a></li><li><a href="#18">Ampliar gr&Atilde;&iexcl;ficas</a></li><li><a href="#21">Controles de par&Atilde;&iexcl;metros</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> varargout = autowah(varargin)
+</pre><pre class="codeinput"><span class="comment">% Efecto de AUTOWAH</span>
+<span class="comment">%</span>
+<span class="comment">%      Si desea pasar la salida del efecto a su workspace escriba:</span>
+<span class="comment">%</span>
+<span class="comment">%                   y = autowah;</span>
+<span class="comment">%</span>
+<span class="comment">%      La variable devuelta "y" se corresponde con un array</span>
+<span class="comment">%      multidimensional formado por las siguientes se&Atilde;&plusmn;ales</span>
+<span class="comment">%       y(:,1) se&Atilde;&plusmn;al canal L</span>
+<span class="comment">%       y(:,2) se&Atilde;&plusmn;al canal R</span>
+<span class="comment">%       y(:,3) espectro de se&Atilde;&plusmn;al canal L</span>
+<span class="comment">%       y(:,4) espectro de se&Atilde;&plusmn;al canal R</span>
+<span class="comment">%       y(:,5) espectro de se&Atilde;&plusmn;al media entre ambos canales</span>
+<span class="comment">%      Nota: puede cambiar el nombre de la variable "y" por la que desee.</span>
+
+<span class="comment">% Begin initialization code - DO NOT EDIT</span>
+gui_Singleton = 1;
+gui_State = struct(<span class="string">'gui_Name'</span>,       mfilename, <span class="keyword">...</span>
+                   <span class="string">'gui_Singleton'</span>,  gui_Singleton, <span class="keyword">...</span>
+                   <span class="string">'gui_OpeningFcn'</span>, @autowah_OpeningFcn, <span class="keyword">...</span>
+                   <span class="string">'gui_OutputFcn'</span>,  @autowah_OutputFcn, <span class="keyword">...</span>
+                   <span class="string">'gui_LayoutFcn'</span>,  [] , <span class="keyword">...</span>
+                   <span class="string">'gui_Callback'</span>,   []);
+<span class="keyword">if</span> nargin &amp;&amp; ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+<span class="keyword">else</span>
+    gui_mainfcn(gui_State, varargin{:});
+<span class="keyword">end</span>
+<span class="comment">% End initialization code - DO NOT EDIT</span>
+</pre><img vspace="5" hspace="5" src="autowah_01.png" alt=""> <h2>EFECTO<a name="3"></a></h2><p>--- Executes on button press in aplicar.</p><pre class="codeinput"><span class="keyword">function</span> aplicar_Callback(hObject, eventdata, handles)
+</pre><pre class="codeinput"><span class="comment">% hObject    handle to aplicar (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+
+<span class="comment">% Limpieza de salida</span>
+z_interfaz_limpieza
+
+<span class="comment">% Autowah</span>
+BW = handles.BW;
+f_1 = handles.f_0-BW/2;
+f_2 = handles.f_0+BW/2;
+<span class="keyword">if</span> handles.LFO_1.checkbox || handles.LFO_2.checkbox     <span class="comment">% Con LFO</span>
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    <span class="keyword">for</span> n = 1:res.LFO:handles.LFO_N
+        <span class="keyword">if</span> handles.LFO_1.checkbox                       <span class="comment">% LFO 1</span>
+            BW = handles.LFO_1.x(n);
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> handles.LFO_2.checkbox                       <span class="comment">% LFO 2</span>
+            f_0 = handles.LFO_2.x(n);
+            f_1 = f_0-BW/2;
+            f_2 = f_0+BW/2;
+        <span class="keyword">end</span>
+        filtro = designfilt(<span class="string">'bandpassfir'</span>,<span class="string">'FilterOrder'</span>,10,<span class="string">'CutoffFrequency1'</span>,f_1,<span class="string">'CutoffFrequency2'</span>,f_2,<span class="string">'SampleRate'</span>,handles.fs);
+        handles.y((n-1)*res.y+1:n*res.y,:) = filter(filtro,handles.x((n-1)*res.y+1:n*res.y,:));
+    <span class="keyword">end</span>
+
+<span class="keyword">else</span>                                                    <span class="comment">% Sin LFO</span>
+    filtro = designfilt(<span class="string">'bandpassfir'</span>,<span class="string">'FilterOrder'</span>,10,<span class="string">'CutoffFrequency1'</span>,f_1,<span class="string">'CutoffFrequency2'</span>,f_2,<span class="string">'SampleRate'</span>,handles.fs);
+    handles.y = filter(filtro,handles.x);
+<span class="keyword">end</span>
+
+z_interfaz_salida
+</pre><pre class="codeoutput">Undefined function or variable 'designfilt'.
+
+Error in autowah&gt;aplicar_Callback (line 68)
+    filtro =
+    designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+    
+Error in gui_mainfcn (line 95)
+        feval(varargin{:});
+
+Error in autowah (line 32)
+    gui_mainfcn(gui_State, varargin{:});
+
+Error in
+@(hObject,eventdata)autowah('aplicar_Callback',hObject,eventdata,guidata(hObject))
+
+ 
+Error using waitfor
+Error while evaluating UIControl Callback
+
+Undefined function or variable 'designfilt'.
+
+Error in autowah&gt;aplicar_Callback (line 68)
+    filtro =
+    designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+    
+Error in gui_mainfcn (line 95)
+        feval(varargin{:});
+
+Error in autowah (line 32)
+    gui_mainfcn(gui_State, varargin{:});
+
+Error in
+@(hObject,eventdata)autowah('aplicar_Callback',hObject,eventdata,guidata(hObject))
+
+ 
+Error using waitfor
+Error while evaluating UIControl Callback
+
+</pre><h2>Par&Atilde;&iexcl;metros<a name="6"></a></h2><p>--- Executes on slider movement.</p><pre class="codeinput"><span class="keyword">function</span> par_1_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_1 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles.BW = get(hObject,<span class="string">'Value'</span>);
+set(handles.par_1_value,<span class="string">'String'</span>,handles.BW)
+handles.limites(2).Min = handles.BW/2;
+handles.limites(2).Max = 20000-handles.BW/2;
+<span class="keyword">if</span> handles.f_0 &lt; handles.limites(2).Min
+    handles.f_0 = handles.limites(2).Min;
+    set(handles.par_2,<span class="string">'Value'</span>,handles.f_0)
+    set(handles.par_2_value,<span class="string">'String'</span>,handles.f_0)
+<span class="keyword">elseif</span> handles.f_0 &gt; handles.limites(2).Max
+    handles.f_0 = handles.limites(2).Max;
+    set(handles.par_2,<span class="string">'Value'</span>,handles.f_0)
+    set(handles.par_2_value,<span class="string">'String'</span>,handles.f_0)
+<span class="keyword">end</span>
+set(handles.par_2,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'Value'</span>,handles.f_0,<span class="string">'Min'</span>,handles.limites(2).Min,<span class="string">'Max'</span>,handles.limites(2).Max)
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+LFO_plot(handles);
+<span class="comment">% Hints: get(hObject,'Value') returns position of slider</span>
+<span class="comment">%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider</span>
+
+
+<span class="keyword">function</span> par_1_value_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_1_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="keyword">if</span> str2double(get(hObject,<span class="string">'String'</span>))&gt;=10 &amp;&amp; str2double(get(hObject,<span class="string">'String'</span>))&lt;=1000
+    handles.BW = str2double(get(hObject,<span class="string">'String'</span>));
+    set(handles.par_1,<span class="string">'Value'</span>,handles.BW)
+    handles.limites(2).Min = handles.BW/2;
+    handles.limites(2).Max = 20000-handles.BW/2;
+    <span class="keyword">if</span> handles.f_0 &lt; handles.limites(2).Min
+        handles.f_0 = handles.limites(2).Min;
+        set(handles.par_2,<span class="string">'Value'</span>,handles.f_0)
+        set(handles.par_2_value,<span class="string">'String'</span>,handles.f_0)
+    <span class="keyword">elseif</span> handles.f_0 &gt; handles.limites(2).Max
+        handles.f_0 = handles.limites(2).Max;
+        set(handles.par_2,<span class="string">'Value'</span>,handles.f_0)
+        set(handles.par_2_value,<span class="string">'String'</span>,handles.f_0)
+    <span class="keyword">end</span>
+    set(handles.par_2,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'Value'</span>,handles.f_0,<span class="string">'Min'</span>,handles.limites(2).Min,<span class="string">'Max'</span>,handles.limites(2).Max)
+<span class="keyword">else</span>
+    set(handles.par_1_value,<span class="string">'String'</span>,handles.BW)
+<span class="keyword">end</span>
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+LFO_plot(handles);
+<span class="comment">% Hints: get(hObject,'String') returns contents of par_1_value as text</span>
+<span class="comment">%        str2double(get(hObject,'String')) returns contents of par_1_value as a double</span>
+
+
+<span class="comment">% --- Executes on button press in par_1_LFO.</span>
+<span class="keyword">function</span> par_1_LFO_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_1_LFO (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles = z_LFO(handles,1);
+handles.limites(2).Min = (handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
+handles.limites(2).Max = 20000-(handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
+set(handles.par_2,<span class="string">'Min'</span>,handles.limites(2).Min,<span class="string">'Max'</span>,handles.limites(2).Max)
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+LFO_plot(handles);
+<span class="comment">% Hint: get(hObject,'Value') returns toggle state of par_1_LFO</span>
+
+
+<span class="comment">% --- Executes on slider movement.</span>
+<span class="keyword">function</span> par_2_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_2 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles.f_0 = get(hObject,<span class="string">'Value'</span>);
+set(handles.par_2_value,<span class="string">'String'</span>,handles.f_0)
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+LFO_plot(handles);
+<span class="comment">% Hints: get(hObject,'Value') returns position of slider</span>
+<span class="comment">%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider</span>
+
+<span class="keyword">function</span> par_2_value_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_2_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="keyword">if</span> str2double(get(hObject,<span class="string">'String'</span>))&gt;=handles.limites(2).Min &amp;&amp; str2double(get(hObject,<span class="string">'String'</span>))&lt;=handles.limites(2).Max
+    handles.f_0 = str2double(get(hObject,<span class="string">'String'</span>));
+    set(handles.par_2,<span class="string">'Value'</span>,handles.f_0)
+<span class="keyword">else</span>
+    set(handles.par_2_value,<span class="string">'String'</span>,handles.f_0)
+<span class="keyword">end</span>
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+LFO_plot(handles);
+<span class="comment">% Hints: get(hObject,'String') returns contents of par_2_value as text</span>
+<span class="comment">%        str2double(get(hObject,'String')) returns contents of par_2_value as a double</span>
+
+
+<span class="comment">% --- Executes on button press in par_2_LFO.</span>
+<span class="keyword">function</span> par_2_LFO_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_2_LFO (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles = z_LFO(handles,2);
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+LFO_plot(handles);
+<span class="comment">% Hint: get(hObject,'Value') returns toggle state of par_2_LFO</span>
+
+
+<span class="comment">% --- Executes on slider movement.</span>
+<span class="keyword">function</span> par_3_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_3 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="comment">% Hints: get(hObject,'Value') returns position of slider</span>
+<span class="comment">%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider</span>
+
+
+<span class="keyword">function</span> par_3_value_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_3_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="comment">% Hints: get(hObject,'String') returns contents of par_3_value as text</span>
+<span class="comment">%        str2double(get(hObject,'String')) returns contents of par_3_value as a double</span>
+
+
+<span class="comment">% --- Executes on button press in par_3_LFO.</span>
+<span class="keyword">function</span> par_3_LFO_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_3_LFO (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles = z_LFO(handles,3);
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+<span class="comment">% Hint: get(hObject,'Value') returns toggle state of par_3_LFO</span>
+
+
+<span class="comment">% --- Executes on slider movement.</span>
+<span class="keyword">function</span> par_4_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_4 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="comment">% Hints: get(hObject,'Value') returns position of slider</span>
+<span class="comment">%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider</span>
+
+
+<span class="keyword">function</span> par_4_value_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_4_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="comment">% Hints: get(hObject,'String') returns contents of par_4_value as text</span>
+<span class="comment">%        str2double(get(hObject,'String')) returns contents of par_4_value as a double</span>
+
+
+<span class="comment">% --- Executes on button press in par_4_LFO.</span>
+<span class="keyword">function</span> par_4_LFO_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_4_LFO (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles = z_LFO(handles,4);
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+<span class="comment">% Hint: get(hObject,'Value') returns toggle state of par_4_LFO</span>
+
+
+<span class="keyword">function</span> par_5_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_5 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="comment">% Hints: get(hObject,'Value') returns position of slider</span>
+<span class="comment">%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider</span>
+
+
+<span class="keyword">function</span> par_5_value_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_5_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="comment">% Hints: get(hObject,'String') returns contents of par_5_value as text</span>
+<span class="comment">%        str2double(get(hObject,'String')) returns contents of par_5_value as a double</span>
+
+
+<span class="comment">% --- Executes on button press in par_5_LFO.</span>
+<span class="keyword">function</span> par_5_LFO_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_5_LFO (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles = z_LFO(handles,5);
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+<span class="comment">% Hint: get(hObject,'Value') returns toggle state of par_5_LFO</span>
+
+
+<span class="comment">% --- Executes on slider movement.</span>
+<span class="keyword">function</span> par_6_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_6 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+
+<span class="comment">% Hints: get(hObject,'Value') returns position of slider</span>
+<span class="comment">%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider</span>
+
+
+<span class="keyword">function</span> par_6_value_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_6_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+<span class="keyword">if</span> str2double(get(hObject,<span class="string">'String'</span>))&gt;=0 &amp; str2double(get(hObject,<span class="string">'String'</span>))&lt;=1
+<span class="keyword">else</span>
+<span class="keyword">end</span>
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+<span class="comment">% Hints: get(hObject,'String') returns contents of par_6_value as text</span>
+<span class="comment">%        str2double(get(hObject,'String')) returns contents of par_6_value as a double</span>
+
+
+<span class="comment">% --- Executes on button press in par_6_LFO.</span>
+<span class="keyword">function</span> par_6_LFO_Callback(hObject, eventdata, handles)
+</pre><pre class="codeinput"><span class="comment">% hObject    handle to par_6_LFO (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+handles = z_LFO(handles,6);
+<span class="comment">% Update handles structure</span>
+guidata(hObject, handles);
+<span class="comment">% Hint: get(hObject,'Value') returns toggle state of par_6_LFO</span>
+</pre><h2>Gr&aacute;fica del efecto<a name="9"></a></h2><p>--- Executes on button press in graf_open.</p><pre class="codeinput"><span class="keyword">function</span> graf_open_Callback(hObject, eventdata, handles)
+</pre><pre class="codeinput"><span class="comment">% hObject    handle to graf_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+</pre><h2>Controles de interfaz<a name="12"></a></h2><p>--- Executes just before autowah is made visible.</p><pre class="codeinput"><span class="keyword">function</span> autowah_OpeningFcn(hObject, eventdata, handles, varargin)
+<span class="comment">% Descripci&oacute;n del efecto</span>
+set(handles.titulo,<span class="string">'String'</span>,<span class="string">'Autowah'</span>)
+set(handles.des,<span class="string">'String'</span>,{<span class="string">'Filtro paso banda estrecho con una frecuencia central variable.'</span>,<span class="string">''</span>,<span class="string">'Puesto que es autom&aacute;tico, la se&Atilde;&plusmn;al que controla la frecuencia central (LFO) es una se&Atilde;&plusmn;al triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'</span>})
+<span class="comment">% Inicializaci&oacute;n de par&aacute;metros</span>
+handles.BW = 100;
+handles.limites(1).Min = 10;
+handles.limites(1).Max = 1000;
+set(handles.par_1,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'Value'</span>,handles.BW,<span class="string">'Min'</span>,handles.limites(1).Min,<span class="string">'Max'</span>,handles.limites(1).Max)
+set(handles.par_1_value,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'String'</span>,handles.BW)
+set(handles.par_1_title,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'String'</span>,<span class="string">'Ancho de banda del filtro'</span>)
+set(handles.par_1_LFO,<span class="string">'Visible'</span>,<span class="string">'on'</span>)
+handles.f_0 = 1000;
+handles.limites(2).Min = handles.BW/2;
+handles.limites(2).Max = 20000-handles.BW/2;
+set(handles.par_2,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'Value'</span>,handles.f_0,<span class="string">'Min'</span>,handles.limites(2).Min,<span class="string">'Max'</span>,handles.limites(2).Max)
+set(handles.par_2_value,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'String'</span>,handles.f_0)
+set(handles.par_2_title,<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="string">'String'</span>,<span class="string">'Frecuencia central filtro [Hz]'</span>)
+set(handles.par_2_LFO,<span class="string">'Visible'</span>,<span class="string">'on'</span>)
+set(handles.graf,<span class="string">'Visible'</span>,<span class="string">'on'</span>)
+<span class="comment">% LFO (necesario para inicializar el gr&aacute;fico del efecto)</span>
+handles.LFO_1.checkbox = 0;
+handles.LFO_2.checkbox = 0;
+handles.LFO_3.checkbox = 0;
+handles.LFO_4.checkbox = 0;
+handles.LFO_5.checkbox = 0;
+handles.LFO_6.checkbox = 0;
+LFO_plot(handles);
+<span class="comment">% Interfaz</span>
+z_interfaz_OpeningFcn
+<span class="comment">% UIWAIT makes autowah wait for user response (see UIRESUME)</span>
+
+
+<span class="comment">% --- Executes on selection change in entrada_lista.</span>
+<span class="keyword">function</span> entrada_lista_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to entrada_lista (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+
+<span class="comment">% Interfaz</span>
+z_interfaz_entrada_lista_Callback
+
+
+<span class="comment">% Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array</span>
+<span class="comment">%        contents{get(hObject,'Value')} returns selected item from entrada_lista</span>
+
+
+<span class="comment">% --- Outputs from this function are returned to the command line.</span>
+<span class="keyword">function</span> varargout = autowah_OutputFcn(hObject, eventdata, handles)
+<span class="comment">% varargout  cell array for returning output args (see VARARGOUT);</span>
+<span class="comment">% hObject    handle to figure</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+
+<span class="comment">% Get default command line output from handles structure</span>
+z_interfaz_OutputFcn
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> entrada_lista_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to entrada_lista (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: listbox controls usually have a white background on Windows.</span>
+<span class="comment">%       See ISPC and COMPUTER.</span>
+<span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes on button press in play_entrada.</span>
+<span class="keyword">function</span> play_entrada_Callback(hObject, eventdata, handles)
+</pre><pre class="codeinput"><span class="comment">% hObject    handle to play_entrada (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+resume(handles.x_audio)
+</pre><h2>Controles de reproducci&Atilde;&sup3;n<a name="15"></a></h2><p>--- Executes on button press in stop_entrada.</p><pre class="codeinput"><span class="keyword">function</span> stop_entrada_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to stop_entrada (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+stop(handles.x_audio)
+
+
+<span class="comment">% --- Executes on button press in pause_entrada.</span>
+<span class="keyword">function</span> pause_entrada_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to pause_entrada (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+pause(handles.x_audio)
+
+
+<span class="comment">% --- Executes on button press in play_salida.</span>
+<span class="keyword">function</span> play_salida_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to play_salida (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+resume(handles.y_audio)
+
+
+<span class="comment">% --- Executes on button press in stop_salida.</span>
+<span class="keyword">function</span> stop_salida_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to stop_salida (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+stop(handles.y_audio)
+
+
+<span class="comment">% --- Executes on button press in pause_salida.</span>
+<span class="keyword">function</span> pause_salida_Callback(hObject, eventdata, handles)
+</pre><pre class="codeinput"><span class="comment">% hObject    handle to pause_salida (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+pause(handles.y_audio)
+</pre><h2>Ampliar gr&Atilde;&iexcl;ficas<a name="18"></a></h2><p>--- Executes on button press in entrada_L_open.</p><pre class="codeinput"><span class="keyword">function</span> entrada_L_open_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to entrada_L_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+z_entrada_L_open
+
+
+<span class="comment">% --- Executes on button press in entrada_R_open.</span>
+<span class="keyword">function</span> entrada_R_open_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to entrada_R_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+z_entrada_R_open
+
+
+<span class="comment">% --- Executes on button press in entrada_espectro_open.</span>
+<span class="keyword">function</span> entrada_espectro_open_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to entrada_espectro_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+z_entrada_espectro_open
+
+
+<span class="comment">% --- Executes on button press in salida_L_open.</span>
+<span class="keyword">function</span> salida_L_open_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to salida_L_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+z_salida_L_open
+
+
+<span class="comment">% --- Executes on button press in salida_R_open.</span>
+<span class="keyword">function</span> salida_R_open_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to salida_R_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+z_salida_R_open
+
+
+<span class="comment">% --- Executes on button press in salida_espectro_open.</span>
+<span class="keyword">function</span> salida_espectro_open_Callback(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to salida_espectro_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+z_salida_espectro_open
+
+
+<span class="comment">% --- Executes on button press in comparar.</span>
+<span class="keyword">function</span> comparar_Callback(hObject, eventdata, handles)
+</pre><pre class="codeinput"><span class="comment">% hObject    handle to salida_espectro_open (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    structure with handles and user data (see GUIDATA)</span>
+z_comparar
+</pre><h2>Controles de par&Atilde;&iexcl;metros<a name="21"></a></h2><p>--- Executes during object creation, after setting all properties.</p><pre class="codeinput"><span class="keyword">function</span> par_1_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_1 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: slider controls usually have a light gray background.</span>
+<span class="keyword">if</span> isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,[.9 .9 .9]);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_1_value_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_1_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+<span class="comment">%       See ISPC and COMPUTER.</span>
+<span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_2_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_2 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: slider controls usually have a light gray background.</span>
+<span class="keyword">if</span> isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,[.9 .9 .9]);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_2_value_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_2_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+<span class="comment">%       See ISPC and COMPUTER.</span>
+<span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_3_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_3 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: slider controls usually have a light gray background.</span>
+<span class="keyword">if</span> isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,[.9 .9 .9]);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_3_value_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_3_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+<span class="comment">%       See ISPC and COMPUTER.</span>
+<span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_4_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_4 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: slider controls usually have a light gray background.</span>
+<span class="keyword">if</span> isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,[.9 .9 .9]);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_4_value_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_4_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+<span class="comment">%       See ISPC and COMPUTER.</span>
+<span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_5_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_5 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: slider controls usually have a light gray background.</span>
+<span class="keyword">if</span> isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,[.9 .9 .9]);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_5_value_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_5_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+<span class="comment">%       See ISPC and COMPUTER.</span>
+<span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_6_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_6 (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: slider controls usually have a light gray background.</span>
+<span class="keyword">if</span> isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,[.9 .9 .9]);
+<span class="keyword">end</span>
+
+
+<span class="comment">% --- Executes during object creation, after setting all properties.</span>
+<span class="keyword">function</span> par_6_value_CreateFcn(hObject, eventdata, handles)
+<span class="comment">% hObject    handle to par_6_value (see GCBO)</span>
+<span class="comment">% eventdata  reserved - to be defined in a future version of MATLAB</span>
+<span class="comment">% handles    empty - handles not created until after all CreateFcns called</span>
+
+<span class="comment">% Hint: edit controls usually have a white background on Windows.</span>
+<span class="comment">%       See ISPC and COMPUTER.</span>
+<span class="keyword">if</span> ispc &amp;&amp; isequal(get(hObject,<span class="string">'BackgroundColor'</span>), get(0,<span class="string">'defaultUicontrolBackgroundColor'</span>))
+    set(hObject,<span class="string">'BackgroundColor'</span>,<span class="string">'white'</span>);
+<span class="keyword">end</span>
+
+
+<span class="keyword">function</span> LFO_plot(handles)
+<span class="comment">% Representaci&oacute;n del LFO</span>
+cla(handles.graf)
+n = 0:20000;
+lfo(1:20001) = 0;
+f_0 = handles.f_0;
+BW = handles.BW;
+hold(handles.graf,<span class="string">'on'</span>)
+    <span class="keyword">if</span> handles.LFO_1.checkbox &amp;&amp; handles.LFO_2.checkbox     <span class="comment">% LFO 1 y 2</span>
+        <span class="comment">% f_0 medio</span>
+        f_0 = handles.LFO_2.offset;
+        <span class="comment">% BW medio</span>
+        BW = handles.LFO_1.offset;
+        <span class="comment">% f_1 m&iacute;nimo</span>
+        f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
+        <span class="comment">% f_2 m&aacute;ximo</span>
+        f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
+        <span class="comment">% BW m&iacute;nimo</span>
+        BW_Min = BW-handles.LFO_1.amplitud;
+        <span class="comment">% BW m&aacute;ximo</span>
+        BW_Max = BW+handles.LFO_1.amplitud;
+        set(line([f_1_Min f_1_Min],[0 2],<span class="string">'LineStyle'</span>,<span class="string">':'</span>),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_2_Max f_2_Max],[0 2],<span class="string">'LineStyle'</span>,<span class="string">':'</span>),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.4 1.4]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.3 1.4]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.3 1.4]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.2 1.2]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.1 1.2]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.1 1.2]),<span class="string">'parent'</span>,handles.graf)
+    <span class="keyword">elseif</span> handles.LFO_1.checkbox                           <span class="comment">% LFO 1</span>
+        <span class="comment">% BW medio</span>
+        BW = handles.LFO_1.offset;
+        <span class="comment">% BW m&iacute;nimo</span>
+        BW_Min = BW-handles.LFO_1.amplitud;
+        set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.4 1.4]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.3 1.4]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.3 1.4]),<span class="string">'parent'</span>,handles.graf)
+        <span class="comment">% BW m&aacute;ximo</span>
+        BW_Max = BW+handles.LFO_1.amplitud;
+        set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.2 1.2]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.1 1.2]),<span class="string">'parent'</span>,handles.graf)
+        set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.1 1.2]),<span class="string">'parent'</span>,handles.graf)
+    <span class="keyword">elseif</span> handles.LFO_2.checkbox                           <span class="comment">% LFO 2</span>
+        <span class="comment">% f_0 medio</span>
+        f_0 = handles.LFO_2.offset;
+        <span class="comment">% f_1 m&iacute;nimo</span>
+        f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
+        set(line([f_1_Min f_1_Min],[0 2],<span class="string">'LineStyle'</span>,<span class="string">':'</span>),<span class="string">'parent'</span>,handles.graf)
+        <span class="comment">% f_2 m&aacute;ximo</span>
+        f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
+        set(line([f_2_Max f_2_Max],[0 2],<span class="string">'LineStyle'</span>,<span class="string">':'</span>),<span class="string">'parent'</span>,handles.graf)
+    <span class="keyword">end</span>
+f_1 = round(f_0-BW/2);
+f_2 = round(f_0+BW/2);
+lfo(f_1+1:f_2+1) = 1;
+set(area(n,lfo),<span class="string">'parent'</span>,handles.graf)
+set(handles.graf,<span class="string">'XLim'</span>,[20 20000],<span class="string">'YLim'</span>,[0 1.5],<span class="string">'YTick'</span>,[],<span class="string">'XGrid'</span>,<span class="string">'on'</span>)
+xlabel(handles.graf,<span class="string">'Frecuencia [Hz]'</span>)
+hold(handles.graf,<span class="string">'off'</span>)
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function varargout = autowah(varargin)
+% Efecto de AUTOWAH
+% 
+%      Si desea pasar la salida del efecto a su workspace escriba:
+%
+%                   y = autowah;
+%
+%      La variable devuelta "y" se corresponde con un array
+%      multidimensional formado por las siguientes seÃ±ales
+%       y(:,1) seÃ±al canal L
+%       y(:,2) seÃ±al canal R
+%       y(:,3) espectro de seÃ±al canal L
+%       y(:,4) espectro de seÃ±al canal R
+%       y(:,5) espectro de seÃ±al media entre ambos canales
+%      Nota: puede cambiar el nombre de la variable "y" por la que desee.
+
+% Begin initialization code - DO NOT EDIT
+gui_Singleton = 1;
+gui_State = struct('gui_Name',       mfilename, ...
+                   'gui_Singleton',  gui_Singleton, ...
+                   'gui_OpeningFcn', @autowah_OpeningFcn, ...
+                   'gui_OutputFcn',  @autowah_OutputFcn, ...
+                   'gui_LayoutFcn',  [] , ...
+                   'gui_Callback',   []);
+if nargin && ischar(varargin{1})
+    gui_State.gui_Callback = str2func(varargin{1});
+end
+
+if nargout
+    [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+else
+    gui_mainfcn(gui_State, varargin{:});
+end
+% End initialization code - DO NOT EDIT
+
+
+%% EFECTO
+% REPLACE_WITH_DASH_DASH- Executes on button press in aplicar.
+function aplicar_Callback(hObject, eventdata, handles)
+% hObject    handle to aplicar (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Limpieza de salida
+z_interfaz_limpieza
+
+% Autowah
+BW = handles.BW;
+f_1 = handles.f_0-BW/2;
+f_2 = handles.f_0+BW/2;
+if handles.LFO_1.checkbox || handles.LFO_2.checkbox     % Con LFO
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    for n = 1:res.LFO:handles.LFO_N
+        if handles.LFO_1.checkbox                       % LFO 1
+            BW = handles.LFO_1.x(n);
+        end
+        if handles.LFO_2.checkbox                       % LFO 2
+            f_0 = handles.LFO_2.x(n);
+            f_1 = f_0-BW/2;
+            f_2 = f_0+BW/2;
+        end
+        filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+        handles.y((n-1)*res.y+1:n*res.y,:) = filter(filtro,handles.x((n-1)*res.y+1:n*res.y,:));
+    end
+    
+else                                                    % Sin LFO
+    filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+    handles.y = filter(filtro,handles.x);
+end
+
+z_interfaz_salida
+
+
+%% ParÃ¡metros
+% REPLACE_WITH_DASH_DASH- Executes on slider movement.
+function par_1_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.BW = get(hObject,'Value');
+set(handles.par_1_value,'String',handles.BW)
+handles.limites(2).Min = handles.BW/2;
+handles.limites(2).Max = 20000-handles.BW/2;
+if handles.f_0 < handles.limites(2).Min
+    handles.f_0 = handles.limites(2).Min;
+    set(handles.par_2,'Value',handles.f_0)
+    set(handles.par_2_value,'String',handles.f_0)
+elseif handles.f_0 > handles.limites(2).Max
+    handles.f_0 = handles.limites(2).Max;
+    set(handles.par_2,'Value',handles.f_0)
+    set(handles.par_2_value,'String',handles.f_0)
+end
+set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+% Update handles structure
+guidata(hObject, handles);
+LFO_plot(handles);
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+function par_1_value_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if str2double(get(hObject,'String'))>=10 && str2double(get(hObject,'String'))<=1000
+    handles.BW = str2double(get(hObject,'String'));
+    set(handles.par_1,'Value',handles.BW)
+    handles.limites(2).Min = handles.BW/2;
+    handles.limites(2).Max = 20000-handles.BW/2;
+    if handles.f_0 < handles.limites(2).Min 
+        handles.f_0 = handles.limites(2).Min;
+        set(handles.par_2,'Value',handles.f_0)
+        set(handles.par_2_value,'String',handles.f_0)
+    elseif handles.f_0 > handles.limites(2).Max
+        handles.f_0 = handles.limites(2).Max;
+        set(handles.par_2,'Value',handles.f_0)
+        set(handles.par_2_value,'String',handles.f_0)
+    end
+    set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+else
+    set(handles.par_1_value,'String',handles.BW)
+end
+% Update handles structure
+guidata(hObject, handles);
+LFO_plot(handles);
+% Hints: get(hObject,'String') returns contents of par_1_value as text
+%        str2double(get(hObject,'String')) returns contents of par_1_value as a double
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in par_1_LFO.
+function par_1_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,1);
+handles.limites(2).Min = (handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
+handles.limites(2).Max = 20000-(handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
+set(handles.par_2,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+% Update handles structure
+guidata(hObject, handles);
+LFO_plot(handles);
+% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
+
+
+% REPLACE_WITH_DASH_DASH- Executes on slider movement.
+function par_2_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.f_0 = get(hObject,'Value');
+set(handles.par_2_value,'String',handles.f_0)
+% Update handles structure
+guidata(hObject, handles);
+LFO_plot(handles);
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+function par_2_value_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if str2double(get(hObject,'String'))>=handles.limites(2).Min && str2double(get(hObject,'String'))<=handles.limites(2).Max
+    handles.f_0 = str2double(get(hObject,'String'));
+    set(handles.par_2,'Value',handles.f_0)
+else
+    set(handles.par_2_value,'String',handles.f_0)
+end
+% Update handles structure
+guidata(hObject, handles);
+LFO_plot(handles);
+% Hints: get(hObject,'String') returns contents of par_2_value as text
+%        str2double(get(hObject,'String')) returns contents of par_2_value as a double
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in par_2_LFO.
+function par_2_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,2);
+% Update handles structure
+guidata(hObject, handles);
+LFO_plot(handles);
+% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
+
+
+% REPLACE_WITH_DASH_DASH- Executes on slider movement.
+function par_3_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+function par_3_value_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of par_3_value as text
+%        str2double(get(hObject,'String')) returns contents of par_3_value as a double
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in par_3_LFO.
+function par_3_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,3);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
+
+
+% REPLACE_WITH_DASH_DASH- Executes on slider movement.
+function par_4_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+function par_4_value_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of par_4_value as text
+%        str2double(get(hObject,'String')) returns contents of par_4_value as a double
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in par_4_LFO.
+function par_4_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,4);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
+
+
+function par_5_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+function par_5_value_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of par_5_value as text
+%        str2double(get(hObject,'String')) returns contents of par_5_value as a double
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in par_5_LFO.
+function par_5_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,5);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
+
+
+% REPLACE_WITH_DASH_DASH- Executes on slider movement.
+function par_6_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+function par_6_value_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
+else
+end
+% Update handles structure
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of par_6_value as text
+%        str2double(get(hObject,'String')) returns contents of par_6_value as a double
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in par_6_LFO.
+function par_6_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,6);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_6_LFO
+
+
+%% Gráfica del efecto
+% REPLACE_WITH_DASH_DASH- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+%% Controles de interfaz
+% REPLACE_WITH_DASH_DASH- Executes just before autowah is made visible.
+function autowah_OpeningFcn(hObject, eventdata, handles, varargin)
+% Descripción del efecto
+set(handles.titulo,'String','Autowah')
+set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Puesto que es automático, la seÃ±al que controla la frecuencia central (LFO) es una seÃ±al triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'})
+% Inicialización de parámetros
+handles.BW = 100;
+handles.limites(1).Min = 10;
+handles.limites(1).Max = 1000;
+set(handles.par_1,'Visible','on','Value',handles.BW,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
+set(handles.par_1_value,'Visible','on','String',handles.BW)
+set(handles.par_1_title,'Visible','on','String','Ancho de banda del filtro')
+set(handles.par_1_LFO,'Visible','on')
+handles.f_0 = 1000;
+handles.limites(2).Min = handles.BW/2;
+handles.limites(2).Max = 20000-handles.BW/2;
+set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+set(handles.par_2_value,'Visible','on','String',handles.f_0)
+set(handles.par_2_title,'Visible','on','String','Frecuencia central filtro [Hz]')
+set(handles.par_2_LFO,'Visible','on')
+set(handles.graf,'Visible','on')
+% LFO (necesario para inicializar el gráfico del efecto)
+handles.LFO_1.checkbox = 0;
+handles.LFO_2.checkbox = 0;
+handles.LFO_3.checkbox = 0;
+handles.LFO_4.checkbox = 0;
+handles.LFO_5.checkbox = 0;
+handles.LFO_6.checkbox = 0;
+LFO_plot(handles);
+% Interfaz
+z_interfaz_OpeningFcn
+% UIWAIT makes autowah wait for user response (see UIRESUME)
+
+
+% REPLACE_WITH_DASH_DASH- Executes on selection change in entrada_lista.
+function entrada_lista_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_lista (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Interfaz
+z_interfaz_entrada_lista_Callback
+
+
+% Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from entrada_lista
+
+
+% REPLACE_WITH_DASH_DASH- Outputs from this function are returned to the command line.
+function varargout = autowah_OutputFcn(hObject, eventdata, handles) 
+% varargout  cell array for returning output args (see VARARGOUT);
+% hObject    handle to figure
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Get default command line output from handles structure
+z_interfaz_OutputFcn
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function entrada_lista_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to entrada_lista (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in play_entrada.
+function play_entrada_Callback(hObject, eventdata, handles)
+% hObject    handle to play_entrada (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+resume(handles.x_audio)
+
+
+%% Controles de reproducciÃ³n
+% REPLACE_WITH_DASH_DASH- Executes on button press in stop_entrada.
+function stop_entrada_Callback(hObject, eventdata, handles)
+% hObject    handle to stop_entrada (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+stop(handles.x_audio)
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in pause_entrada.
+function pause_entrada_Callback(hObject, eventdata, handles)
+% hObject    handle to pause_entrada (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+pause(handles.x_audio)
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in play_salida.
+function play_salida_Callback(hObject, eventdata, handles)
+% hObject    handle to play_salida (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+resume(handles.y_audio)
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in stop_salida.
+function stop_salida_Callback(hObject, eventdata, handles)
+% hObject    handle to stop_salida (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+stop(handles.y_audio)
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in pause_salida.
+function pause_salida_Callback(hObject, eventdata, handles)
+% hObject    handle to pause_salida (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+pause(handles.y_audio)
+
+
+%% Ampliar grÃ¡ficas
+% REPLACE_WITH_DASH_DASH- Executes on button press in entrada_L_open.
+function entrada_L_open_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_L_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_entrada_L_open
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in entrada_R_open.
+function entrada_R_open_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_R_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_entrada_R_open
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in entrada_espectro_open.
+function entrada_espectro_open_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_espectro_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_entrada_espectro_open
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in salida_L_open.
+function salida_L_open_Callback(hObject, eventdata, handles)
+% hObject    handle to salida_L_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_salida_L_open
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in salida_R_open.
+function salida_R_open_Callback(hObject, eventdata, handles)
+% hObject    handle to salida_R_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_salida_R_open
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in salida_espectro_open.
+function salida_espectro_open_Callback(hObject, eventdata, handles)
+% hObject    handle to salida_espectro_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_salida_espectro_open
+
+
+% REPLACE_WITH_DASH_DASH- Executes on button press in comparar.
+function comparar_Callback(hObject, eventdata, handles)
+% hObject    handle to salida_espectro_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_comparar
+
+
+%% Controles de parÃ¡metros
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_1_value_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_1_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_2_value_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_2_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_3_value_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_3_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_4_value_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_4_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_5_value_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_5_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_6_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% REPLACE_WITH_DASH_DASH- Executes during object creation, after setting all properties.
+function par_6_value_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to par_6_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+function LFO_plot(handles)
+% Representación del LFO
+cla(handles.graf)
+n = 0:20000;
+lfo(1:20001) = 0;
+f_0 = handles.f_0;
+BW = handles.BW;
+hold(handles.graf,'on')
+    if handles.LFO_1.checkbox && handles.LFO_2.checkbox     % LFO 1 y 2
+        % f_0 medio
+        f_0 = handles.LFO_2.offset;
+        % BW medio
+        BW = handles.LFO_1.offset;
+        % f_1 mínimo
+        f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
+        % f_2 máximo
+        f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
+        % BW mínimo
+        BW_Min = BW-handles.LFO_1.amplitud;
+        % BW máximo
+        BW_Max = BW+handles.LFO_1.amplitud;
+        set(line([f_1_Min f_1_Min],[0 2],'LineStyle',':'),'parent',handles.graf)
+        set(line([f_2_Max f_2_Max],[0 2],'LineStyle',':'),'parent',handles.graf)
+        set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.4 1.4]),'parent',handles.graf)
+        set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.3 1.4]),'parent',handles.graf)
+        set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.3 1.4]),'parent',handles.graf)
+        set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.2 1.2]),'parent',handles.graf)
+        set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.1 1.2]),'parent',handles.graf)
+        set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.1 1.2]),'parent',handles.graf)
+    elseif handles.LFO_1.checkbox                           % LFO 1
+        % BW medio
+        BW = handles.LFO_1.offset;
+        % BW mínimo
+        BW_Min = BW-handles.LFO_1.amplitud;
+        set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.4 1.4]),'parent',handles.graf)
+        set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.3 1.4]),'parent',handles.graf)
+        set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.3 1.4]),'parent',handles.graf)
+        % BW máximo
+        BW_Max = BW+handles.LFO_1.amplitud;
+        set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.2 1.2]),'parent',handles.graf)
+        set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.1 1.2]),'parent',handles.graf)
+        set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.1 1.2]),'parent',handles.graf)
+    elseif handles.LFO_2.checkbox                           % LFO 2
+        % f_0 medio
+        f_0 = handles.LFO_2.offset;
+        % f_1 mínimo
+        f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
+        set(line([f_1_Min f_1_Min],[0 2],'LineStyle',':'),'parent',handles.graf)
+        % f_2 máximo
+        f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
+        set(line([f_2_Max f_2_Max],[0 2],'LineStyle',':'),'parent',handles.graf)
+    end
+f_1 = round(f_0-BW/2);
+f_2 = round(f_0+BW/2);
+lfo(f_1+1:f_2+1) = 1;
+set(area(n,lfo),'parent',handles.graf)
+set(handles.graf,'XLim',[20 20000],'YLim',[0 1.5],'YTick',[],'XGrid','on')
+xlabel(handles.graf,'Frecuencia [Hz]')
+hold(handles.graf,'off')
+##### SOURCE END #####
+--></body></html>

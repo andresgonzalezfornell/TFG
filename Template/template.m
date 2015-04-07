@@ -95,6 +95,17 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_1_value as a double
 
 
+% --- Executes on button press in par_1_LFO.
+function par_1_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,1);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
+
+
 % --- Executes on slider movement.
 function par_2_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
@@ -115,6 +126,17 @@ end
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_2_value as text
 %        str2double(get(hObject,'String')) returns contents of par_2_value as a double
+
+
+% --- Executes on button press in par_2_LFO.
+function par_2_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,2);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
 
 
 % --- Executes on slider movement.
@@ -139,6 +161,17 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_3_value as a double
 
 
+% --- Executes on button press in par_3_LFO.
+function par_3_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,3);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
+
+
 % --- Executes on slider movement.
 function par_4_Callback(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
@@ -159,6 +192,17 @@ end
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_4_value as text
 %        str2double(get(hObject,'String')) returns contents of par_4_value as a double
+
+
+% --- Executes on button press in par_4_LFO.
+function par_4_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,4);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
 
 
 % --- Executes on slider movement.
@@ -184,6 +228,17 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_5_value as a double
 
 
+% --- Executes on button press in par_5_LFO.
+function par_5_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,5);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
+
+
 % --- Executes on slider movement.
 function par_6_Callback(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
@@ -205,6 +260,17 @@ end
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_6_value as text
 %        str2double(get(hObject,'String')) returns contents of par_6_value as a double
+
+
+% --- Executes on button press in par_6_LFO.
+function par_6_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,6);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_6_LFO
 
 
 %% Gráfica del efecto
@@ -401,17 +467,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in par_1_LFO.
-function par_1_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_1_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,1);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
-
-
 % --- Executes during object creation, after setting all properties.
 function par_2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
@@ -435,17 +490,6 @@ function par_2_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in par_2_LFO.
-function par_2_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_2_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,2);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
 
 
 % --- Executes during object creation, after setting all properties.
@@ -473,17 +517,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in par_3_LFO.
-function par_3_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_3_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,3);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
-
-
 % --- Executes during object creation, after setting all properties.
 function par_4_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
@@ -507,17 +540,6 @@ function par_4_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in par_4_LFO.
-function par_4_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_4_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,4);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
 
 
 % --- Executes during object creation, after setting all properties.
@@ -545,17 +567,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in par_5_LFO.
-function par_5_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_5_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,5);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
-
-
 % --- Executes during object creation, after setting all properties.
 function par_6_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
@@ -579,14 +590,3 @@ function par_6_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
-
-% --- Executes on button press in par_6_LFO.
-function par_6_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_6_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,6);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_6_LFO

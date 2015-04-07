@@ -42,16 +42,25 @@ function aplicar_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Limpieza de salida
-clear handles.y
+z_interfaz_limpieza
 
 % Distortion
-l = 1/(1-handles.k);
-for n = 1:length(handles.x(:,1))
-    % Distortion canal L
-    handles.y(n,1) = sign(handles.x(n,1))*e^l/(e^l-1)*(1-e^(-l*x));
-    % Distortion canal R
-    handles.y(n,2) = sign(handles.x(n,2))*e^l/(e^l-1)*(1-e^(-l*x));
+if handles.LFO_1.checkbox                               % Con LFO
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    for n = 1:handles.LFO_N
+        if mod(n,res.LFO) == 1
+            l = 1/(1-handles.LFO_1.x(n));
+        end
+        handles.y(n,:) = sign(handles.x(n,:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*handles.x(n,:)));
+    end
+else                                                    % Sin LFO
+    for n = 1:length(handles.x(:,1))
+        l = 1/(1-handles.k);
+        handles.y(n,:) = sign(handles.x(n,:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*handles.x(n,:)));
+    end
 end
+
 z_interfaz_salida
 
 
@@ -65,7 +74,7 @@ function par_1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 handles.k = 1-get(hObject,'Value');
-set(handles.par_1_value,'String',handles.k)
+set(handles.par_1_value,'String',get(hObject,'Value'))
 % Update handles structure
 guidata(hObject, handles);
 
@@ -74,11 +83,11 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min & str2double(get(hObject,'String'))<=handles.limites(1).Max
     handles.k = 1-str2double(get(hObject,'String'));
-    set(handles.par_1,'Value',handles.k)
+    set(handles.par_1,'Value',str2double(get(hObject,'String')))
 else
-    set(handles.par_1_value,'String',handles.k)
+    set(handles.par_1_value,'String',1-handles.k)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -214,9 +223,12 @@ set(handles.titulo,'String','Distortion')
 set(handles.des,'String','Filtro no lineal')
 % Inicialización de parámetros
 handles.k = 0.3;
-set(handles.par_1,'Visible','on','Value',0.7)
-set(handles.par_1_value,'Visible','on','String',0.3)
+handles.limites(1).Min = 0;
+handles.limites(1).Max = 1;
+set(handles.par_1,'Visible','on','Value',0.7,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
+set(handles.par_1_value,'Visible','on','String',0.7)
 set(handles.par_1_title,'Visible','on','String','Nivel de distortion')
+set(handles.par_1_LFO,'Visible','on')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes distortion wait for user response (see UIRESUME)

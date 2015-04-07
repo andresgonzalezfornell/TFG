@@ -14,19 +14,6 @@ function varargout = panning(varargin)
 %       y(:,5) espectro de se帽al media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
-
-%% Manual de uso de plantilla
-%   Copiar template.m y template.fig modificando template por el nombre del efecto (panning) y editar el panning.m
-%   Buscar y reemplazar:
-%       panning        por nombre del efecto siguiendo el formato (ej.: overdrive)
-%       Panning        por nombre del efecto siguiendo el formato (ej.: Overdrive)
-%       PANNING        por nombre del efecto siguiendo el formato (ej.: OVERDRIVE)
-%       <Descripci贸n>   por la descripci贸n del efecto
-%   Implementar el efecto en la funci贸n aplicar_callback.
-%   Inicializar los par谩metros siguiendo el formato de ejemplo en la funci贸n panning_OpeningFcn
-%   Implementar los par谩metros en las funciones par_<#>_Callback
-%   Modificar en el archivo panning.fig los callbacks de los botones
-
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -55,7 +42,7 @@ function aplicar_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Limpieza de salida
-clear handles.y
+z_interfaz_limpieza
 
 % Panning
 g = [1 1];
@@ -500,6 +487,12 @@ function par_1_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,1);
+if handles.LFO_1.checkbox
+    set(handles.fuente,'Visible','off')
+    % Por alguna extra馻 raz髇, no se hace invisible, por lo que se
+    % posiciona en una zona no visible.
+    set(handles.fuente,'Position',[1 1 1 1])
+end
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_1_LFO

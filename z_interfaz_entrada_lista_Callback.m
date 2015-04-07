@@ -93,10 +93,11 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     handles.X_L = X_L(1:length(n)/2);
                     handles.X_R = X_R(1:length(n)/2);
                     %handles.X = (handles.X_L+handles.X_R)/2;
+                    cla(handles.entrada_espectro)
                     hold(handles.entrada_espectro,'on')
                     loglog(handles.entrada_espectro,f,abs(handles.X_R),'red')
                     loglog(handles.entrada_espectro,f,abs(handles.X_L),'green')
-                    set(handles.entrada_espectro,'XLim',[1.0 25000.0],'XGrid','on')
+                    set(handles.entrada_espectro,'XLim',[20 20000],'XGrid','on')
                     hold(handles.entrada_espectro,'off')
                     xlabel(handles.entrada_espectro,'Frecuencia [Hz]')
                     set(handles.entrada_archivo,'String',filename);
