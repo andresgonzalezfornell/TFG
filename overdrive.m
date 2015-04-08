@@ -14,6 +14,7 @@ function varargout = overdrive(varargin)
 %       y(:,5) espectro de se√±al media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
+
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -229,14 +230,6 @@ end
 %        str2double(get(hObject,'String')) returns contents of par_6_value as a double
 
 
-%% Gr·fica del efecto
-% --- Executes on button press in graf_open.
-function graf_open_Callback(hObject, eventdata, handles)
-% hObject    handle to graf_open (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
 %% Controles de interfaz
 % --- Executes just before overdrive is made visible.
 function overdrive_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -389,6 +382,14 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 z_salida_espectro_open
+
+
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_graf_open
 
 
 % --- Executes on button press in comparar.

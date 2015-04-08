@@ -222,14 +222,6 @@ end
 %        str2double(get(hObject,'String')) returns contents of par_6_value as a double
 
 
-%% Gráfica del efecto
-% --- Executes on button press in graf_open.
-function graf_open_Callback(hObject, eventdata, handles)
-% hObject    handle to graf_open (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
 %% Controles de interfaz
 % --- Executes just before delay is made visible.
 function delay_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -387,6 +379,14 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 z_salida_espectro_open
+
+
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_graf_open
 
 
 % --- Executes on button press in comparar.

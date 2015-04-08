@@ -1,4 +1,4 @@
-%% AmpliaciÃ³n del grÃ¡fico de la entrada
+%% Ampliación del gráfico de la entrada
 
 if isfield(handles,'x')
     figure('name','Entrada canal L')

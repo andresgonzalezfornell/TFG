@@ -92,9 +92,9 @@ elseif handles.f_0 > handles.limites(2).Max
     set(handles.par_2_value,'String',handles.f_0)
 end
 set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+handles = LFO_plot(hObject,handles);
 % Update handles structure
 guidata(hObject, handles);
-LFO_plot(handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -121,9 +121,9 @@ if str2double(get(hObject,'String'))>=10 && str2double(get(hObject,'String'))<=1
 else
     set(handles.par_1_value,'String',handles.BW)
 end
+handles = LFO_plot(hObject,handles);
 % Update handles structure
 guidata(hObject, handles);
-LFO_plot(handles);
 % Hints: get(hObject,'String') returns contents of par_1_value as text
 %        str2double(get(hObject,'String')) returns contents of par_1_value as a double
 
@@ -137,9 +137,9 @@ handles = z_LFO(handles,1);
 handles.limites(2).Min = (handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
 handles.limites(2).Max = 20000-(handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
 set(handles.par_2,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+handles = LFO_plot(hObject,handles);
 % Update handles structure
 guidata(hObject, handles);
-LFO_plot(handles);
 % Hint: get(hObject,'Value') returns toggle state of par_1_LFO
 
 
@@ -150,9 +150,9 @@ function par_2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.f_0 = get(hObject,'Value');
 set(handles.par_2_value,'String',handles.f_0)
+handles = LFO_plot(hObject,handles);
 % Update handles structure
 guidata(hObject, handles);
-LFO_plot(handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -166,9 +166,9 @@ if str2double(get(hObject,'String'))>=handles.limites(2).Min && str2double(get(h
 else
     set(handles.par_2_value,'String',handles.f_0)
 end
+handles = LFO_plot(hObject,handles);
 % Update handles structure
 guidata(hObject, handles);
-LFO_plot(handles);
 % Hints: get(hObject,'String') returns contents of par_2_value as text
 %        str2double(get(hObject,'String')) returns contents of par_2_value as a double
 
@@ -179,9 +179,9 @@ function par_2_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,2);
+handles = LFO_plot(hObject,handles);
 % Update handles structure
 guidata(hObject, handles);
-LFO_plot(handles);
 % Hint: get(hObject,'Value') returns toggle state of par_2_LFO
 
 
@@ -302,14 +302,6 @@ guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_6_LFO
 
 
-%% Gráfica del efecto
-% --- Executes on button press in graf_open.
-function graf_open_Callback(hObject, eventdata, handles)
-% hObject    handle to graf_open (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
 %% Controles de interfaz
 % --- Executes just before autowah is made visible.
 function autowah_OpeningFcn(hObject, eventdata, handles, varargin)
@@ -332,6 +324,7 @@ set(handles.par_2_value,'Visible','on','String',handles.f_0)
 set(handles.par_2_title,'Visible','on','String','Frecuencia central filtro [Hz]')
 set(handles.par_2_LFO,'Visible','on')
 set(handles.graf,'Visible','on')
+set(handles.graf_open,'Visible','on')
 % LFO (necesario para inicializar el gráfico del efecto)
 handles.LFO_1.checkbox = 0;
 handles.LFO_2.checkbox = 0;
@@ -339,7 +332,7 @@ handles.LFO_3.checkbox = 0;
 handles.LFO_4.checkbox = 0;
 handles.LFO_5.checkbox = 0;
 handles.LFO_6.checkbox = 0;
-LFO_plot(handles);
+handles = LFO_plot(handles);
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes autowah wait for user response (see UIRESUME)
@@ -481,9 +474,17 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 z_salida_espectro_open
 
 
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_graf_open
+
+
 % --- Executes on button press in comparar.
 function comparar_Callback(hObject, eventdata, handles)
-% hObject    handle to salida_espectro_open (see GCBO)
+% hObject    handle to comparar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 z_comparar
@@ -640,8 +641,9 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-function LFO_plot(handles)
+function [handles] = LFO_plot(handles)
 % Representación del LFO
+handles.grafico.title = 'Filtro de autowah';
 cla(handles.graf)
 n = 0:20000;
 lfo(1:20001) = 0;
@@ -682,6 +684,7 @@ hold(handles.graf,'on')
         set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.2 1.2]),'parent',handles.graf)
         set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.1 1.2]),'parent',handles.graf)
         set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.1 1.2]),'parent',handles.graf)
+        handles.grafico.legend = 'Filtro&&BW máximo&&&BW mínimo&';
     elseif handles.LFO_2.checkbox                           % LFO 2
         % f_0 medio
         f_0 = handles.LFO_2.offset;
