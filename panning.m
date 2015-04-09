@@ -146,7 +146,7 @@ function par_2_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=1 & str2double(get(hObject,'String'))<=89
+if str2double(get(hObject,'String'))>=handles.limites(2).Min & str2double(get(hObject,'String'))<=handles.limites(2).Max
     handles.az_altavoz = str2double(get(hObject,'String'));
     set(handles.par_2,'Value',handles.az_altavoz)
     suma_L = [15*sind(handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
@@ -268,16 +268,18 @@ set(handles.titulo,'String','Panning')
 set(handles.des,'String','Produce la ilusiÃ³n al oyente de una direcciÃ³n determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales estÃ©reo y dos fuentes separadas suficientemente rodeando al oyente.')
 % Inicialización de parámetros
 handles.az_virtual = 0;
-handles.az_altavoz = 60;
 handles.limites(1).Min = -60;
 handles.limites(1).Max = 60;
-set(handles.par_1,'Visible','on','Value',0,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
-set(handles.par_1_value,'Visible','on','String',0)
-set(handles.par_1_title,'Visible','on','String','Acimut virtual [Âº]')
+set(handles.par_1,'Visible','on','Value',handles.az_virtual)
+set(handles.par_1_value,'Visible','on','String',handles.az_virtual)
+set(handles.par_1_title,'Visible','on','String','Acimut virtual [º]')
 set(handles.par_1_LFO,'Visible','on')
-set(handles.par_2,'Visible','on','Value',60,'Min',1,'Max',89)
-set(handles.par_2_value,'Visible','on','String',60)
-set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [Âº]')
+handles.az_altavoz = 60;
+handles.limites(2).Min = 1;
+handles.limites(2).Max = 89;
+set(handles.par_2,'Visible','on','Value',handles.az_altavoz)
+set(handles.par_2_value,'Visible','on','String',handles.az_altavoz)
+set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [º]')
 % Dibujo
 oyente_im = imread('Images/oyente.png');
 axes(handles.oyente);

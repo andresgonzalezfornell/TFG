@@ -48,26 +48,31 @@ z_interfaz_limpieza
 BW = handles.BW;
 f_1 = handles.f_0-BW/2;
 f_2 = handles.f_0+BW/2;
-if handles.LFO_1.checkbox || handles.LFO_2.checkbox     % Con LFO
+mix = handles.mix;
+filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+wah = filter(filtro,handles.x);
+if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
     res.LFO = 10;
     res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
     for n = 1:res.LFO:handles.LFO_N
-        if handles.LFO_1.checkbox                       % LFO 1
+        if handles.LFO_1.checkbox                                               % LFO 1
             BW = handles.LFO_1.x(n);
         end
-        if handles.LFO_2.checkbox                       % LFO 2
+        if handles.LFO_2.checkbox                                               % LFO 2
             f_0 = handles.LFO_2.x(n);
             f_1 = f_0-BW/2;
             f_2 = f_0+BW/2;
         end
-        filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-        handles.y((n-1)*res.y+1:n*res.y,:) = filter(filtro,handles.x((n-1)*res.y+1:n*res.y,:));
+        if handles.LFO_3.checkbox                                               % LFO 3
+            mix((n-1)*res.y+1:n*res.y) = handles.LFO_3.x(n);
+        end
+        if handles.LFO_1.checkbox || handles.LFO_2.checkbox
+            filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+            wah((n-1)*res.y+1:n*res.y,:) = filter(filtro,handles.x((n-1)*res.y+1:n*res.y,:));
+        end
     end
-    
-else                                                    % Sin LFO
-    filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-    handles.y = filter(filtro,handles.x);
 end
+handles.y = (1-mix).*handles.x + mix.*wah;
 
 z_interfaz_salida
 
@@ -92,7 +97,7 @@ elseif handles.f_0 > handles.limites(2).Max
     set(handles.par_2_value,'String',handles.f_0)
 end
 set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
-handles = LFO_plot(hObject,handles);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
@@ -103,7 +108,7 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=10 && str2double(get(hObject,'String'))<=1000
+if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
     handles.BW = str2double(get(hObject,'String'));
     set(handles.par_1,'Value',handles.BW)
     handles.limites(2).Min = handles.BW/2;
@@ -121,7 +126,7 @@ if str2double(get(hObject,'String'))>=10 && str2double(get(hObject,'String'))<=1
 else
     set(handles.par_1_value,'String',handles.BW)
 end
-handles = LFO_plot(hObject,handles);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_1_value as text
@@ -137,7 +142,7 @@ handles = z_LFO(handles,1);
 handles.limites(2).Min = (handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
 handles.limites(2).Max = 20000-(handles.LFO_1.amplitud+handles.LFO_1.offset)/2;
 set(handles.par_2,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
-handles = LFO_plot(hObject,handles);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_1_LFO
@@ -150,7 +155,7 @@ function par_2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.f_0 = get(hObject,'Value');
 set(handles.par_2_value,'String',handles.f_0)
-handles = LFO_plot(hObject,handles);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
@@ -166,7 +171,7 @@ if str2double(get(hObject,'String'))>=handles.limites(2).Min && str2double(get(h
 else
     set(handles.par_2_value,'String',handles.f_0)
 end
-handles = LFO_plot(hObject,handles);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_2_value as text
@@ -179,28 +184,39 @@ function par_2_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,2);
-handles = LFO_plot(hObject,handles);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_2_LFO
 
 
-% --- Executes on slider movement.
 function par_3_Callback(hObject, eventdata, handles)
-% hObject    handle to par_3 (see GCBO)
+% hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+handles.mix = get(hObject,'Value');
+set(handles.par_3_value,'String',get(hObject,'Value'))
+handles = LFO_plot(handles);
+% Update handles structure
+guidata(hObject, handles);
 
 
 function par_3_value_Callback(hObject, eventdata, handles)
-% hObject    handle to par_3_value (see GCBO)
+% hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of par_3_value as text
-%        str2double(get(hObject,'String')) returns contents of par_3_value as a double
-
+if str2double(get(hObject,'String'))>=handles.limites(3).Min & str2double(get(hObject,'String'))<=handles.limites(3).Max
+    handles.mix = str2double(get(hObject,'String'));
+    set(handles.par_3,'Value',str2double(get(hObject,'String')))
+else
+    set(handles.par_3_value,'String',handles.mix)
+end
+handles = LFO_plot(handles);
+% Update handles structure
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of par_1_value as text
 
 % --- Executes on button press in par_3_LFO.
 function par_3_LFO_Callback(hObject, eventdata, handles)
@@ -208,6 +224,7 @@ function par_3_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,3);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_3_LFO
@@ -312,29 +329,38 @@ set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central
 handles.BW = 100;
 handles.limites(1).Min = 10;
 handles.limites(1).Max = 1000;
-set(handles.par_1,'Visible','on','Value',handles.BW,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
+set(handles.par_1,'Visible','on','Value',handles.BW)
 set(handles.par_1_value,'Visible','on','String',handles.BW)
 set(handles.par_1_title,'Visible','on','String','Ancho de banda del filtro')
 set(handles.par_1_LFO,'Visible','on')
 handles.f_0 = 1000;
 handles.limites(2).Min = handles.BW/2;
 handles.limites(2).Max = 20000-handles.BW/2;
-set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+set(handles.par_2,'Visible','on','Value',handles.f_0)
 set(handles.par_2_value,'Visible','on','String',handles.f_0)
 set(handles.par_2_title,'Visible','on','String','Frecuencia central filtro [Hz]')
 set(handles.par_2_LFO,'Visible','on')
 set(handles.graf,'Visible','on')
 set(handles.graf_open,'Visible','on')
-% LFO (necesario para inicializar el gráfico del efecto)
+handles.mix = 0.7;
+handles.limites(3).Min = 0;
+handles.limites(3).Max = 1;
+set(handles.par_3,'Visible','on','Value',handles.mix)
+set(handles.par_3_value,'Visible','on','String',handles.mix)
+set(handles.par_3_title,'Visible','on','String','Nivel de autowah')
+set(handles.par_3_LFO,'Visible','on')
+% LFO (necesario para el gráfico del efecto)
 handles.LFO_1.checkbox = 0;
 handles.LFO_2.checkbox = 0;
 handles.LFO_3.checkbox = 0;
 handles.LFO_4.checkbox = 0;
 handles.LFO_5.checkbox = 0;
 handles.LFO_6.checkbox = 0;
+% Gráfico del efecto
 handles = LFO_plot(handles);
 % Interfaz
 z_interfaz_OpeningFcn
+
 % UIWAIT makes autowah wait for user response (see UIRESUME)
 
 
@@ -650,55 +676,85 @@ lfo(1:20001) = 0;
 f_0 = handles.f_0;
 BW = handles.BW;
 hold(handles.graf,'on')
-    if handles.LFO_1.checkbox && handles.LFO_2.checkbox     % LFO 1 y 2
-        % f_0 medio
-        f_0 = handles.LFO_2.offset;
-        % BW medio
-        BW = handles.LFO_1.offset;
-        % f_1 mínimo
-        f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
-        % f_2 máximo
-        f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
-        % BW mínimo
-        BW_Min = BW-handles.LFO_1.amplitud;
-        % BW máximo
-        BW_Max = BW+handles.LFO_1.amplitud;
-        set(line([f_1_Min f_1_Min],[0 2],'LineStyle',':'),'parent',handles.graf)
-        set(line([f_2_Max f_2_Max],[0 2],'LineStyle',':'),'parent',handles.graf)
-        set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.4 1.4]),'parent',handles.graf)
-        set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.3 1.4]),'parent',handles.graf)
-        set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.3 1.4]),'parent',handles.graf)
-        set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.2 1.2]),'parent',handles.graf)
-        set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.1 1.2]),'parent',handles.graf)
-        set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.1 1.2]),'parent',handles.graf)
-    elseif handles.LFO_1.checkbox                           % LFO 1
-        % BW medio
-        BW = handles.LFO_1.offset;
-        % BW mínimo
-        BW_Min = BW-handles.LFO_1.amplitud;
-        set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.4 1.4]),'parent',handles.graf)
-        set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.3 1.4]),'parent',handles.graf)
-        set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.3 1.4]),'parent',handles.graf)
-        % BW máximo
-        BW_Max = BW+handles.LFO_1.amplitud;
-        set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.2 1.2]),'parent',handles.graf)
-        set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.1 1.2]),'parent',handles.graf)
-        set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.1 1.2]),'parent',handles.graf)
-        handles.grafico.legend = 'Filtro&&BW máximo&&&BW mínimo&';
-    elseif handles.LFO_2.checkbox                           % LFO 2
-        % f_0 medio
-        f_0 = handles.LFO_2.offset;
-        % f_1 mínimo
-        f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
-        set(line([f_1_Min f_1_Min],[0 2],'LineStyle',':'),'parent',handles.graf)
-        % f_2 máximo
-        f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
-        set(line([f_2_Max f_2_Max],[0 2],'LineStyle',':'),'parent',handles.graf)
+set(rectangle('Position',[0 1 20000 0.25],'FaceColor',[1 1 1]),'EdgeColor','none','parent',handles.graf)
+set(line([0 20000],[1 1]),'Color','black','parent',handles.graf)
+if handles.LFO_3.checkbox                               % LFO 3
+    mix = handles.LFO_3.offset;
+    mix_Max = mix + handles.LFO_3.amplitud;
+    mix_Min = mix - handles.LFO_3.amplitud;
+    x(n+1) = 1-mix;
+    set(area(n,x,'FaceColor',[0.667 0.875 0.71]),'EdgeColor','none','parent',handles.graf)
+    if handles.LFO_1.checkbox
+        BW = handles.LFO_2.offset;
     end
+    if handles.LFO_2.checkbox
+        f_0 = handles.LFO_2.offset;
+    end
+    f_2 = f_0 + BW/2;
+    if f_2 >= 18500     % Representación en la izquierda
+        f_1 = f_0 - BW/2;
+        set(line([f_1-1000 f_1-1000],[mix_Min mix_Max]),'parent',handles.graf)
+        set(line([f_1-1000 f_1-500],[mix_Min mix_Min]),'parent',handles.graf)
+        set(line([f_1-1000 f_1-500],[mix_Max mix_Max]),'parent',handles.graf)
+    else                % Representación en la derecha
+        set(line([f_2+1000 f_2+1000],[mix_Min mix_Max]),'parent',handles.graf)
+        set(line([f_2+500 f_2+1000],[mix_Min mix_Min]),'parent',handles.graf)
+        set(line([f_2+500 f_2+1000],[mix_Max mix_Max]),'parent',handles.graf)
+    end
+else
+    mix = handles.mix;
+    x(n+1) = 1-mix;
+    set(area(n,x,'FaceColor',[0.667 0.875 0.71]),'EdgeColor','none','parent',handles.graf)
+end
+if handles.LFO_1.checkbox && handles.LFO_2.checkbox     % LFO 1 y 2
+    % f_0 medio
+    f_0 = handles.LFO_2.offset;
+    % BW medio
+    BW = handles.LFO_1.offset;
+    % f_1 mínimo
+    f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
+    % f_2 máximo
+    f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
+    % BW mínimo
+    BW_Min = BW-handles.LFO_1.amplitud;
+    % BW máximo
+    BW_Max = BW+handles.LFO_1.amplitud;
+    set(line([f_1_Min f_1_Min],[0 2],'LineStyle',':'),'parent',handles.graf)
+    set(line([f_2_Max f_2_Max],[0 2],'LineStyle',':'),'parent',handles.graf)
+    set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.2 1.2]),'parent',handles.graf)
+    set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.18 1.2]),'parent',handles.graf)
+    set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.18 1.2]),'parent',handles.graf)
+    set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.1 1.1]),'parent',handles.graf)
+    set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.08 1.1]),'parent',handles.graf)
+    set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.08 1.1]),'parent',handles.graf)
+elseif handles.LFO_1.checkbox                           % LFO 1
+    % BW medio
+    BW = handles.LFO_1.offset;
+    % BW mínimo
+    BW_Min = BW-handles.LFO_1.amplitud;
+    set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.2 1.2]),'parent',handles.graf)
+    set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.18 1.2]),'parent',handles.graf)
+    set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.18 1.2]),'parent',handles.graf)
+    % BW máximo
+    BW_Max = BW+handles.LFO_1.amplitud;
+    set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.1 1.1]),'parent',handles.graf)
+    set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.08 1.1]),'parent',handles.graf)
+    set(line([f_0+BW_Max/2 f_0+BW_Max/2],[1.08 1.1]),'parent',handles.graf)
+elseif handles.LFO_2.checkbox                           % LFO 2
+    % f_0 medio
+    f_0 = handles.LFO_2.offset;
+    % f_1 mínimo
+    f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
+    set(line([f_1_Min f_1_Min],[0 2],'LineStyle','--'),'parent',handles.graf)
+    % f_2 máximo
+    f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
+    set(line([f_2_Max f_2_Max],[0 2],'LineStyle','--'),'parent',handles.graf)
+end
 f_1 = round(f_0-BW/2);
 f_2 = round(f_0+BW/2);
-lfo(f_1+1:f_2+1) = 1;
-set(area(n,lfo),'parent',handles.graf)
-set(handles.graf,'XLim',[20 20000],'YLim',[0 1.5],'YTick',[],'XGrid','on')
-xlabel(handles.graf,'Frecuencia [Hz]')
+lfo(f_1+1:f_2+1) = mix;
+set(area(n,lfo),'FaceColor','b','parent',handles.graf)
+set(handles.graf,'XLim',[20 20000],'YLim',[0 1.25],'YTick',[],'XGrid','on')
+handles.graf.XLabel.String = 'Frecuencia [Hz]';
+handles.graf.Title.String = 'Filtro de autowah';
 hold(handles.graf,'off')

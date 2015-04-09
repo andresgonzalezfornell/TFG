@@ -109,11 +109,6 @@ function par_2_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
-    % Update handles structure
-    guidata(hObject, handles);
-else
-end
 % Hints: get(hObject,'String') returns contents of par_2_value as text
 %        str2double(get(hObject,'String')) returns contents of par_2_value as a double
 
@@ -123,7 +118,6 @@ function par_3_Callback(hObject, eventdata, handles)
 % hObject    handle to par_3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -131,11 +125,6 @@ function par_3_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_3_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
-    % Update handles structure
-    guidata(hObject, handles);
-else
-end
 % Hints: get(hObject,'String') returns contents of par_3_value as text
 %        str2double(get(hObject,'String')) returns contents of par_3_value as a double
 
@@ -153,11 +142,6 @@ function par_4_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_4_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
-    % Update handles structure
-    guidata(hObject, handles);
-else
-end
 % Hints: get(hObject,'String') returns contents of par_4_value as text
 %        str2double(get(hObject,'String')) returns contents of par_4_value as a double
 
@@ -218,8 +202,8 @@ set(handles.des,'String','Filtro no lineal')
 handles.k = 0.3;
 handles.limites(1).Min = 0;
 handles.limites(1).Max = 1;
-set(handles.par_1,'Visible','on','Value',0.7,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
-set(handles.par_1_value,'Visible','on','String',0.7)
+set(handles.par_1,'Visible','on','Value',1-handles.k)
+set(handles.par_1_value,'Visible','on','String',1-handles.k)
 set(handles.par_1_title,'Visible','on','String','Nivel de distortion')
 set(handles.par_1_LFO,'Visible','on')
 % Interfaz

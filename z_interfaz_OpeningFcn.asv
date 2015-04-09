@@ -32,20 +32,7 @@ if isfield(handles,'limites')
     for i = 1:length(handles.limites)
         switch i
             case 1
-                set(handles.par_1,'Min',handles.limites(i).Min,'Max',handles.limites(i).Max)
-            case 2
-                set(handles.par_2,'Min',handles.limites(i).Min,'Max',handles.limites(i).Max)
-            case 3
-                set(handles.par_3,'Min',handles.limites(i).Min,'Max',handles.limites(i).Max)
-            case 4
-                set(handles.par_4,'Min',handles.limites(i).Min,'Max',handles.limites(i).Max)
-            case 5
-                set(handles.par_5,'Min',handles.limites(i).Min,'Max',handles.limites(i).Max)
-            case 6
-                set(handles.par_6,'Min',handles.limites(i).Min,'Max',handles.limites(i).Max)
-        end
-    end
-end
+                set(handles.par_1
 
 % LFO
 handles.LFO_1.checkbox = 0;

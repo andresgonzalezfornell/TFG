@@ -106,7 +106,7 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min & str2double(get(hObject,'String'))<=handles.limites(1).Max
     handles.k = 1-str2double(get(hObject,'String'));
     set(handles.par_1,'Value',str2double(get(hObject,'String')))
 else
