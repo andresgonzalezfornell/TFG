@@ -15,18 +15,6 @@ function varargout = panning(varargin)
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 
-%% Manual de uso de plantilla
-%   Copiar template.m y template.fig modificando template por el nombre del efecto (panning) y editar el panning.m
-%   Buscar y reemplazar:
-%       panning        por nombre del efecto siguiendo el formato (ej.: overdrive)
-%       Panning        por nombre del efecto siguiendo el formato (ej.: Overdrive)
-%       PANNING        por nombre del efecto siguiendo el formato (ej.: OVERDRIVE)
-%       <Descripci贸n>   por la descripci贸n del efecto
-%   Implementar el efecto en la funci贸n aplicar_callback.
-%   Inicializar los par谩metros siguiendo el formato de ejemplo en la funci贸n panning_OpeningFcn
-%   Implementar los par谩metros en las funciones par_<#>_Callback
-%   Modificar en el archivo panning.fig los callbacks de los botones
-
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -55,18 +43,40 @@ function aplicar_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Limpieza de salida
-clear handles.y
+z_interfaz_limpieza
 
 % Panning
-k = (tand(handles.az_altavoz)-tand(handles.az_virtual)) / (tand(handles.az_altavoz)+tand(handles.az_virtual));
 g = [1 1];
-if k>1
-    g(2) = 1/k;
-else
-    g(1) = k;
+if handles.LFO_1.checkbox                               % Con LFO
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    for n = 1:res.LFO:handles.LFO_N
+        az_virtual = handles.LFO_1.x(n);
+        k = (tand(handles.az_altavoz)-tand(az_virtual)) / (tand(handles.az_altavoz)+tand(az_virtual));
+        if k>1
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,1) = 1;
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,2) = 1/k;
+        else
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,1) = k;
+            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,2) = 1;
+        end
+    end
+    if k>1
+        g(n*res.y/res.LFO:length(handles.x(:,1)),1) = 1;
+        g(n*res.y/res.LFO:length(handles.x(:,1)),2) = 1/k;
+    else
+        g(n*res.y/res.LFO:length(handles.x(:,1)),1) = k;
+        g(n*res.y/res.LFO:length(handles.x(:,1)),2) = 1;
+    end
+else                                                    % Sin LFO
+    k = (tand(handles.az_altavoz)-tand(handles.az_virtual)) / (tand(handles.az_altavoz)+tand(handles.az_virtual));
+    if k>1
+        g(2) = 1/k;
+    else
+        g(1) = k;
+    end
 end
-handles.y(:,1) = g(1)*handles.x(:,1);
-handles.y(:,2) = g(2)*handles.x(:,2);
+handles.y = g.*handles.x;
 
 z_interfaz_salida
 
@@ -136,7 +146,7 @@ function par_2_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=1 & str2double(get(hObject,'String'))<=89
+if str2double(get(hObject,'String'))>=handles.limites(2).Min & str2double(get(hObject,'String'))<=handles.limites(2).Max
     handles.az_altavoz = str2double(get(hObject,'String'));
     set(handles.par_2,'Value',handles.az_altavoz)
     suma_L = [15*sind(handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
@@ -253,18 +263,23 @@ end
 %% Controles de interfaz
 % --- Executes just before panning is made visible.
 function panning_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripci贸n del efecto
+% Descripci髇 del efecto
 set(handles.titulo,'String','Panning')
 set(handles.des,'String','Produce la ilusi贸n al oyente de una direcci贸n determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales est茅reo y dos fuentes separadas suficientemente rodeando al oyente.')
-% Inicializaci贸n de par谩metros
+% Inicializaci髇 de par醡etros
 handles.az_virtual = 0;
+handles.limites(1).Min = -60;
+handles.limites(1).Max = 60;
+set(handles.par_1,'Visible','on','Value',handles.az_virtual)
+set(handles.par_1_value,'Visible','on','String',handles.az_virtual)
+set(handles.par_1_title,'Visible','on','String','Acimut virtual [篯')
+set(handles.par_1_LFO,'Visible','on')
 handles.az_altavoz = 60;
-set(handles.par_1,'Visible','on','Value',0,'Min',-60,'Max',60)
-set(handles.par_1_value,'Visible','on','String',0)
-set(handles.par_1_title,'Visible','on','String','Acimut virtual [潞]')
-set(handles.par_2,'Visible','on','Value',60,'Min',1,'Max',89)
-set(handles.par_2_value,'Visible','on','String',60)
-set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [潞]')
+handles.limites(2).Min = 1;
+handles.limites(2).Max = 89;
+set(handles.par_2,'Visible','on','Value',handles.az_altavoz)
+set(handles.par_2_value,'Visible','on','String',handles.az_altavoz)
+set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [篯')
 % Dibujo
 oyente_im = imread('Images/oyente.png');
 axes(handles.oyente);
@@ -427,6 +442,14 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 z_salida_espectro_open
 
 
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_graf_open
+
+
 % --- Executes on button press in comparar.
 function comparar_Callback(hObject, eventdata, handles)
 % hObject    handle to salida_espectro_open (see GCBO)
@@ -461,6 +484,23 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in par_1_LFO.
+function par_1_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,1);
+if handles.LFO_1.checkbox
+    set(handles.fuente,'Visible','off')
+    % Por alguna extra馻 raz髇, no se hace invisible, por lo que se
+    % posiciona en una zona no visible.
+    set(handles.fuente,'Position',[1 1 1 1])
+end
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
+
+
 % --- Executes during object creation, after setting all properties.
 function par_2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
@@ -484,6 +524,17 @@ function par_2_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in par_2_LFO.
+function par_2_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,2);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
 
 
 % --- Executes during object creation, after setting all properties.
@@ -511,6 +562,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in par_3_LFO.
+function par_3_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,3);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
+
+
 % --- Executes during object creation, after setting all properties.
 function par_4_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
@@ -534,6 +596,17 @@ function par_4_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in par_4_LFO.
+function par_4_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,4);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
 
 
 % --- Executes during object creation, after setting all properties.
@@ -561,6 +634,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in par_5_LFO.
+function par_5_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,5);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
+
+
 % --- Executes during object creation, after setting all properties.
 function par_6_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
@@ -584,3 +668,14 @@ function par_6_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in par_6_LFO.
+function par_6_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,6);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_6_LFO

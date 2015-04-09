@@ -54,6 +54,36 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     n = 1:length(handles.x(:,1));
                     t = n/file.fs;
                     f = 0+file.fs/length(n):file.fs/length(n):file.fs/2;
+                    
+                    % LFO
+                    handles.LFO_1.checkbox = 0;
+                    handles.LFO_2.checkbox = 0;
+                    handles.LFO_3.checkbox = 0;
+                    handles.LFO_4.checkbox = 0;
+                    handles.LFO_5.checkbox = 0;
+                    handles.LFO_6.checkbox = 0;
+                    set(handles.par_1,'Enable','on')
+                    set(handles.par_2,'Enable','on')
+                    set(handles.par_3,'Enable','on')
+                    set(handles.par_4,'Enable','on')
+                    set(handles.par_5,'Enable','on')
+                    set(handles.par_6,'Enable','on')
+                    set(handles.par_1_value,'String',get(handles.par_1,'Value'),'Enable','on')
+                    set(handles.par_2_value,'String',get(handles.par_2,'Value'),'Enable','on')
+                    set(handles.par_3_value,'String',get(handles.par_3,'Value'),'Enable','on')
+                    set(handles.par_4_value,'String',get(handles.par_4,'Value'),'Enable','on')
+                    set(handles.par_5_value,'String',get(handles.par_5,'Value'),'Enable','on')
+                    set(handles.par_6_value,'String',get(handles.par_6,'Value'),'Enable','on')
+                    set(handles.par_1_LFO,'Enable','on','Value',0)
+                    set(handles.par_2_LFO,'Enable','on','Value',0)
+                    set(handles.par_3_LFO,'Enable','on','Value',0)
+                    set(handles.par_4_LFO,'Enable','on','Value',0)
+                    set(handles.par_5_LFO,'Enable','on','Value',0)
+                    set(handles.par_6_LFO,'Enable','on','Value',0)
+                    for i = 1:6
+                        handles.limites(i).longitud = length(handles.x(:,1))/handles.fs;
+                    end
+                    
                     % Mono
                     if length(handles.x(1,:)) == 1
                         x(:,2) = 0;
@@ -63,10 +93,11 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     handles.X_L = X_L(1:length(n)/2);
                     handles.X_R = X_R(1:length(n)/2);
                     %handles.X = (handles.X_L+handles.X_R)/2;
+                    cla(handles.entrada_espectro)
                     hold(handles.entrada_espectro,'on')
-                    stairs(handles.entrada_espectro,f,abs(handles.X_R),'red')
-                    stairs(handles.entrada_espectro,f,abs(handles.X_L),'green')
-                    set(handles.entrada_espectro,'color',[0.05 0.05 0.1])
+                    loglog(handles.entrada_espectro,f,abs(handles.X_R),'red')
+                    loglog(handles.entrada_espectro,f,abs(handles.X_L),'green')
+                    set(handles.entrada_espectro,'XLim',[20 20000],'XGrid','on')
                     hold(handles.entrada_espectro,'off')
                     xlabel(handles.entrada_espectro,'Frecuencia [Hz]')
                     set(handles.entrada_archivo,'String',filename);

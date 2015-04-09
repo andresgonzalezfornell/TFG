@@ -14,6 +14,7 @@ function varargout = overdrive(varargin)
 %       y(:,5) espectro de señal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
+
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -42,29 +43,47 @@ function aplicar_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Limpieza de salida
-clear handles.y
+z_interfaz_limpieza
 
 % Overdrive
-for n = 1:length(handles.x(:,1))
-    % Overdrive canal L
-    if abs(handles.x(n,1)) < handles.k
-        handles.y(n,1) = handles.x(n,1)/1.5;
-    else
-        handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
+if handles.LFO_1.checkbox                               % Con LFO
+    res.LFO = 10;
+    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    for n = 1:handles.LFO_N
+        if mod(n,res.LFO) == 1
+            k = 1-handles.LFO_1.x(n);
+        end
+        % Overdrive canal L
+        if abs(handles.x(n,1)) < k
+            handles.y(n,1) = handles.x(n,1)/1.5;
+        else
+            handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
+        end
+        % Overdrive canal R
+        if abs(handles.x(n,2)) < k
+            handles.y(n,2) = handles.x(n,2)/1.5;
+        else
+            handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
+        end
     end
-    if abs(handles.y(n,1)) > 1
-        handles.y(n,1) = 1;
-    end
-    % Overdrive canal R
-    if abs(handles.x(n,2)) < handles.k
-        handles.y(n,2) = handles.x(n,2)/1.5;
-    else
-        handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
-    end
-    if abs(handles.y(n,2)) > 1
-        handles.y(n,2) = 1;
+else                                                    % Sin LFO
+    for n = 1:length(handles.x(:,1))
+        % Overdrive canal L
+        if abs(handles.x(n,1)) < handles.k
+            handles.y(n,1) = handles.x(n,1)/1.5;
+        else
+            handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
+        end
+        % Overdrive canal R
+        if abs(handles.x(n,2)) < handles.k
+            handles.y(n,2) = handles.x(n,2)/1.5;
+        else
+            handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
+        end
+
     end
 end
+
 z_interfaz_salida
 
 
@@ -78,7 +97,7 @@ function par_1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 handles.k = 1-get(hObject,'Value');
-set(handles.par_1_value,'String',handles.k)
+set(handles.par_1_value,'String',get(hObject,'Value'))
 % Update handles structure
 guidata(hObject, handles);
 
@@ -87,11 +106,11 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 & str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min & str2double(get(hObject,'String'))<=handles.limites(1).Max
     handles.k = 1-str2double(get(hObject,'String'));
-    set(handles.par_1,'Value',handles.k)
+    set(handles.par_1,'Value',str2double(get(hObject,'String')))
 else
-    set(handles.par_1_value,'String',handles.k)
+    set(handles.par_1_value,'String',1-handles.k)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -219,9 +238,12 @@ set(handles.titulo,'String','Overdrive')
 set(handles.des,'String','Filtro no lineal')
 % Inicialización de parámetros
 handles.k = 0.3;
-set(handles.par_1,'Visible','on','Value',0.7)
-set(handles.par_1_value,'Visible','on','String',0.3)
+handles.limites(1).Min = 0;
+handles.limites(1).Max = 1;
+set(handles.par_1,'Visible','on','Value',0.7,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
+set(handles.par_1_value,'Visible','on','String',0.7)
 set(handles.par_1_title,'Visible','on','String','Umbral de no linealidad')
+set(handles.par_1_LFO,'Visible','on')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes overdrive wait for user response (see UIRESUME)
@@ -362,6 +384,14 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 z_salida_espectro_open
 
 
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_graf_open
+
+
 % --- Executes on button press in comparar.
 function comparar_Callback(hObject, eventdata, handles)
 % hObject    handle to salida_espectro_open (see GCBO)
@@ -396,6 +426,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in par_1_LFO.
+function par_1_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,1);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
+
+
 % --- Executes during object creation, after setting all properties.
 function par_2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
@@ -419,6 +460,17 @@ function par_2_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in par_2_LFO.
+function par_2_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,2);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
 
 
 % --- Executes during object creation, after setting all properties.
@@ -446,6 +498,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in par_3_LFO.
+function par_3_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,3);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
+
+
 % --- Executes during object creation, after setting all properties.
 function par_4_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
@@ -469,6 +532,17 @@ function par_4_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in par_4_LFO.
+function par_4_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,4);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
 
 
 % --- Executes during object creation, after setting all properties.
@@ -496,6 +570,17 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
+% --- Executes on button press in par_5_LFO.
+function par_5_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,5);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
+
+
 % --- Executes during object creation, after setting all properties.
 function par_6_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
@@ -519,3 +604,14 @@ function par_6_value_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in par_6_LFO.
+function par_6_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,6);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_6_LFO

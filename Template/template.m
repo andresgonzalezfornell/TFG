@@ -6,12 +6,12 @@ function varargout = <efecto>(varargin)
 %                   y = <efecto>;
 %
 %      La variable devuelta "y" se corresponde con un array
-%      multidimensional formado por las siguientes se√±ales
-%       y(:,1) se√±al canal L
-%       y(:,2) se√±al canal R
-%       y(:,3) espectro de se√±al canal L
-%       y(:,4) espectro de se√±al canal R
-%       y(:,5) espectro de se√±al media entre ambos canales
+%      multidimensional formado por las siguientes seÒales
+%       y(:,1) seÒal canal L
+%       y(:,2) seÒal canal R
+%       y(:,3) espectro de seÒal canal L
+%       y(:,4) espectro de seÒal canal R
+%       y(:,5) espectro de seÒal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 
@@ -21,10 +21,11 @@ function varargout = <efecto>(varargin)
 %       <efecto>        por nombre del efecto siguiendo el formato (ej.: overdrive)
 %       <Efecto>        por nombre del efecto siguiendo el formato (ej.: Overdrive)
 %       <EFECTO>        por nombre del efecto siguiendo el formato (ej.: OVERDRIVE)
-%       <Descripci√≥n>   por la descripci√≥n del efecto
-%   Implementar el efecto en la funci√≥n aplicar_callback.
-%   Inicializar los par√°metros siguiendo el formato de ejemplo en la funci√≥n <efecto>_OpeningFcn
-%   Implementar los par√°metros en las funciones par_<#>_Callback
+%       <Descripcion>   por la descripciÛn del efecto
+%   Implementar el efecto en la funciÛn aplicar_callback.
+%   Implementar los par·metros en las funciones par_<#>_Callback y par_<#>_value_Callback
+%   Implementar la ampliaciÛn del gr·fico de representaciÛn del efecto en el gr·fico handles.graf_open
+%   Inicializar los par·metros siguiendo el formato de ejemplo en la funciÛn <efecto>_OpeningFcn
 %   Modificar en el archivo <efecto>.fig los callbacks de los botones
 
 % Begin initialization code - DO NOT EDIT
@@ -37,8 +38,7 @@ gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
-end
-
+    endl
 if nargout
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
@@ -59,18 +59,32 @@ clear handles.y
 
 % <Efecto>
 % Implementar efecto
+%
+% El control de los par·metros con LFO se puede realizar de la siguiente manera:
+%   if handles.LFO_1.checkbox
+%       res.LFO = 10;   % Cada cuantas muestras de seÒal actualizar el LFO
+%       res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+%       for n = 1:res.LFO:handles.LFO_N
+%           parametro1((n-1)*res.y+1:n*res.y) = handles.LFO_1.x(n);
+%       end
+%   else
+%   end
 
 z_interfaz_salida
 
 
-%% Par√°metros
+%% Par·metros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.k = get(hObject,'Value');
-set(handles.par_1_value,'String',handles.k)
+%
+% ObtenciÛn del valor
+%   handles.parametro = get(hObject,'Value');
+% Paso del par·metro al controlador numÈrico
+%   set(handles.par_1_value,'String',handles.k)
+%
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
@@ -81,11 +95,14 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 && str2double(get(hObject,'String'))<=1
-    handles.k = str2double(get(hObject,'String'));
-    set(handles.par_1,'Value',handles.k)
+if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
+    % ObtenciÛn del valor
+    %   handles.parametro = str2double(get(hObject,'String'));
+    % Paso del par·metro al slider
+    %   set(handles.par_1,'Value',handles.parametro)
 else
-    set(handles.par_1_value,'String',handles.k)
+    % Vuelta al ˙ltimo valor
+    %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -93,12 +110,30 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_1_value as a double
 
 
+% --- Executes on button press in par_1_LFO.
+function par_1_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,1);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
+
+
 % --- Executes on slider movement.
 function par_2_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+%
+% ObtenciÛn del valor
+%   handles.parametro = get(hObject,'Value');
+% Paso del par·metro al controlador numÈrico
+%   set(handles.par_1_value,'String',handles.k)
+%
+% Update handles structure
+guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -106,8 +141,14 @@ function par_2_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 && str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
+    % ObtenciÛn del valor
+    %   handles.parametro = str2double(get(hObject,'String'));
+    % Paso del par·metro al slider
+    %   set(handles.par_1,'Value',handles.parametro)
 else
+    % Vuelta al ˙ltimo valor
+    %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -115,12 +156,30 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_2_value as a double
 
 
+% --- Executes on button press in par_2_LFO.
+function par_2_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,2);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
+
+
 % --- Executes on slider movement.
 function par_3_Callback(hObject, eventdata, handles)
 % hObject    handle to par_3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+%
+% ObtenciÛn del valor
+%   handles.parametro = get(hObject,'Value');
+% Paso del par·metro al controlador numÈrico
+%   set(handles.par_1_value,'String',handles.k)
+%
+% Update handles structure
+guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -128,8 +187,14 @@ function par_3_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_3_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 && str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
+    % ObtenciÛn del valor
+    %   handles.parametro = str2double(get(hObject,'String'));
+    % Paso del par·metro al slider
+    %   set(handles.par_1,'Value',handles.parametro)
 else
+    % Vuelta al ˙ltimo valor
+    %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -137,11 +202,30 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_3_value as a double
 
 
+% --- Executes on button press in par_3_LFO.
+function par_3_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,3);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
+
+
 % --- Executes on slider movement.
 function par_4_Callback(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+%
+% ObtenciÛn del valor
+%   handles.parametro = get(hObject,'Value');
+% Paso del par·metro al controlador numÈrico
+%   set(handles.par_1_value,'String',handles.k)
+%
+% Update handles structure
+guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -150,8 +234,14 @@ function par_4_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_4_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 && str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
+    % ObtenciÛn del valor
+    %   handles.parametro = str2double(get(hObject,'String'));
+    % Paso del par·metro al slider
+    %   set(handles.par_1,'Value',handles.parametro)
 else
+    % Vuelta al ˙ltimo valor
+    %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -159,12 +249,30 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_4_value as a double
 
 
+% --- Executes on button press in par_4_LFO.
+function par_4_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,4);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
+
+
 % --- Executes on slider movement.
 function par_5_Callback(hObject, eventdata, handles)
 % hObject    handle to par_5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+%
+% ObtenciÛn del valor
+%   handles.parametro = get(hObject,'Value');
+% Paso del par·metro al controlador numÈrico
+%   set(handles.par_1_value,'String',handles.k)
+%
+% Update handles structure
+guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -173,8 +281,14 @@ function par_5_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_5_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 && str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
+    % ObtenciÛn del valor
+    %   handles.parametro = str2double(get(hObject,'String'));
+    % Paso del par·metro al slider
+    %   set(handles.par_1,'Value',handles.parametro)
 else
+    % Vuelta al ˙ltimo valor
+    %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -182,12 +296,30 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_5_value as a double
 
 
+% --- Executes on button press in par_5_LFO.
+function par_5_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,5);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
+
+
 % --- Executes on slider movement.
 function par_6_Callback(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+%
+% ObtenciÛn del valor
+%   handles.parametro = get(hObject,'Value');
+% Paso del par·metro al controlador numÈrico
+%   set(handles.par_1_value,'String',handles.k)
+%
+% Update handles structure
+guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
@@ -196,8 +328,14 @@ function par_6_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_6_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0 && str2double(get(hObject,'String'))<=1
+if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
+    % ObtenciÛn del valor
+    %   handles.parametro = str2double(get(hObject,'String'));
+    % Paso del par·metro al slider
+    %   set(handles.par_1,'Value',handles.parametro)
 else
+    % Vuelta al ˙ltimo valor
+    %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -205,17 +343,33 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_6_value as a double
 
 
+% --- Executes on button press in par_6_LFO.
+function par_6_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,6);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_6_LFO
+
+
 %% Controles de interfaz
 % --- Executes just before <efecto> is made visible.
 function <efecto>_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripci√≥n del efecto
+% DescripciÛn del efecto
 set(handles.titulo,'String','<Efecto>')
-set(handles.des,'String','<Descripci√≥n>')
-% Inicializaci√≥n de par√°metros
-% handles.k = 0.3;
-% set(handles.par_1,'Visible','on','Value',0.7)
-% set(handles.par_1_value,'Visible','on','String',0.3)
-% set(handles.par_1_title,'Visible','on','String','<parametro>')
+set(handles.des,'String','<Descripcion>')
+%
+% InicializaciÛn de par·metros (ejemplo con par·metro 1)
+%   handles.parametro1 = 0;         % Valor inicial par·metro 1
+%   handles.limites(1).Min = 0;     % Valor mÌnimo par·metro 1
+%   handles.limites(1).Max = 1;     % Valor m·ximo par·metro 1
+%   set(handles.par_1,'Visible','on','Value',handles.BW)
+%   set(handles.par_1_value,'Visible','on','String',handles.parametro1)
+%   set(handles.par_1_title,'Visible','on','String','Nombre par·metro 1')
+%   set(handles.par_1_LFO,'Visible','on')
+%
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes <efecto> wait for user response (see UIRESUME)
@@ -226,11 +380,8 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Interfaz
 z_interfaz_entrada_lista_Callback
-
-
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -241,7 +392,6 @@ function varargout = <efecto>_OutputFcn(hObject, eventdata, handles)
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Get default command line output from handles structure
 z_interfaz_OutputFcn
 
@@ -251,7 +401,6 @@ function entrada_lista_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -357,6 +506,14 @@ function salida_espectro_open_Callback(hObject, eventdata, handles)
 z_salida_espectro_open
 
 
+% --- Executes on button press in graf_open.
+function graf_open_Callback(hObject, eventdata, handles)
+% hObject    handle to graf_open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_graf_open
+
+
 % --- Executes on button press in comparar.
 function comparar_Callback(hObject, eventdata, handles)
 % hObject    handle to salida_espectro_open (see GCBO)
@@ -365,13 +522,12 @@ function comparar_Callback(hObject, eventdata, handles)
 z_comparar
 
 
-%% Controles de par√°metros
+%% Controles de par·metros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -383,7 +539,6 @@ function par_1_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -396,7 +551,6 @@ function par_2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -408,7 +562,6 @@ function par_2_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_2_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -421,7 +574,6 @@ function par_3_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -433,7 +585,6 @@ function par_3_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_3_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -446,7 +597,6 @@ function par_4_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -458,7 +608,6 @@ function par_4_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_4_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -471,7 +620,6 @@ function par_5_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -483,7 +631,6 @@ function par_5_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_5_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -496,7 +643,6 @@ function par_6_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -508,7 +654,6 @@ function par_6_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_6_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
