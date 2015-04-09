@@ -6,7 +6,7 @@ function varargout = <efecto>(varargin)
 %                   y = <efecto>;
 %
 %      La variable devuelta "y" se corresponde con un array
-%      multidimensional formado por las siguientes señales
+%      multidimensional formado por las siguientes seÃ±ales
 %       y(:,1) señal canal L
 %       y(:,2) señal canal R
 %       y(:,3) espectro de señal canal L
@@ -38,7 +38,8 @@ gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
-    endl
+end
+
 if nargout
     [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
 else
@@ -360,16 +361,13 @@ function <efecto>_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripción del efecto
 set(handles.titulo,'String','<Efecto>')
 set(handles.des,'String','<Descripcion>')
-%
-% Inicialización de parámetros (ejemplo con parámetro 1)
-%   handles.parametro1 = 0;         % Valor inicial parámetro 1
-%   handles.limites(1).Min = 0;     % Valor mínimo parámetro 1
-%   handles.limites(1).Max = 1;     % Valor máximo parámetro 1
-%   set(handles.par_1,'Visible','on','Value',handles.BW)
-%   set(handles.par_1_value,'Visible','on','String',handles.parametro1)
-%   set(handles.par_1_title,'Visible','on','String','Nombre parámetro 1')
-%   set(handles.par_1_LFO,'Visible','on')
-%
+% Inicialización de parámetros
+%   handles.parametro = 0;
+%   handles.limites(1).Min = 10;
+%   handles.limites(1).Max = 1000;
+% set(handles.par_1,'Visible','on','Value',0.7)
+% set(handles.par_1_value,'Visible','on','String',0.3)
+% set(handles.par_1_title,'Visible','on','String','<parametro>')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes <efecto> wait for user response (see UIRESUME)
@@ -380,8 +378,11 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 % Interfaz
 z_interfaz_entrada_lista_Callback
+
+
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -392,6 +393,7 @@ function varargout = <efecto>_OutputFcn(hObject, eventdata, handles)
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 % Get default command line output from handles structure
 z_interfaz_OutputFcn
 
@@ -401,6 +403,7 @@ function entrada_lista_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -522,12 +525,13 @@ function comparar_Callback(hObject, eventdata, handles)
 z_comparar
 
 
-%% Controles de parámetros
+%% Controles de parÃ¡metros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -539,6 +543,7 @@ function par_1_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -551,6 +556,7 @@ function par_2_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -562,6 +568,7 @@ function par_2_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_2_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -574,6 +581,7 @@ function par_3_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -585,6 +593,7 @@ function par_3_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_3_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -597,6 +606,7 @@ function par_4_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -608,6 +618,7 @@ function par_4_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_4_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -620,6 +631,7 @@ function par_5_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -631,6 +643,7 @@ function par_5_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_5_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -643,6 +656,7 @@ function par_6_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: slider controls usually have a light gray background.
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
@@ -654,6 +668,7 @@ function par_6_value_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_6_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))

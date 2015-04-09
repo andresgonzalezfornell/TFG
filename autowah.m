@@ -369,11 +369,8 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Interfaz
 z_interfaz_entrada_lista_Callback
-
-
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -384,7 +381,6 @@ function varargout = autowah_OutputFcn(hObject, eventdata, handles)
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Get default command line output from handles structure
 z_interfaz_OutputFcn
 
