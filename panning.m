@@ -61,10 +61,6 @@ if handles.LFO_1.checkbox                               % Con LFO
             g((n-1)*res.y+1:n*res.y,2) = 1;
         end
     end
-    length(g(:,1))
-    length(g(:,2))
-    length(handles.x(:,1))
-    length(handles.x(:,2))
     if k>1
         g(length(g(:,1))+1:length(handles.x(:,1)),1) = 1;
         g(length(g(:,2))+1:length(handles.x(:,2)),2) = 1/k;
@@ -130,6 +126,13 @@ function par_2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.az_altavoz = get(hObject,'Value');
 set(handles.par_2_value,'String',handles.az_altavoz)
+if handles.LFO_1.checkbox       % Desactivación de LFO 1
+    handles.LFO_1.checkbox = 0;
+    set(handles.par_1_value,'String',get(handles.par_1,'Value'))
+    set(handles.par_1,'Enable','on')
+    set(handles.par_1_value,'Enable','on')
+    set(handles.par_1_LFO,'Value',0)
+end
 suma_L = [15*sind(handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
 suma_R = [15*sind(-handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
 set(handles.altavoz_L,'Position',suma_L+handles.p_0);
@@ -142,6 +145,7 @@ if abs(handles.az_virtual) > handles.az_altavoz
     set(handles.fuente,'Position',suma_fuente+handles.p_0);
 end
 set(handles.par_1,'Min',-handles.az_altavoz,'Max',handles.az_altavoz)
+
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
@@ -155,6 +159,13 @@ function par_2_value_Callback(hObject, eventdata, handles)
 if str2double(get(hObject,'String'))>=handles.limites(2).Min & str2double(get(hObject,'String'))<=handles.limites(2).Max
     handles.az_altavoz = str2double(get(hObject,'String'));
     set(handles.par_2,'Value',handles.az_altavoz)
+    if handles.LFO_1.checkbox       % Desactivación de LFO 1
+        handles.LFO_1.checkbox = 0;
+        set(handles.par_1_value,'String',get(handles.par_1,'Value'))
+        set(handles.par_1,'Enable','on')
+        set(handles.par_1_value,'Enable','on')
+        set(handles.par_1_LFO,'Value',0)
+    end
     suma_L = [15*sind(handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
     suma_R = [15*sind(-handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
     set(handles.altavoz_L,'Position',suma_L+handles.p_0);
