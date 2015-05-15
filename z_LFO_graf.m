@@ -1,3 +1,5 @@
+%% CreaciÃ³n y graficaciÃ³n de las seÃ±ales de LFO
+
 % Limpieza de variables
 if isfield(handles.LFO,'n')
     handles.LFO = rmfield(handles.LFO,'n');
@@ -8,8 +10,8 @@ end
 tipo = get(handles.tipo_panel,'SelectedObject');
 handles.LFO.tipo = tipo.String;
 Ts = 0.001;                     % Periodo de muestreo
-T = 1/handles.LFO.frecuencia;   % Periodo de señal
-L = floor(T/Ts);                % Número de muestras de un periodo de señal
+T = 1/handles.LFO.frecuencia;   % Periodo de seï¿½al
+L = floor(T/Ts);                % Nï¿½mero de muestras de un periodo de seï¿½al
 handles.LFO.n = Ts:Ts:handles.limites.longitud;
 switch tipo.String
     case '(S) Sinusoidal'
@@ -21,7 +23,7 @@ switch tipo.String
         x(1:floor(L/4)) = 4*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
         n = -floor(L/4)+1:floor(L/4);
         while i*floor(L/4) < length(handles.LFO.n)
-            x(i*floor(L/4)+1:(i+2)*floor(L/4)) = 4*m*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
+            x(i*floor(L/4)+1:(i+2)*floor(L/4)) = 4*m*handles.LFO.amplitud*handles.LFO.frecuencia*n*Ts + handles.LFO.offset;
             i = i+2;
             m = -m;
         end

@@ -9,9 +9,9 @@ function varargout = autowah(varargin)
 %      multidimensional formado por las siguientes seÃ±ales
 %       y(:,1) seÃ±al canal L
 %       y(:,2) seÃ±al canal R
-%       y(:,3) espectro de señal canal L
-%       y(:,4) espectro de señal canal R
-%       y(:,5) espectro de señal media entre ambos canales
+%       y(:,3) espectro de seï¿½al canal L
+%       y(:,4) espectro de seï¿½al canal R
+%       y(:,5) espectro de seï¿½al media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 % Begin initialization code - DO NOT EDIT
@@ -53,7 +53,8 @@ filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'Cutof
 wah = filter(filtro,handles.x);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
     res.LFO = 10;
-    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    res.y = floor(length(handles.x(:,1))/handles.LFO_N);
+    handles.LFO_N
     for n = 1:res.LFO:handles.LFO_N
         if handles.LFO_1.checkbox                                               % LFO 1
             BW = handles.LFO_1.x(n);
@@ -70,6 +71,7 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   
             filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
             wah((n-1)*res.y+1:n*res.y,:) = filter(filtro,handles.x((n-1)*res.y+1:n*res.y,:));
         end
+        n
     end
 end
 handles.y = (1-mix).*handles.x + mix.*wah;
@@ -322,10 +324,10 @@ guidata(hObject, handles);
 %% Controles de interfaz
 % --- Executes just before autowah is made visible.
 function autowah_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripción del efecto
+% Descripciï¿½n del efecto
 set(handles.titulo,'String','Autowah')
-set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Puesto que es automático, la seÃ±al que controla la frecuencia central (LFO) es una seÃ±al triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'})
-% Inicialización de parámetros
+set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Puesto que es automï¿½tico, la seÃ±al que controla la frecuencia central (LFO) es una seÃ±al triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'})
+% Inicializaciï¿½n de parï¿½metros
 handles.BW = 100;
 handles.limites(1).Min = 10;
 handles.limites(1).Max = 1000;
@@ -349,14 +351,14 @@ set(handles.par_3,'Visible','on','Value',handles.mix)
 set(handles.par_3_value,'Visible','on','String',handles.mix)
 set(handles.par_3_title,'Visible','on','String','Nivel de autowah')
 set(handles.par_3_LFO,'Visible','on')
-% LFO (necesario para el gráfico del efecto)
+% LFO (necesario para el grï¿½fico del efecto)
 handles.LFO_1.checkbox = 0;
 handles.LFO_2.checkbox = 0;
 handles.LFO_3.checkbox = 0;
 handles.LFO_4.checkbox = 0;
 handles.LFO_5.checkbox = 0;
 handles.LFO_6.checkbox = 0;
-% Gráfico del efecto
+% Grï¿½fico del efecto
 handles = LFO_plot(handles);
 % Interfaz
 z_interfaz_OpeningFcn
@@ -664,7 +666,7 @@ end
 
 
 function [handles] = LFO_plot(handles)
-% Representación del LFO
+% Representaciï¿½n del LFO
 handles.grafico.title = 'Filtro de autowah';
 cla(handles.graf)
 n = 0:20000;
@@ -687,12 +689,12 @@ if handles.LFO_3.checkbox                               % LFO 3
         f_0 = handles.LFO_2.offset;
     end
     f_2 = f_0 + BW/2;
-    if f_2 >= 18500     % Representación en la izquierda
+    if f_2 >= 18500     % Representaciï¿½n en la izquierda
         f_1 = f_0 - BW/2;
         set(line([f_1-1000 f_1-1000],[mix_Min mix_Max]),'parent',handles.graf)
         set(line([f_1-1000 f_1-500],[mix_Min mix_Min]),'parent',handles.graf)
         set(line([f_1-1000 f_1-500],[mix_Max mix_Max]),'parent',handles.graf)
-    else                % Representación en la derecha
+    else                % Representaciï¿½n en la derecha
         set(line([f_2+1000 f_2+1000],[mix_Min mix_Max]),'parent',handles.graf)
         set(line([f_2+500 f_2+1000],[mix_Min mix_Min]),'parent',handles.graf)
         set(line([f_2+500 f_2+1000],[mix_Max mix_Max]),'parent',handles.graf)
@@ -707,13 +709,13 @@ if handles.LFO_1.checkbox && handles.LFO_2.checkbox     % LFO 1 y 2
     f_0 = handles.LFO_2.offset;
     % BW medio
     BW = handles.LFO_1.offset;
-    % f_1 mínimo
+    % f_1 mï¿½nimo
     f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
-    % f_2 máximo
+    % f_2 mï¿½ximo
     f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
-    % BW mínimo
+    % BW mï¿½nimo
     BW_Min = BW-handles.LFO_1.amplitud;
-    % BW máximo
+    % BW mï¿½ximo
     BW_Max = BW+handles.LFO_1.amplitud;
     set(line([f_1_Min f_1_Min],[0 2],'LineStyle',':'),'parent',handles.graf)
     set(line([f_2_Max f_2_Max],[0 2],'LineStyle',':'),'parent',handles.graf)
@@ -726,12 +728,12 @@ if handles.LFO_1.checkbox && handles.LFO_2.checkbox     % LFO 1 y 2
 elseif handles.LFO_1.checkbox                           % LFO 1
     % BW medio
     BW = handles.LFO_1.offset;
-    % BW mínimo
+    % BW mï¿½nimo
     BW_Min = BW-handles.LFO_1.amplitud;
     set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.2 1.2]),'parent',handles.graf)
     set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.18 1.2]),'parent',handles.graf)
     set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.18 1.2]),'parent',handles.graf)
-    % BW máximo
+    % BW mï¿½ximo
     BW_Max = BW+handles.LFO_1.amplitud;
     set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.1 1.1]),'parent',handles.graf)
     set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.08 1.1]),'parent',handles.graf)
@@ -739,10 +741,10 @@ elseif handles.LFO_1.checkbox                           % LFO 1
 elseif handles.LFO_2.checkbox                           % LFO 2
     % f_0 medio
     f_0 = handles.LFO_2.offset;
-    % f_1 mínimo
+    % f_1 mï¿½nimo
     f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
     set(line([f_1_Min f_1_Min],[0 2],'LineStyle','--'),'parent',handles.graf)
-    % f_2 máximo
+    % f_2 mï¿½ximo
     f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
     set(line([f_2_Max f_2_Max],[0 2],'LineStyle','--'),'parent',handles.graf)
 end

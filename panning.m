@@ -46,28 +46,33 @@ function aplicar_Callback(hObject, eventdata, handles)
 z_interfaz_limpieza
 
 % Panning
-g = [1 1];
+g = [1 ; 1];
 if handles.LFO_1.checkbox                               % Con LFO
-    res.LFO = 10;
+    res.LFO = 1;
     res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
     for n = 1:res.LFO:handles.LFO_N
         az_virtual = handles.LFO_1.x(n);
         k = (tand(handles.az_altavoz)-tand(az_virtual)) / (tand(handles.az_altavoz)+tand(az_virtual));
         if k>1
-            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,1) = 1;
-            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,2) = 1/k;
+            g((n-1)*res.y+1:n*res.y,1) = 1;
+            g((n-1)*res.y+1:n*res.y,2) = 1/k;
         else
-            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,1) = k;
-            g((n-1)*res.y/res.LFO+1:n*res.y/res.LFO,2) = 1;
+            g((n-1)*res.y+1:n*res.y,1) = k;
+            g((n-1)*res.y+1:n*res.y,2) = 1;
         end
     end
+    length(g(:,1))
+    length(g(:,2))
+    length(handles.x(:,1))
+    length(handles.x(:,2))
     if k>1
-        g(n*res.y/res.LFO:length(handles.x(:,1)),1) = 1;
-        g(n*res.y/res.LFO:length(handles.x(:,1)),2) = 1/k;
+        g(length(g(:,1))+1:length(handles.x(:,1)),1) = 1;
+        g(length(g(:,2))+1:length(handles.x(:,2)),2) = 1/k;
     else
-        g(n*res.y/res.LFO:length(handles.x(:,1)),1) = k;
-        g(n*res.y/res.LFO:length(handles.x(:,1)),2) = 1;
+        g(length(g(:,1))+1:length(handles.x(:,1)),1) = k;
+        g(length(g(:,2))+1:length(handles.x(:,2)),2) = 1;
     end
+    handles.y = g.*handles.x;
 else                                                    % Sin LFO
     k = (tand(handles.az_altavoz)-tand(handles.az_virtual)) / (tand(handles.az_altavoz)+tand(handles.az_virtual));
     if k>1
@@ -75,8 +80,9 @@ else                                                    % Sin LFO
     else
         g(1) = k;
     end
+    handles.y(:,1) = g(1)*handles.x(:,1);
+    handles.y(:,2) = g(2)*handles.x(:,2);
 end
-handles.y = g.*handles.x;
 
 z_interfaz_salida
 
@@ -263,23 +269,23 @@ end
 %% Controles de interfaz
 % --- Executes just before panning is made visible.
 function panning_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripción del efecto
+% Descripciï¿½n del efecto
 set(handles.titulo,'String','Panning')
 set(handles.des,'String','Produce la ilusiÃ³n al oyente de una direcciÃ³n determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales estÃ©reo y dos fuentes separadas suficientemente rodeando al oyente.')
-% Inicialización de parámetros
+% Inicializaciï¿½n de parï¿½metros
 handles.az_virtual = 0;
 handles.limites(1).Min = -60;
 handles.limites(1).Max = 60;
 set(handles.par_1,'Visible','on','Value',handles.az_virtual)
 set(handles.par_1_value,'Visible','on','String',handles.az_virtual)
-set(handles.par_1_title,'Visible','on','String','Acimut virtual [º]')
+set(handles.par_1_title,'Visible','on','String','Acimut virtual [ï¿½]')
 set(handles.par_1_LFO,'Visible','on')
 handles.az_altavoz = 60;
 handles.limites(2).Min = 1;
 handles.limites(2).Max = 89;
 set(handles.par_2,'Visible','on','Value',handles.az_altavoz)
 set(handles.par_2_value,'Visible','on','String',handles.az_altavoz)
-set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [º]')
+set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [ï¿½]')
 % Dibujo
 oyente_im = imread('Images/oyente.png');
 axes(handles.oyente);
@@ -492,7 +498,7 @@ function par_1_LFO_Callback(hObject, eventdata, handles)
 handles = z_LFO(handles,1);
 if handles.LFO_1.checkbox
     set(handles.fuente,'Visible','off')
-    % Por alguna extraña razón, no se hace invisible, por lo que se
+    % Por alguna extraï¿½a razï¿½n, no se hace invisible, por lo que se
     % posiciona en una zona no visible.
     set(handles.fuente,'Position',[1 1 1 1])
 end
