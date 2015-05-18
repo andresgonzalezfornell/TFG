@@ -3,7 +3,7 @@ function varargout = distortion(varargin)
 % 
 %      Si desea pasar la salida del efecto a su workspace escriba:
 %
-%                   y = DISTORTION;
+%                   y = distortion;
 %
 %      La variable devuelta "y" se corresponde con un array
 %      multidimensional formado por las siguientes señales

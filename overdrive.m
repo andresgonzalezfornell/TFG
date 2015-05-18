@@ -3,7 +3,7 @@ function varargout = overdrive(varargin)
 %
 %      Si desea pasar la salida del efecto a su workspace escriba:
 %
-%                   y = OVERDRIVE;
+%                   y = overdrive;
 %
 %      La variable devuelta "y" se corresponde con un array
 %      multidimensional formado por las siguientes señales

@@ -1,7 +1,7 @@
 function [handles] = z_LFO(handles,par)
 %LFO Control del LFO
 
-% Obtención del estado del LFO
+% Obtencion del estado del LFO
 switch par
     case 1
         handles.LFO_1.checkbox = get(handles.par_1_LFO,'Value');
@@ -53,6 +53,8 @@ if checkbox        % Si LFO habilitado
                 tipo_abreviado = '(DA)';
             case '(DD) Diente sierra descendente'
                 tipo_abreviado = '(DD)';
+            case '(C) Cuadrada'
+                tipo_abreviado = '(C)';
         end
         switch par
             case 1

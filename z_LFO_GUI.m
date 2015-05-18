@@ -53,9 +53,9 @@ function z_LFO_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to z_LFO_GUI (see VARARGIN)
 handles.par = varargin{1};
 handles.limites = varargin{2};
-% Inicialización de parámetros
+% Inicializacion de parametros
 handles.LFO.frecuencia = 2;
-set(handles.title,'String',strcat('Aplicar LFO al parámetro ',num2str(handles.par)))
+set(handles.title,'String',strcat('Aplicar LFO al parï¿½metro ',num2str(handles.par)))
 set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
 set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',0.1,'Max',10)
 set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
@@ -67,7 +67,7 @@ handles.LFO.offset = handles.delta+handles.limites.Min;
 set(handles.offset,'Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
 set(handles.offset_value,'String',handles.LFO.offset)
 handles.LFO.submit = 0;
-% Gráfico
+% Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
 set(handles.graf,'YLim',[handles.limites.Min handles.limites.Max])
@@ -346,3 +346,14 @@ z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of sierra_desc
+
+
+% --- Executes on button press in cuadrada.
+function cuadrada_Callback(hObject, eventdata, handles)
+% hObject    handle to cuadrada (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of cuadrada

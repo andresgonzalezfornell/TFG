@@ -52,9 +52,8 @@ mix = handles.mix;
 filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
 wah = filter(filtro,handles.x);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
-    res.LFO = 10;
+    res.LFO = 1000;
     res.y = floor(length(handles.x(:,1))/handles.LFO_N);
-    handles.LFO_N
     for n = 1:res.LFO:handles.LFO_N
         if handles.LFO_1.checkbox                                               % LFO 1
             BW = handles.LFO_1.x(n);
