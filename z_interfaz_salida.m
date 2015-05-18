@@ -23,6 +23,10 @@ hold(handles.salida_espectro,'off')
 xlabel(handles.salida_L,'Tiempo [s] (canal L)')
 xlabel(handles.salida_R,'Tiempo [s] (canal R)')
 xlabel(handles.salida_espectro,'Frecuencia [Hz]')
+% Diálogo de espera
+if exist('wb')
+    close(wb)
+end
 % Update handles structure
 guidata(hObject, handles);
 

@@ -9,9 +9,9 @@ function varargout = autowah(varargin)
 %      multidimensional formado por las siguientes señales
 %       y(:,1) señal canal L
 %       y(:,2) señal canal R
-%       y(:,3) espectro de se�al canal L
-%       y(:,4) espectro de se�al canal R
-%       y(:,5) espectro de se�al media entre ambos canales
+%       y(:,3) espectro de senal canal L
+%       y(:,4) espectro de senal canal R
+%       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 % Begin initialization code - DO NOT EDIT
@@ -52,8 +52,9 @@ mix = handles.mix;
 filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
 wah = filter(filtro,handles.x);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
-    res.LFO = 1000;
+    res.LFO = 200;
     res.y = floor(length(handles.x(:,1))/handles.LFO_N);
+    wb = waitbar(0,'Processing...');                                % Dialogo de espera
     for n = 1:res.LFO:handles.LFO_N
         if handles.LFO_1.checkbox                                               % LFO 1
             BW = handles.LFO_1.x(n);
@@ -70,7 +71,7 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   
             filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
             wah((n-1)*res.y+1:n*res.y,:) = filter(filtro,handles.x((n-1)*res.y+1:n*res.y,:));
         end
-        n
+        waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
     end
 end
 handles.y = (1-mix).*handles.x + mix.*wah;

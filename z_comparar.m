@@ -1,4 +1,4 @@
-%% Comparación entre espectros de entrada y salida
+%% Comparaciï¿½n entre espectros de entrada y salida
 
 if isfield(handles,'Y_L') && isfield(handles,'Y_R') && isfield(handles,'X_L') && isfield(handles,'X_R')
     figure('name','Espectros de entrada y salida')
@@ -12,10 +12,12 @@ if isfield(handles,'Y_L') && isfield(handles,'Y_R') && isfield(handles,'X_L') &&
     subplot(2,1,1)
 	loglog(f,abs(handles.X_R),'red')
 	loglog(f,abs(handles.X_L),'green')
-	xlabel('Frecuencia [Hz] (entrada)')
+	xlim([20 20000])
+    xlabel('Frecuencia [Hz] (entrada)')
     subplot(2,1,2)
 	loglog(f,abs(handles.Y_R),'red')
-	loglog(f,abs(handles.Y_L),'green')   
+	loglog(f,abs(handles.Y_L),'green')
+    xlim([20 20000])
 	xlabel('Frecuencia [Hz] (salida)')
     hold off
 end
