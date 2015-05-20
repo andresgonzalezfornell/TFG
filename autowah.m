@@ -45,12 +45,13 @@ function aplicar_Callback(hObject, eventdata, handles)
 z_interfaz_limpieza
 
 % Autowah
+x = handles.x;
 BW = handles.BW;
 f_1 = handles.f_0-BW/2;
 f_2 = handles.f_0+BW/2;
 mix = handles.mix;
 filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-wah = filter(filtro,handles.x);
+wah = filter(filtro,x);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
     res.LFO = 200;
     res.y = floor(length(handles.x(:,1))/handles.LFO_N);
@@ -69,12 +70,12 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   
         end
         if handles.LFO_1.checkbox || handles.LFO_2.checkbox
             filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-            wah((n-1)*res.y+1:n*res.y,:) = filter(filtro,handles.x((n-1)*res.y+1:n*res.y,:));
+            wah((n-1)*res.y+1:n*res.y,:) = filter(filtro,x((n-1)*res.y+1:n*res.y,:));
         end
         waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
     end
 end
-handles.y = (1-mix).*handles.x + mix.*wah;
+handles.y = (1-mix).*x + mix.*wah;
 
 z_interfaz_salida
 
@@ -324,10 +325,10 @@ guidata(hObject, handles);
 %% Controles de interfaz
 % --- Executes just before autowah is made visible.
 function autowah_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripci�n del efecto
+% Descripcion del efecto
 set(handles.titulo,'String','Autowah')
 set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Puesto que es autom�tico, la señal que controla la frecuencia central (LFO) es una señal triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'})
-% Inicializaci�n de par�metros
+% Inicializacion de parametros
 handles.BW = 100;
 handles.limites(1).Min = 10;
 handles.limites(1).Max = 1000;
@@ -351,14 +352,14 @@ set(handles.par_3,'Visible','on','Value',handles.mix)
 set(handles.par_3_value,'Visible','on','String',handles.mix)
 set(handles.par_3_title,'Visible','on','String','Nivel de autowah')
 set(handles.par_3_LFO,'Visible','on')
-% LFO (necesario para el gr�fico del efecto)
+% LFO (necesario para el grafico del efecto)
 handles.LFO_1.checkbox = 0;
 handles.LFO_2.checkbox = 0;
 handles.LFO_3.checkbox = 0;
 handles.LFO_4.checkbox = 0;
 handles.LFO_5.checkbox = 0;
 handles.LFO_6.checkbox = 0;
-% Gr�fico del efecto
+% Grafico del efecto
 handles = LFO_plot(handles);
 % Interfaz
 z_interfaz_OpeningFcn
@@ -683,7 +684,7 @@ if handles.LFO_3.checkbox                               % LFO 3
     x(n+1) = 1-mix;
     set(area(n,x,'FaceColor',[0.667 0.875 0.71]),'EdgeColor','none','parent',handles.graf)
     if handles.LFO_1.checkbox
-        BW = handles.LFO_2.offset;
+        BW = handles.LFO_1.offset;
     end
     if handles.LFO_2.checkbox
         f_0 = handles.LFO_2.offset;

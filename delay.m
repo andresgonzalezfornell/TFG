@@ -65,18 +65,19 @@ end
 z_interfaz_salida
 
 
-%% Parámetros
+%% Parametros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+d = get(hObject,'Value');
+handles.M = round(d*handles.fs);
+d = handles.M/handles.fs;
+set(handles.par_1,'Value',d)
+set(handles.par_1_value,'String',d)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-handles.d = get(hObject,'Value');
-set(handles.par_1_value,'String',handles.d)
-set(handles.par_1_LFO,'Value',0)
 % Update handles structure
 guidata(hObject, handles);
 
@@ -85,13 +86,17 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 if str2double(get(hObject,'String'))>=handles.limites(1).Min & str2double(get(hObject,'String'))<=handles.limites(1).Max
-    handles.d = str2double(get(hObject,'String'));
-    set(handles.par_1,'Value',handles.d)
+    d = str2double(get(hObject,'String'));
+    handles.M = round(d*handles.fs);
+    d = handles.M/handles.fs;
+    set(handles.par_1,'Value',d)
+    set(handles.par_1_value,'String',d)
 else
-    set(handles.par_1_value,'String',handles.d)
+    set(handles.par_1_value,'String',handles.M/handles.fs)
 end
-set(handles.par_1_LFO,'Value',0)
+
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_1_value as text
@@ -103,11 +108,8 @@ function par_2_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-d = get(hObject,'Value');
-handles.M = round(d*handles.fs);
-d = handles.M/handles.fs;
-set(handles.par_2,'Value',d)
-set(handles.par_2_value,'String',d)
+handles.d = get(hObject,'Value');
+set(handles.par_2_value,'String',handles.d)
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
@@ -118,13 +120,10 @@ function par_2_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(2).Min & str2double(get(hObject,'String'))<=handles.limites(2).Max
-    d = str2double(get(hObject,'String'));
-    handles.M = round(d*handles.fs)
-    d = handles.M/handles.fs;
-    set(handles.par_2,'Value',d)
-    set(handles.par_2_value,'String',d)
+    handles.d = str2double(get(hObject,'String'));
+    set(handles.par_2,'Value',handles.d)
 else
-    set(handles.par_2_value,'String',handles.M/handles.fs)
+    set(handles.par_2_value,'String',handles.d)
 end
 % Update handles structure
 guidata(hObject, handles);
@@ -228,20 +227,21 @@ function delay_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripción del efecto
 set(handles.titulo,'String','Delay')
 set(handles.des,'String','Rango de efectos basados en conjunto de ecualizadores variables con algún parámetro variable en el tiempo.')
-% Inicialización de parámetros
+% Inicializacion de parametros
+handles.fs = 44100;
 handles.d = 0.3;
 handles.limites(1).Min = 0;
-handles.limites(1).Max = 1;
-set(handles.par_1,'Visible','on','Value',handles.d)
-set(handles.par_1_value,'Visible','on','String',handles.d)
-set(handles.par_1_title,'Visible','on','String','Nivel de delay')
-set(handles.par_1_LFO,'Visible','on')
-handles.M = 0.5*handles.fs;
-handles.limites(1).Min = 0;
 handles.limites(1).Max = 2;
-set(handles.par_2,'Visible','on','Value',round(handles.M/handles.fs))
-set(handles.par_2_value,'Visible','on','String',round(handles.M/handles.fs))
-set(handles.par_2_title,'Visible','on','String','Tiempo de delay [s]')
+handles.M = 0.5*handles.fs;
+set(handles.par_1,'Visible','on','Value',round(handles.M/handles.fs))
+set(handles.par_1_value,'Visible','on','String',round(handles.M/handles.fs))
+set(handles.par_1_title,'Visible','on','String','Tiempo de delay [s]')
+set(handles.par_1_LFO,'Visible','on')
+handles.limites(2).Min = 0;
+handles.limites(2).Max = 1;
+set(handles.par_2,'Visible','on','Value',handles.d)
+set(handles.par_2_value,'Visible','on','String',handles.d)
+set(handles.par_2_title,'Visible','on','String','Nivel de delay')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes delay wait for user response (see UIRESUME)
