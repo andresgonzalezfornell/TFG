@@ -3,6 +3,9 @@
 % Generación de reproducción
 handles.y_audio = audioplayer(handles.y,handles.fs);
 % Gráficos
+cla(handles.salida_L)
+cla(handles.salida_R)
+cla(handles.salida_espectro)
 n = 1:length(handles.y(:,1));
 t = n/handles.fs;
 f = 0+handles.fs/length(n):handles.fs/length(n):handles.fs/2;

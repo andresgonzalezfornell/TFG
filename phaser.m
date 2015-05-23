@@ -6,12 +6,12 @@ function varargout = phaser(varargin)
 %                   y = phaser;
 %
 %      La variable devuelta "y" se corresponde con un array
-%      multidimensional formado por las siguientes señales
-%       y(:,1) señal canal L
-%       y(:,2) señal canal R
-%       y(:,3) espectro de señal canal L
-%       y(:,4) espectro de señal canal R
-%       y(:,5) espectro de señal media entre ambos canales
+%      multidimensional formado por las siguientes senales
+%       y(:,1) senal canal L
+%       y(:,2) senal canal R
+%       y(:,3) espectro de senal canal L
+%       y(:,4) espectro de senal canal R
+%       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 % Begin initialization code - DO NOT EDIT
@@ -50,13 +50,13 @@ BW_3 = handles.BW_3;
 f_1_min = handles.f_1 - BW_1/2;
 f_2_min = handles.f_2 - BW_2/2;
 f_3_min = handles.f_3 - BW_3/2;
-f_1_max = handles.f_1 - BW_1/2;
-f_2_max = handles.f_2 - BW_2/2;
-f_3_max = handles.f_3 - BW_3/2;
+f_1_max = handles.f_1 + BW_1/2;
+f_2_max = handles.f_2 + BW_2/2;
+f_3_max = handles.f_3 + BW_3/2;
 mix = handles.mix;
-filtro_1 = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1_min,'CutoffFrequency2',f_1_max,'SampleRate',handles.fs);
-filtro_2 = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_2_min,'CutoffFrequency2',f_2_max,'SampleRate',handles.fs);
-filtro_3 = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_3_min,'CutoffFrequency2',f_3_max,'SampleRate',handles.fs);
+filtro_1 = designfilt('bandstopfir','FilterOrder',10,'CutoffFrequency1',f_1_min,'CutoffFrequency2',f_1_max,'SampleRate',handles.fs);
+filtro_2 = designfilt('bandstopfir','FilterOrder',10,'CutoffFrequency1',f_2_min,'CutoffFrequency2',f_2_max,'SampleRate',handles.fs);
+filtro_3 = designfilt('bandstopfir','FilterOrder',10,'CutoffFrequency1',f_3_min,'CutoffFrequency2',f_3_max,'SampleRate',handles.fs);
 phaser = filter(filtro_1,x);
 phaser = filter(filtro_2,phaser);
 phaser = filter(filtro_3,phaser);
@@ -67,13 +67,21 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox                             
     for n = 1:res.LFO:handles.LFO_N
         if handles.LFO_1.checkbox                                               % LFO 1
             f_0 = handles.LFO_1.x(n);
-            f_1 = f_0-BW/2;
-            f_2 = f_0+BW/2;
+            f_1_min = f_0*handles.f_1_ref - BW_1/2;
+            f_2_min = f_0*handles.f_2_ref - BW_2/2;
+            f_3_min = f_0*handles.f_3_ref - BW_3/2;
+            f_1_max = f_0*handles.f_1_ref + BW_1/2;
+            f_2_max = f_0*handles.f_2_ref + BW_2/2;
+            f_3_max = f_0*handles.f_3_ref + BW_3/2;
+            filtro_1 = designfilt('bandstopfir','FilterOrder',10,'CutoffFrequency1',f_1_min,'CutoffFrequency2',f_1_max,'SampleRate',handles.fs);
+            filtro_2 = designfilt('bandstopfir','FilterOrder',10,'CutoffFrequency1',f_2_min,'CutoffFrequency2',f_2_max,'SampleRate',handles.fs);
+            filtro_3 = designfilt('bandstopfir','FilterOrder',10,'CutoffFrequency1',f_3_min,'CutoffFrequency2',f_3_max,'SampleRate',handles.fs);
+            phaser((n-1)*res.y+1:n*res.y,:) = filter(filtro_1,x((n-1)*res.y+1:n*res.y,:));
+            phaser((n-1)*res.y+1:n*res.y,:) = filter(filtro_2,phaser((n-1)*res.y+1:n*res.y,:));
+            phaser((n-1)*res.y+1:n*res.y,:) = filter(filtro_3,phaser((n-1)*res.y+1:n*res.y,:));
         end
         if handles.LFO_2.checkbox                                               % LFO 2
             mix((n-1)*res.y+1:n*res.y) = handles.LFO_2.x(n);
-            filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-            phaser((n-1)*res.y+1:n*res.y,:) = filter(filtro,x((n-1)*res.y+1:n*res.y,:));
         end
         waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
     end
@@ -83,16 +91,16 @@ handles.y = (1-mix).*x + mix.*phaser;
 z_interfaz_salida
 
 
-%% Parámetros
+%% Parametros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.f_0 = get(hObject,'Value');
-handles.f_1 = handles.f_0*200;
-handles.f_2 = handles.f_0*2000;
-handles.f_3 = handles.f_0*20000;
+handles.f_1 = handles.f_0*handles.f_1_ref;
+handles.f_2 = handles.f_0*handles.f_2_ref;
+handles.f_3 = handles.f_0*handles.f_3_ref;
 set(handles.par_1_value,'String',handles.f_0)
 handles = LFO_plot(handles);
 % Update handles structure
@@ -107,9 +115,9 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(2).Min && str2double(get(hObject,'String'))<=handles.limites(2).Max
     handles.f_0 = str2double(get(hObject,'String'));
-    handles.f_1 = handles.f_0*200;
-    handles.f_2 = handles.f_0*2000;
-    handles.f_3 = handles.f_0*20000;
+    handles.f_1 = handles.f_0*handles.f_1_ref;
+    handles.f_2 = handles.f_0*handles.f_2_ref;
+    handles.f_3 = handles.f_0*handles.f_3_ref;
     set(handles.par_1,'Value',handles.f_0)
 else
     set(handles.par_1_value,'String',handles.f_0)
@@ -305,17 +313,20 @@ guidata(hObject, handles);
 %% Controles de interfaz
 % --- Executes just before phaser is made visible.
 function phaser_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripción del efecto
+% Descripciï¿½n del efecto
 set(handles.titulo,'String','Phaser')
-set(handles.des,'String','Conjunto de filtros de banda eliminada estrecha (notch filter) con frecuencia central variable controlado por un oscilador de baja frecuencia. El fuerte cambio de fase existente alrededor de la banda eliminada se combina con las fases de la señal directa y causa cancelaciones o refuerzos de fase.')
+set(handles.des,'String','Conjunto de filtros de banda eliminada estrecha (notch filter) con frecuencia central variable controlado por un oscilador de baja frecuencia. El fuerte cambio de fase existente alrededor de la banda eliminada se combina con las fases de la seï¿½al directa y causa cancelaciones o refuerzos de fase.')
 % Inicializacion de parametros
 handles.BW_1 = 10;
 handles.BW_2 = 100;
 handles.BW_3 = 1000;
 handles.f_0 = 0.5;
-handles.f_1 = handles.f_0*200;
-handles.f_2 = handles.f_0*2000;
-handles.f_3 = handles.f_0*20000;
+handles.f_1_ref = 200;
+handles.f_2_ref = 2000;
+handles.f_3_ref = 20000;
+handles.f_1 = handles.f_0*handles.f_1_ref;
+handles.f_2 = handles.f_0*handles.f_2_ref;
+handles.f_3 = handles.f_0*handles.f_3_ref;
 handles.limites(1).Min = 0.25;
 handles.limites(1).Max = 1;
 set(handles.par_1,'Visible','on','Value',handles.f_0)
@@ -492,7 +503,7 @@ function comparar_Callback(hObject, eventdata, handles)
 z_comparar
 
 
-%% Controles de parámetros
+%% Controles de parï¿½metros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
@@ -636,50 +647,74 @@ function [handles] = LFO_plot(handles)
 handles.grafico.title = 'Filtros phaser';
 cla(handles.graf)
 n = 0:20500;
+if handles.LFO_1.checkbox                               % LFO 1
+    f_0 = handles.LFO_1.offset;
+else
+    f_0 = handles.f_0;
+end
+if handles.LFO_2.checkbox                               % LFO 2
+    mix = handles.LFO_2.offset;
+else
+    mix = handles.mix;
+end
+f_1_min = round(f_0*handles.f_1_ref - handles.BW_1/2);
+f_2_min = round(f_0*handles.f_2_ref - handles.BW_2/2);
+f_3_min = round(f_0*handles.f_3_ref - handles.BW_3/2);
+f_1_max = round(f_0*handles.f_1_ref + handles.BW_1/2);
+f_2_max = round(f_0*handles.f_2_ref + handles.BW_2/2);
+f_3_max = round(f_0*handles.f_3_ref + handles.BW_3/2);
 hold(handles.graf,'on')
 set(rectangle('Position',[0 1 20000 0.25],'FaceColor',[1 1 1]),'EdgeColor','none','parent',handles.graf)
 set(line([0 20000],[1 1]),'Color','black','parent',handles.graf)
+% Nivel de seÃ±al sin efecto
+x(n+1) = 1-mix;
+set(area(n,x,'FaceColor',[0.667 0.875 0.71]),'EdgeColor','none','parent',handles.graf)
+% Filtro 1
+lfo_1(1:f_1_min) = mix;
+lfo_1(f_1_min+1:f_1_max+1) = 0;
+lfo_1(f_1_max+2:round(sqrt(f_1_max*f_2_min)+1)) = mix;
+set(area(n(1:length(lfo_1)),lfo_1),'FaceColor',[0.698 0.765 1],'parent',handles.graf)
+% Filtro 2
+lfo_2(round(sqrt(f_1_max*f_2_min)+1):f_2_min) = mix;
+lfo_2(f_2_min+1:f_2_max+1) = 0;
+lfo_2(f_2_max+2:round(sqrt(f_2_max*f_3_min)+1)) = mix;
+set(area(n(length(lfo_1)+1:length(lfo_2)),lfo_2(length(lfo_1)+1:length(lfo_2))),'FaceColor',[1 0.792 0.416],'parent',handles.graf)
+% Filtro 3
+lfo_3(round(sqrt(f_2_max*f_3_min)+1):f_3_min) = mix;
+lfo_3(f_3_min+1:f_3_max+1) = 0;
+lfo_3(f_3_max+2:20501) = mix;
+set(area(n(length(lfo_2)+1:length(lfo_3)),lfo_3(length(lfo_2)+1:length(lfo_3))),'FaceColor',[1 0.486 0.412],'parent',handles.graf)
+if handles.LFO_1.checkbox                               % LFO 1
+    % f_1
+    f_1_min = round(handles.f_1_ref*handles.LFO_1.offset-handles.BW_1/2);
+    f_1_max = round(handles.f_1_ref*handles.LFO_1.offset+handles.BW_1/2);
+    set(line([(f_1_min-handles.f_1_ref*handles.LFO_1.amplitud) (f_1_min-handles.f_1_ref*handles.LFO_1.amplitud)],[0 2],'LineStyle','--','Color',[0.306 0.337 0.439]),'parent',handles.graf)
+    set(line([(f_1_max+handles.f_1_ref*handles.LFO_1.amplitud) (f_1_max+handles.f_1_ref*handles.LFO_1.amplitud)],[0 2],'LineStyle','--','Color',[0.306 0.337 0.439]),'parent',handles.graf)
+    % f_2
+    f_2_min = round(handles.f_2_ref*handles.LFO_1.offset-handles.BW_2/2);
+    f_2_max = round(handles.f_2_ref*handles.LFO_1.offset+handles.BW_2/2);
+    set(line([(f_2_min-handles.f_2_ref*handles.LFO_1.amplitud) (f_2_min-handles.f_2_ref*handles.LFO_1.amplitud)],[0 2],'LineStyle','--','Color',[0.612 0.482 0.255]),'parent',handles.graf)
+    set(line([(f_2_max+handles.f_2_ref*handles.LFO_1.amplitud) (f_2_max+handles.f_2_ref*handles.LFO_1.amplitud)],[0 2],'LineStyle','--','Color',[0.612 0.482 0.255]),'parent',handles.graf)
+    % f_3
+    f_3_min = round(handles.f_3_ref*handles.LFO_1.offset-handles.BW_3/2);
+    f_3_max = round(handles.f_3_ref*handles.LFO_1.offset+handles.BW_3/2);
+    set(line([(f_3_min-handles.f_3_ref*handles.LFO_1.amplitud) (f_3_min-handles.f_3_ref*handles.LFO_1.amplitud)],[0 2],'LineStyle','--','Color',[0.698 0.341 0.286]),'parent',handles.graf)
+    set(line([(f_3_max+handles.f_3_ref*handles.LFO_1.amplitud) (f_3_max+handles.f_3_ref*handles.LFO_1.amplitud)],[0 2],'LineStyle','--','Color',[0.698 0.341 0.286]),'parent',handles.graf)
+end
 if handles.LFO_2.checkbox                               % LFO 2
-    mix = handles.LFO_2.offset;
     mix_Max = mix + handles.LFO_2.amplitud;
     mix_Min = mix - handles.LFO_2.amplitud;
-    x(n+1) = 1-mix;
-    set(area(n,x,'FaceColor',[0.667 0.875 0.71]),'EdgeColor','none','parent',handles.graf)
-    if handles.LFO_1.checkbox
-        f_0 = handles.LFO_1.offset;
+    if f_0 >= 0.9           % Representacion en la izquierda
+        set(line([500 500],[mix_Min mix_Max]),'parent',handles.graf,'Color','black')
+        set(line([500 1000],[mix_Min mix_Min]),'parent',handles.graf,'Color','black')
+        set(line([500 1000],[mix_Max mix_Max]),'parent',handles.graf,'Color','black')
+    else                    % Representacion en la derecha
+        set(line([19500 19500],[mix_Min mix_Max]),'parent',handles.graf,'Color','black')
+        set(line([19000 19500],[mix_Min mix_Min]),'parent',handles.graf,'Color','black')
+        set(line([19000 19500],[mix_Max mix_Max]),'parent',handles.graf,'Color','black')
     end
-    f_2 = f_0 + BW/2;
-    if f_2 >= 18500     % Representacion en la izquierda
-        f_1 = f_0 - BW/2;
-        set(line([f_1-1000 f_1-1000],[mix_Min mix_Max]),'parent',handles.graf)
-        set(line([f_1-1000 f_1-500],[mix_Min mix_Min]),'parent',handles.graf)
-        set(line([f_1-1000 f_1-500],[mix_Max mix_Max]),'parent',handles.graf)
-    else                % Representacion en la derecha
-        set(line([f_2+1000 f_2+1000],[mix_Min mix_Max]),'parent',handles.graf)
-        set(line([f_2+500 f_2+1000],[mix_Min mix_Min]),'parent',handles.graf)
-        set(line([f_2+500 f_2+1000],[mix_Max mix_Max]),'parent',handles.graf)
-    end
-else
-    mix = handles.mix;
-    x(n+1) = 1-mix;
-    set(area(n,x,'FaceColor',[0.667 0.875 0.71]),'EdgeColor','none','parent',handles.graf)
 end
-if handles.LFO_1.checkbox                           % LFO 1
-    % f_0 medio
-    f_0 = handles.LFO_1.offset;
-    % f_1 minimo
-    f_1_Min = round(f_0-handles.LFO_1.amplitud-BW/2);
-    set(line([f_1_Min f_1_Min],[0 2],'LineStyle','--'),'parent',handles.graf)
-    % f_2 maximo
-    f_2_Max = round(f_0+handles.LFO_1.amplitud+BW/2);
-    set(line([f_2_Max f_2_Max],[0 2],'LineStyle','--'),'parent',handles.graf)
-end
-lfo(n+1) = mix;
-lfo(round(handles.f_1-handles.BW_1/2):round(handles.f_1+handles.BW_1/2)) = 0;
-lfo(round(handles.f_2-handles.BW_2/2):round(handles.f_2+handles.BW_2/2)) = 0;
-lfo(round(handles.f_3-handles.BW_3/2):round(handles.f_3+handles.BW_3/2)) = 0;
-set(area(n,lfo),'FaceColor','b','parent',handles.graf)
 set(handles.graf,'XLim',[20 20000],'YLim',[0 1.25],'YTick',[],'XGrid','on')
 handles.graf.XLabel.String = 'Frecuencia [Hz]';
-handles.graf.Title.String = 'Filtro de autowah';
+handles.graf.Title.String = 'Filtros de phaser';
 hold(handles.graf,'off')
