@@ -47,19 +47,25 @@ z_interfaz_limpieza
 
 % Distortion
 if handles.LFO_1.checkbox                               % Con LFO
-    res.LFO = 10;
-    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
-    for n = 1:handles.LFO_N
-        if mod(n,res.LFO) == 1
-            l = 1/(1-handles.LFO_1.x(n));
+    LFO_res = round(handles.fs/10);
+    wb = waitbar(0,'Processing...');                        % Dialogo de espera
+    for n = 0:LFO_res:handles.LFO_N-LFO_res
+        k = handles.LFO_1.x(n+1);
+        if k > 0.99
+            k = 0.99;
         end
-        handles.y(n,:) = sign(handles.x(n,:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*handles.x(n,:)));
+        l = 1/(1-k);
+        handles.y(n+1:n+LFO_res,:) = sign(handles.x(n+1:n+LFO_res,:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(handles.x(n+1:n+LFO_res,:))));
+        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
     end
+    handles.y(n+LFO_res+1:length(handles.x(:,1)),:) = sign(handles.x(n+LFO_res+1:length(handles.x(:,1)),:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(handles.x(n+LFO_res+1:length(handles.x(:,1)),:))));
 else                                                    % Sin LFO
-    for n = 1:length(handles.x(:,1))
-        l = 1/(1-handles.k);
-        handles.y(n,:) = sign(handles.x(n,:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*handles.x(n,:)));
+    k = handles.k;
+    if k > 0.99
+        k = 0.99;
     end
+    l = 1/(1-k);
+    handles.y = sign(handles.x).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(handles.x)));
 end
 
 z_interfaz_salida
@@ -74,8 +80,9 @@ function par_1_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-handles.k = 1-get(hObject,'Value');
+handles.k = get(hObject,'Value');
 set(handles.par_1_value,'String',get(hObject,'Value'))
+handles = distortion_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 
@@ -85,11 +92,12 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min & str2double(get(hObject,'String'))<=handles.limites(1).Max
-    handles.k = 1-str2double(get(hObject,'String'));
+    handles.k = str2double(get(hObject,'String'));
     set(handles.par_1,'Value',str2double(get(hObject,'String')))
 else
-    set(handles.par_1_value,'String',1-handles.k)
+    set(handles.par_1_value,'String',handles.k)
 end
+handles = distortion_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_1_value as text
@@ -199,13 +207,21 @@ function distortion_OpeningFcn(hObject, eventdata, handles, varargin)
 set(handles.titulo,'String','Distortion')
 set(handles.des,'String','Filtro no lineal')
 % Inicialización de parámetros
-handles.k = 0.3;
+handles.k = 0.7;
 handles.limites(1).Min = 0;
 handles.limites(1).Max = 1;
-set(handles.par_1,'Visible','on','Value',1-handles.k)
-set(handles.par_1_value,'Visible','on','String',1-handles.k)
+set(handles.par_1,'Visible','on','Value',handles.k)
+set(handles.par_1_value,'Visible','on','String',handles.k)
 set(handles.par_1_title,'Visible','on','String','Nivel de distortion')
 set(handles.par_1_LFO,'Visible','on')
+% LFO (necesario para el grafico del efecto)
+handles.LFO_1.checkbox = 0;
+handles.LFO_2.checkbox = 0;
+handles.LFO_3.checkbox = 0;
+handles.LFO_4.checkbox = 0;
+handles.LFO_5.checkbox = 0;
+handles.LFO_6.checkbox = 0;
+handles = distortion_plot(handles);
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes distortion wait for user response (see UIRESUME)
@@ -395,6 +411,7 @@ function par_1_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,1);
+handles = distortion_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_1_LFO
@@ -578,3 +595,43 @@ handles = z_LFO(handles,6);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_6_LFO
+
+
+function [handles] = distortion_plot(handles)
+% Representacion de la funcion distortion
+cla(handles.graf)
+x = -1:0.01:1;
+if handles.LFO_1.checkbox                               % Con LFO
+    k = handles.LFO_1.offset;
+    if k > 0.99
+        k = 0.99;
+    end
+    k_min = handles.LFO_1.offset - handles.LFO_1.amplitud;
+    k_max = handles.LFO_1.offset + handles.LFO_1.amplitud;
+    if k_min > 0.99
+        k_min = 0.99;
+    end
+    if k_max > 0.99
+        k_max = 0.99;
+    end
+    l = 1/(1-k);
+    l_min = 1/(1-k_min);
+    l_max = 1/(1-k_max);
+    y = sign(x).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(x)));
+    y_min = sign(x).*exp(l_min)./(exp(l_min)-1).*(1-exp(-l_min.*abs(x)));
+    y_max = sign(x).*exp(l_max)./(exp(l_max)-1).*(1-exp(-l_max.*abs(x)));
+    set(plot(x,y),'parent',handles.graf)
+    set(plot(x,y_min,'LineStyle','--','Color','black'),'parent',handles.graf)
+    set(plot(x,y_max,'LineStyle','--','Color','black'),'parent',handles.graf)
+else                                                    % Sin LFO
+    k = handles.k;
+    if k > 0.99
+        k = 0.99;
+    end
+    l = 1/(1-k);
+    y = sign(x).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(x)));
+    plot(handles.graf,x,y)
+end
+set(handles.graf,'XLim',[-1 1],'YLim',[-1 1],'XGrid','on','YGrid','on')
+handles.graf.XLabel.String = 'Señal de entrada x';
+handles.graf.Title.String = 'Señal de salida y(x)';

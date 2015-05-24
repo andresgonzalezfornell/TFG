@@ -51,13 +51,16 @@ original(1:L,:) = handles.x;
 original(L+1:L+handles.M,:) = zeros(handles.M,2);
 delay(1:handles.M,:) = zeros(handles.M,2);
 delay(handles.M+1:L+handles.M,:) = handles.x;
-if handles.LFO_1.checkbox                               % Con LFO
-    res.LFO = 10;
-    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
-    for n = 1:res.LFO:handles.LFO_N
-        d = handles.LFO_1.x(n);
-        handles.y = (original + d.*delay)./(1+d);
+if handles.LFO_2.checkbox                               % Con LFO
+    d = delay;
+    LFO_res = round(handles.fs/100);
+    wb = waitbar(0,'Processing...');                       % Dialogo de espera
+    for n = 0:LFO_res:handles.LFO_N-LFO_res
+        d(n+1:n+LFO_res,:) = handles.LFO_2.x(n+1);
+        waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
     end
+    d(n+LFO_res+1:length(handles.x(:,1)),:) = handles.LFO_2.x(n+1);
+    handles.y = (original + d.*delay)./(1+(handles.LFO_2.amplitud+handles.LFO_2.offset)/2);     % Valor cuadrático medio en el peor caso (cuadrada)
 else                                                    % Sin LFO
     handles.y = (original + handles.d.*delay)./(1+handles.d);
 end
@@ -71,11 +74,11 @@ function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-d = get(hObject,'Value');
-handles.M = round(d*handles.fs);
-d = handles.M/handles.fs;
-set(handles.par_1,'Value',d)
-set(handles.par_1_value,'String',d)
+delay = get(hObject,'Value');
+handles.M = round(delay*handles.fs);
+delay = handles.M/handles.fs;
+set(handles.par_1,'Value',delay)
+set(handles.par_1_value,'String',delay)
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 % Update handles structure
@@ -88,11 +91,11 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 if str2double(get(hObject,'String'))>=handles.limites(1).Min & str2double(get(hObject,'String'))<=handles.limites(1).Max
-    d = str2double(get(hObject,'String'));
-    handles.M = round(d*handles.fs);
-    d = handles.M/handles.fs;
-    set(handles.par_1,'Value',d)
-    set(handles.par_1_value,'String',d)
+    delay = str2double(get(hObject,'String'));
+    handles.M = round(delay*handles.fs);
+    delay = handles.M/handles.fs;
+    set(handles.par_1,'Value',delay)
+    set(handles.par_1_value,'String',delay)
 else
     set(handles.par_1_value,'String',handles.M/handles.fs)
 end
@@ -236,12 +239,12 @@ handles.M = 0.5*handles.fs;
 set(handles.par_1,'Visible','on','Value',round(handles.M/handles.fs))
 set(handles.par_1_value,'Visible','on','String',round(handles.M/handles.fs))
 set(handles.par_1_title,'Visible','on','String','Tiempo de delay [s]')
-set(handles.par_1_LFO,'Visible','on')
 handles.limites(2).Min = 0;
 handles.limites(2).Max = 1;
 set(handles.par_2,'Visible','on','Value',handles.d)
 set(handles.par_2_value,'Visible','on','String',handles.d)
 set(handles.par_2_title,'Visible','on','String','Nivel de delay')
+set(handles.par_2_LFO,'Visible','on')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes delay wait for user response (see UIRESUME)

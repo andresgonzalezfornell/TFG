@@ -53,6 +53,7 @@ function z_LFO_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to z_LFO_GUI (see VARARGIN)
 handles.par = varargin{1};
 handles.limites = varargin{2};
+handles.fs = varargin{3};
 % Inicializacion de parametros
 handles.LFO.frecuencia = 2;
 set(handles.title,'String',strcat('Aplicar LFO al par�metro ',num2str(handles.par)))

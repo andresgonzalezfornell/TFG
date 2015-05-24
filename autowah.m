@@ -48,32 +48,39 @@ z_interfaz_limpieza
 x = handles.x;
 BW = handles.BW;
 f_1 = handles.f_0-BW/2;
+if f_1 <= 0
+    f_1 = 1;
+end
 f_2 = handles.f_0+BW/2;
 mix = handles.mix;
 filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
 wah = filter(filtro,x);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
-    res.LFO = 200;
-    res.y = floor(length(handles.x(:,1))/handles.LFO_N);
-    wb = waitbar(0,'Processing...');                                % Dialogo de espera
-    for n = 1:res.LFO:handles.LFO_N
+    LFO_res = round(handles.fs/10);
+    wb = waitbar(0,'Processing...');                        % Dialogo de espera
+    for n = 0:LFO_res:handles.LFO_N-LFO_res
         if handles.LFO_1.checkbox                                               % LFO 1
-            BW = handles.LFO_1.x(n);
+            BW = handles.LFO_1.x(n+1);
         end
         if handles.LFO_2.checkbox                                               % LFO 2
-            f_0 = handles.LFO_2.x(n);
+            f_0 = handles.LFO_2.x(n+1);
             f_1 = f_0-BW/2;
+            if f_1 <= 0
+                f_1 = 1;
+            end
             f_2 = f_0+BW/2;
         end
         if handles.LFO_3.checkbox                                               % LFO 3
-            mix((n-1)*res.y+1:n*res.y) = handles.LFO_3.x(n);
+            mix(n+1:n+LFO_res) = handles.LFO_3.x(n+1);
         end
         if handles.LFO_1.checkbox || handles.LFO_2.checkbox
             filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-            wah((n-1)*res.y+1:n*res.y,:) = filter(filtro,x((n-1)*res.y+1:n*res.y,:));
+            %fvtool(filtro)
+            wah(n+1:n+LFO_res,:) = filter(filtro,x(n+1:n+LFO_res,:));
         end
-        waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
+        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
     end
+    wah(n+LFO_res+1:length(handles.x(:,1)),:) = filter(filtro,x(n+LFO_res+1:length(handles.x(:,1)),:));
 end
 handles.y = (1-mix).*x + mix.*wah;
 
@@ -114,8 +121,8 @@ function par_1_value_Callback(hObject, eventdata, handles)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
     handles.BW = str2double(get(hObject,'String'));
     set(handles.par_1,'Value',handles.BW)
-    handles.limites(2).Min = handles.BW/2;
-    handles.limites(2).Max = 20000-handles.BW/2;
+    handles.limites(2).Min = round(handles.BW/2);
+    handles.limites(2).Max = round(20000-handles.BW/2);
     if handles.f_0 < handles.limites(2).Min 
         handles.f_0 = handles.limites(2).Min;
         set(handles.par_2,'Value',handles.f_0)
@@ -667,8 +674,7 @@ end
 
 
 function [handles] = LFO_plot(handles)
-% Representaci�n del LFO
-handles.grafico.title = 'Filtro de autowah';
+% Representacion del LFO
 cla(handles.graf)
 n = 0:20000;
 lfo(1:20001) = 0;

@@ -9,7 +9,7 @@ if isfield(handles.LFO,'x')
 end
 tipo = get(handles.tipo_panel,'SelectedObject');
 handles.LFO.tipo = tipo.String;
-Ts = 0.001;                     % Periodo de muestreo
+Ts = 1/handles.fs;              % Periodo de muestreo
 T = 1/handles.LFO.frecuencia;   % Periodo de senal
 L = floor(T/Ts);                % Numero de muestras de un periodo de senal
 handles.LFO.n = Ts:Ts:handles.limites.longitud;

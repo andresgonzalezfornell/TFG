@@ -47,41 +47,32 @@ z_interfaz_limpieza
 
 % Overdrive
 if handles.LFO_1.checkbox                               % Con LFO
-    res.LFO = 10;
+    LFO_res = round(handles.fs/100);
     res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
-    for n = 1:handles.LFO_N
+    for n = 0:LFO_res:handles.LFO_N-LFO_res
         if mod(n,res.LFO) == 1
             k = 1-handles.LFO_1.x(n);
         end
         % Overdrive canal L
         if abs(handles.x(n,1)) < k
-            handles.y(n,1) = handles.x(n,1)/1.5;
+            handles.y(n+1,1) = handles.x(n+1,1)/1.5;
         else
-            handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
+            handles.y(n+1,1) = sign(handles.x(n+1,1))*(4-(2-2*abs(handles.x(n+1,1)))^2)/4;
         end
         % Overdrive canal R
         if abs(handles.x(n,2)) < k
-            handles.y(n,2) = handles.x(n,2)/1.5;
+            handles.y(n+1,2) = handles.x(n+1,2)/1.5;
         else
-            handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
+            handles.y(n+1,2) = sign(handles.x(n+1,2))*(4-(2-2*abs(handles.x(n+1,2)))^2)/4;
         end
     end
 else                                                    % Sin LFO
-    for n = 1:length(handles.x(:,1))
-        % Overdrive canal L
-        if abs(handles.x(n,1)) < handles.k
-            handles.y(n,1) = handles.x(n,1)/1.5;
-        else
-            handles.y(n,1) = sign(handles.x(n,1))*(4-(2-2*abs(handles.x(n,1)))^2)/4;
-        end
-        % Overdrive canal R
-        if abs(handles.x(n,2)) < handles.k
-            handles.y(n,2) = handles.x(n,2)/1.5;
-        else
-            handles.y(n,2) = sign(handles.x(n,2))*(4-(2-2*abs(handles.x(n,2)))^2)/4;
-        end
-
+    k = handles.k;
+    if k < 0.01
+        k = 0.01;
     end
+    l = (1/(1-k*0.9)-1)*15;
+    handles.y = atan(l*handles.x)/atan(l);
 end
 
 z_interfaz_salida
@@ -96,8 +87,9 @@ function par_1_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-handles.k = 1-get(hObject,'Value');
+handles.k = get(hObject,'Value');
 set(handles.par_1_value,'String',get(hObject,'Value'))
+handles = overdrive_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 
@@ -107,8 +99,9 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min & str2double(get(hObject,'String'))<=handles.limites(1).Max
-    handles.k = 1-str2double(get(hObject,'String'));
+    handles.k = str2double(get(hObject,'String'));
     set(handles.par_1,'Value',str2double(get(hObject,'String')))
+    handles = overdrive_plot(handles);
 else
     set(handles.par_1_value,'String',1-handles.k)
 end
@@ -237,13 +230,21 @@ function overdrive_OpeningFcn(hObject, eventdata, handles, varargin)
 set(handles.titulo,'String','Overdrive')
 set(handles.des,'String','Filtro no lineal')
 % Inicialización de parámetros
-handles.k = 0.3;
+handles.k = 0.7;
 handles.limites(1).Min = 0;
 handles.limites(1).Max = 1;
-set(handles.par_1,'Visible','on','Value',0.7,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
-set(handles.par_1_value,'Visible','on','String',0.7)
+set(handles.par_1,'Visible','on','Value',handles.k,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
+set(handles.par_1_value,'Visible','on','String',handles.k)
 set(handles.par_1_title,'Visible','on','String','Umbral de no linealidad')
 set(handles.par_1_LFO,'Visible','on')
+% LFO (necesario para el grafico del efecto)
+handles.LFO_1.checkbox = 0;
+handles.LFO_2.checkbox = 0;
+handles.LFO_3.checkbox = 0;
+handles.LFO_4.checkbox = 0;
+handles.LFO_5.checkbox = 0;
+handles.LFO_6.checkbox = 0;
+handles = overdrive_plot(handles);
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes overdrive wait for user response (see UIRESUME)
@@ -432,6 +433,7 @@ function par_1_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,1);
+handles = overdrive_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_1_LFO
@@ -615,3 +617,43 @@ handles = z_LFO(handles,6);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of par_6_LFO
+
+
+function [handles] = overdrive_plot(handles)
+% Representacion de la funcion overdrive
+cla(handles.graf)
+x = -1:0.01:1;
+if handles.LFO_1.checkbox                               % Con LFO
+    k = handles.LFO_1.offset;
+    if k > 0.99
+        k = 0.99;
+    end
+    k_min = handles.LFO_1.offset - handles.LFO_1.amplitud;
+    k_max = handles.LFO_1.offset + handles.LFO_1.amplitud;
+    if k_min > 0.99
+        k_min = 0.99;
+    end
+    if k_max > 0.99
+        k_max = 0.99;
+    end
+    l = 1/(1-k);
+    l_min = 1/(1-k_min);
+    l_max = 1/(1-k_max);
+    y = sign(x).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(x)));
+    y_min = sign(x).*exp(l_min)./(exp(l_min)-1).*(1-exp(-l_min.*abs(x)));
+    y_max = sign(x).*exp(l_max)./(exp(l_max)-1).*(1-exp(-l_max.*abs(x)));
+    set(plot(x,y),'parent',handles.graf)
+    set(plot(x,y_min,'LineStyle','--','Color','black'),'parent',handles.graf)
+    set(plot(x,y_max,'LineStyle','--','Color','black'),'parent',handles.graf)
+else                                                    % Sin LFO
+    k = handles.k;
+    if k < 0.01
+        k = 0.01;
+    end
+    l = (1/(1-k*0.9)-1)*15;
+    y = atan(l*x)/atan(l);
+    plot(handles.graf,x,y)
+end
+set(handles.graf,'XLim',[-1 1],'YLim',[-1 1],'XGrid','on','YGrid','on')
+handles.graf.XLabel.String = 'Señal de entrada x';
+handles.graf.Title.String = 'Señal de salida y(x)';

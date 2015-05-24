@@ -15,8 +15,8 @@ set(handles.salida_L,'color',[0.05 0.05 0.1])
 set(handles.salida_R,'color',[0.05 0.05 0.1])
 Y_L = fft(handles.y(:,1))/length(n);
 Y_R = fft(handles.y(:,2))/length(n);
-handles.Y_L = Y_L(1:length(n)/2);
-handles.Y_R = Y_R(1:length(n)/2);
+handles.Y_L = Y_L(1:floor(length(n)/2));
+handles.Y_R = Y_R(1:floor(length(n)/2));
 handles.Y = (handles.Y_L+handles.Y_R)/2;
 hold(handles.salida_espectro,'on')
 loglog(handles.salida_espectro,f,abs(handles.Y_R),'red')

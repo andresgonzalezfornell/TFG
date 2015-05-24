@@ -48,27 +48,29 @@ z_interfaz_limpieza
 % Panning
 g = [1 ; 1];
 if handles.LFO_1.checkbox                               % Con LFO
-    res.LFO = 1;
-    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
-    for n = 1:res.LFO:handles.LFO_N
-        az_virtual = handles.LFO_1.x(n);
+    LFO_res = round(handles.fs/100);
+    wb = waitbar(0,'Processing...');                        % Dialogo de espera
+    for n = 0:LFO_res:handles.LFO_N-LFO_res
+        az_virtual = handles.LFO_1.x(n+1);
         k = (tand(handles.az_altavoz)-tand(az_virtual)) / (tand(handles.az_altavoz)+tand(az_virtual));
         if k>1
-            g((n-1)*res.y+1:n*res.y,1) = 1;
-            g((n-1)*res.y+1:n*res.y,2) = 1/k;
+            g(n+1:n+LFO_res,:,1) = 1;
+            g(n+1:n+LFO_res,:,2) = 1/k;
         else
-            g((n-1)*res.y+1:n*res.y,1) = k;
-            g((n-1)*res.y+1:n*res.y,2) = 1;
+            g(n+1:n+LFO_res,:,1) = k;
+            g(n+1:n+LFO_res,:,2) = 1;
         end
+        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
     end
     if k>1
-        g(length(g(:,1))+1:length(handles.x(:,1)),1) = 1;
-        g(length(g(:,2))+1:length(handles.x(:,2)),2) = 1/k;
+        g(n+LFO_res+1:length(handles.x(:,1)),1) = 1;
+        g(n+LFO_res+1:length(handles.x(:,2)),2) = 1/k;
     else
-        g(length(g(:,1))+1:length(handles.x(:,1)),1) = k;
-        g(length(g(:,2))+1:length(handles.x(:,2)),2) = 1;
+        g(n+LFO_res+1:length(handles.x(:,1)),1) = k;
+        g(n+LFO_res+1:length(handles.x(:,2)),2) = 1;
     end
-    handles.y = g.*handles.x;
+    handles.y(:,1) = g(:,1).*handles.x(:,1);
+    handles.y(:,2) = g(:,2).*handles.x(:,2);
 else                                                    % Sin LFO
     k = (tand(handles.az_altavoz)-tand(handles.az_virtual)) / (tand(handles.az_altavoz)+tand(handles.az_virtual));
     if k>1
@@ -144,7 +146,9 @@ if abs(handles.az_virtual) > handles.az_altavoz
     suma_fuente = [15*sind(handles.az_virtual) 7.5*cosd(handles.az_virtual) 0 0];
     set(handles.fuente,'Position',suma_fuente+handles.p_0);
 end
-set(handles.par_1,'Min',-handles.az_altavoz,'Max',handles.az_altavoz)
+handles.limites(1).Min = -handles.az_altavoz;
+handles.limites(1).Max = handles.az_altavoz;
+set(handles.par_1,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
 
 % Update handles structure
 guidata(hObject, handles);
@@ -177,7 +181,9 @@ if str2double(get(hObject,'String'))>=handles.limites(2).Min & str2double(get(hO
         suma_fuente = [15*sind(handles.az_virtual) 7.5*cosd(handles.az_virtual) 0 0];
         set(handles.fuente,'Position',suma_fuente+handles.p_0);
     end
-    set(handles.par_1,'Min',-handles.az_altavoz,'Max',handles.az_altavoz)
+    handles.limites(1).Min = -handles.az_altavoz;
+    handles.limites(1).Max = handles.az_altavoz;
+    set(handles.par_1,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
 else
     set(handles.par_2_value,'String',handles.az_altavoz)
 end

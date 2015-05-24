@@ -25,22 +25,22 @@ end
 if checkbox        % Si LFO habilitado
     switch par
         case 1
-            handles.LFO_1 = z_LFO_GUI(par,handles.limites(par));
+            handles.LFO_1 = z_LFO_GUI(par,handles.limites(par),handles.fs);
             LFO = handles.LFO_1;
         case 2
-            handles.LFO_2 = z_LFO_GUI(par,handles.limites(par));
+            handles.LFO_2 = z_LFO_GUI(par,handles.limites(par),handles.fs);
             LFO = handles.LFO_2;
         case 3
-            handles.LFO_3 = z_LFO_GUI(par,handles.limites(par));
+            handles.LFO_3 = z_LFO_GUI(par,handles.limites(par),handles.fs);
             LFO = handles.LFO_3;
         case 4
-            handles.LFO_4 = z_LFO_GUI(par,handles.limites(par));
+            handles.LFO_4 = z_LFO_GUI(par,handles.limites(par),handles.fs);
             LFO = handles.LFO_4;
         case 5
-            handles.LFO_5 = z_LFO_GUI(par,handles.limites(par));
+            handles.LFO_5 = z_LFO_GUI(par,handles.limites(par),handles.fs);
             LFO = handles.LFO_5;
         case 6
-            handles.LFO_6 = z_LFO_GUI(par,handles.limites(par));
+            handles.LFO_6 = z_LFO_GUI(par,handles.limites(par),handles.fs);
             LFO = handles.LFO_6;
     end
     if LFO.submit       % Si se ha seleccionado a aplicar

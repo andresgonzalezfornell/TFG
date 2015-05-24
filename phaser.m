@@ -61,12 +61,11 @@ phaser = filter(filtro_1,x);
 phaser = filter(filtro_2,phaser);
 phaser = filter(filtro_3,phaser);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox                             % Con LFO
-    res.LFO = 200;
-    res.y = floor(length(handles.x(:,1))/handles.LFO_N);
-    wb = waitbar(0,'Processing...');                                % Dialogo de espera
-    for n = 1:res.LFO:handles.LFO_N
+    LFO_res = round(handles.fs/10);
+    wb = waitbar(0,'Processing...');                        % Dialogo de espera
+    for n = 0:LFO_res:handles.LFO_N-LFO_res
         if handles.LFO_1.checkbox                                               % LFO 1
-            f_0 = handles.LFO_1.x(n);
+            f_0 = handles.LFO_1.x(n+1);
             f_1_min = f_0*handles.f_1_ref - BW_1/2;
             f_2_min = f_0*handles.f_2_ref - BW_2/2;
             f_3_min = f_0*handles.f_3_ref - BW_3/2;
@@ -83,7 +82,7 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox                             
         if handles.LFO_2.checkbox                                               % LFO 2
             mix((n-1)*res.y+1:n*res.y) = handles.LFO_2.x(n);
         end
-        waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
+        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
     end
 end
 handles.y = (1-mix).*x + mix.*phaser;
