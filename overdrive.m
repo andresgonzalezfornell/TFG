@@ -9,9 +9,9 @@ function varargout = overdrive(varargin)
 %      multidimensional formado por las siguientes señales
 %       y(:,1) señal canal L
 %       y(:,2) señal canal R
-%       y(:,3) espectro de señal canal L
-%       y(:,4) espectro de señal canal R
-%       y(:,5) espectro de señal media entre ambos canales
+%       y(:,3) espectro de senal canal L
+%       y(:,4) espectro de senal canal R
+%       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 
@@ -47,25 +47,18 @@ z_interfaz_limpieza
 
 % Overdrive
 if handles.LFO_1.checkbox                               % Con LFO
-    LFO_res = round(handles.fs/100);
-    res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
+    LFO_res = round(handles.fs/10);
+    wb = waitbar(0,'Processing...');                        % Dialogo de espera
     for n = 0:LFO_res:handles.LFO_N-LFO_res
-        if mod(n,res.LFO) == 1
-            k = 1-handles.LFO_1.x(n);
+        k = handles.LFO_1.x(n+1);
+        if k < 0.01
+            k = 0.01;
         end
-        % Overdrive canal L
-        if abs(handles.x(n,1)) < k
-            handles.y(n+1,1) = handles.x(n+1,1)/1.5;
-        else
-            handles.y(n+1,1) = sign(handles.x(n+1,1))*(4-(2-2*abs(handles.x(n+1,1)))^2)/4;
-        end
-        % Overdrive canal R
-        if abs(handles.x(n,2)) < k
-            handles.y(n+1,2) = handles.x(n+1,2)/1.5;
-        else
-            handles.y(n+1,2) = sign(handles.x(n+1,2))*(4-(2-2*abs(handles.x(n+1,2)))^2)/4;
-        end
+        l = (1/(1-k*0.9)-1)*15;
+        handles.y(n+1:n+LFO_res,:) = atan(l*handles.x(n+1:n+LFO_res,:))/atan(l);
+        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
     end
+    handles.y(n+LFO_res+1:length(handles.x(:,1)),:) = atan(l*handles.x(n+LFO_res+1:length(handles.x(:,1)),:))/atan(l);
 else                                                    % Sin LFO
     k = handles.k;
     if k < 0.01
@@ -78,7 +71,7 @@ end
 z_interfaz_salida
 
 
-%% Parámetros
+%% Parametros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
@@ -226,10 +219,10 @@ end
 %% Controles de interfaz
 % --- Executes just before overdrive is made visible.
 function overdrive_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripción del efecto
+% Descripcion del efecto
 set(handles.titulo,'String','Overdrive')
-set(handles.des,'String','Filtro no lineal')
-% Inicialización de parámetros
+set(handles.des,'String','El efecto no lineal empleado sigue la funcion:    y(n) = atan(l*x) / atan(l)     l = (1/(1-k*0.9)-1)*15;')
+% Inicializacion de parametros
 handles.k = 0.7;
 handles.limites(1).Min = 0;
 handles.limites(1).Max = 1;
@@ -255,11 +248,8 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Interfaz
 z_interfaz_entrada_lista_Callback
-
-
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -270,7 +260,6 @@ function varargout = overdrive_OutputFcn(hObject, eventdata, handles)
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Get default command line output from handles structure
 z_interfaz_OutputFcn
 
@@ -280,7 +269,6 @@ function entrada_lista_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -295,7 +283,8 @@ function play_entrada_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 resume(handles.x_audio)
 
-%% Controles de reproducción
+
+%% Controles de reproduccion
 % --- Executes on button press in stop_entrada.
 function stop_entrada_Callback(hObject, eventdata, handles)
 % hObject    handle to stop_entrada (see GCBO)
@@ -336,7 +325,7 @@ function pause_salida_Callback(hObject, eventdata, handles)
 pause(handles.y_audio)
 
 
-%% Ampliar gráficas
+%% Ampliar graficas
 % --- Executes on button press in entrada_L_open.
 function entrada_L_open_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_L_open (see GCBO)
@@ -401,7 +390,7 @@ function comparar_Callback(hObject, eventdata, handles)
 z_comparar
 
 
-%% Controles de parámetros
+%% Controles de parametros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)

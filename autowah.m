@@ -7,8 +7,8 @@ function varargout = autowah(varargin)
 %
 %      La variable devuelta "y" se corresponde con un array
 %      multidimensional formado por las siguientes señales
-%       y(:,1) señal canal L
-%       y(:,2) señal canal R
+%       y(:,1) senal canal L
+%       y(:,2) senal canal R
 %       y(:,3) espectro de senal canal L
 %       y(:,4) espectro de senal canal R
 %       y(:,5) espectro de senal media entre ambos canales
@@ -334,7 +334,7 @@ guidata(hObject, handles);
 function autowah_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripcion del efecto
 set(handles.titulo,'String','Autowah')
-set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Puesto que es autom�tico, la señal que controla la frecuencia central (LFO) es una señal triangular. La frecuencia media (inicial) se ha establecido en 8000Hz'})
+set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Para un autowah, configure un LFO para la frecuencia central del filtro.'})
 % Inicializacion de parametros
 handles.BW = 100;
 handles.limites(1).Min = 10;

@@ -229,7 +229,7 @@ end
 function delay_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripción del efecto
 set(handles.titulo,'String','Delay')
-set(handles.des,'String','Rango de efectos basados en conjunto de ecualizadores variables con algún parámetro variable en el tiempo.')
+set(handles.des,'String','Mezcla el audio original junto con el mismo audio retardado. Ambos audios coinciden en volumen cuando el nivel de delay es "1".')
 % Inicializacion de parametros
 handles.fs = 44100;
 handles.d = 0.3;

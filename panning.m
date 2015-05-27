@@ -286,10 +286,10 @@ end
 %% Controles de interfaz
 % --- Executes just before panning is made visible.
 function panning_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripci�n del efecto
+% Descripcion del efecto
 set(handles.titulo,'String','Panning')
-set(handles.des,'String','Produce la ilusión al oyente de una dirección determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales estéreo y dos fuentes separadas suficientemente rodeando al oyente.')
-% Inicializaci�n de par�metros
+set(handles.des,'String','Produce la ilusion al oyente de una direccion determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales estéreo y dos fuentes separadas suficientemente rodeando al oyente.')
+% Inicializacion de parametros
 handles.az_virtual = 0;
 handles.limites(1).Min = -60;
 handles.limites(1).Max = 60;

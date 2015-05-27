@@ -6,12 +6,12 @@ function varargout = distortion(varargin)
 %                   y = distortion;
 %
 %      La variable devuelta "y" se corresponde con un array
-%      multidimensional formado por las siguientes señales
+%      multidimensional formado por las siguientes senales
 %       y(:,1) señal canal L
 %       y(:,2) señal canal R
-%       y(:,3) espectro de señal canal L
-%       y(:,4) espectro de señal canal R
-%       y(:,5) espectro de señal media entre ambos canales
+%       y(:,3) espectro de senal canal L
+%       y(:,4) espectro de senal canal R
+%       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 
@@ -71,7 +71,7 @@ end
 z_interfaz_salida
 
 
-%% Parámetros
+%% Parametros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
@@ -203,10 +203,10 @@ end
 %% Controles de interfaz
 % --- Executes just before distortion is made visible.
 function distortion_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripción del efecto
-set(handles.titulo,'String','Distortion')
-set(handles.des,'String','Filtro no lineal')
-% Inicialización de parámetros
+% Descripcion del efecto
+set(handles.titulo,'String','Efecto de distortion')
+set(handles.des,'String','El efecto no lineal empleado sigue la funcion:    y(n) = signo(x)� (e^(l)/(e^(l)-1))� (1-e^(-l�|x|)     l = 1/(1-k)')
+% Inicializacion de parametros
 handles.k = 0.7;
 handles.limites(1).Min = 0;
 handles.limites(1).Max = 1;
@@ -273,7 +273,7 @@ function play_entrada_Callback(hObject, eventdata, handles)
 resume(handles.x_audio)
 
 
-%% Controles de reproducción
+%% Controles de reproduccion
 % --- Executes on button press in stop_entrada.
 function stop_entrada_Callback(hObject, eventdata, handles)
 % hObject    handle to stop_entrada (see GCBO)
@@ -633,5 +633,5 @@ else                                                    % Sin LFO
     plot(handles.graf,x,y)
 end
 set(handles.graf,'XLim',[-1 1],'YLim',[-1 1],'XGrid','on','YGrid','on')
-handles.graf.XLabel.String = 'Señal de entrada x';
-handles.graf.Title.String = 'Señal de salida y(x)';
+handles.graf.XLabel.String = 'Entrada x';
+handles.graf.Title.String = 'Salida y(x)';

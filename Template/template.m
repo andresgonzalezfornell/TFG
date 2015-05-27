@@ -60,29 +60,33 @@ clear handles.y
 % <Efecto>
 % Implementar efecto
 %
-% El control de los parámetros con LFO se puede realizar de la siguiente manera:
-%   if handles.LFO_1.checkbox
-%       res.LFO = 10;   % Cada cuantas muestras de señal actualizar el LFO
-%       res.y = res.LFO*floor(length(handles.x(:,1))/handles.LFO_N);
-%       for n = 1:res.LFO:handles.LFO_N
-%           parametro1((n-1)*res.y+1:n*res.y) = handles.LFO_1.x(n);
-%       end
-%   else
-%   end
-
+% El control de los parametros con LFO se puede realizar de la siguiente manera:
+%if handles.LFO_1.checkbox                               % Con LFO
+%    LFO_res = round(handles.fs/10);
+%    wb = waitbar(0,'Processing...');                        % Dialogo de espera
+%    for n = 0:LFO_res:handles.LFO_N-LFO_res
+%        parametro1 = handles.LFO_1.x(n+1);                                             % Toma la muestra del parámetro
+%        handles.y(n+1:n+LFO_res,:) = parametro1 * handles.x(n+1:n+LFO_res,:);          % Realiza el efecto
+%        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
+%    end
+%    handles.y(n+LFO_res+1:length(handles.x(:,1)),:) = parametro1 * handles.x(n+LFO_res+1:length(handles.x(:,1)),:);    % Realiza el efecto en las muestras sobrantes
+%else                                                    % Sin 
+%    handles.y = parametro1 * handles.x;                                                % Realiza el efecto
+%end
+%
 z_interfaz_salida
 
 
-%% Parámetros
+%% Parametros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %
-% Obtención del valor
+% Obtencion del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parámetro al controlador numérico
+% Paso del parametro al controlador numérico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -98,10 +102,10 @@ function par_1_value_Callback(hObject, eventdata, handles)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
     % Obtención del valor
     %   handles.parametro = str2double(get(hObject,'String'));
-    % Paso del parámetro al slider
+    % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
-    % Vuelta al último valor
+    % Vuelta al ultimo valor
     %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
@@ -129,7 +133,7 @@ function par_2_Callback(hObject, eventdata, handles)
 %
 % Obtención del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parámetro al controlador numérico
+% Paso del parametro al controlador numérico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -144,7 +148,7 @@ function par_2_value_Callback(hObject, eventdata, handles)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
     % Obtención del valor
     %   handles.parametro = str2double(get(hObject,'String'));
-    % Paso del parámetro al slider
+    % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
     % Vuelta al último valor
@@ -175,7 +179,7 @@ function par_3_Callback(hObject, eventdata, handles)
 %
 % Obtención del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parámetro al controlador numérico
+% Paso del parametro al controlador numérico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -190,7 +194,7 @@ function par_3_value_Callback(hObject, eventdata, handles)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
     % Obtención del valor
     %   handles.parametro = str2double(get(hObject,'String'));
-    % Paso del parámetro al slider
+    % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
     % Vuelta al último valor
@@ -221,7 +225,7 @@ function par_4_Callback(hObject, eventdata, handles)
 %
 % Obtención del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parámetro al controlador numérico
+% Paso del parametro al controlador numérico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -237,7 +241,7 @@ function par_4_value_Callback(hObject, eventdata, handles)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
     % Obtención del valor
     %   handles.parametro = str2double(get(hObject,'String'));
-    % Paso del parámetro al slider
+    % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
     % Vuelta al último valor
