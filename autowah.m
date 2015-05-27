@@ -40,7 +40,7 @@ function aplicar_Callback(hObject, eventdata, handles)
 % hObject    handle to aplicar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+ tic
 % Limpieza de salida
 z_interfaz_limpieza
 
@@ -53,7 +53,7 @@ if f_1 <= 0
 end
 f_2 = handles.f_0+BW/2;
 mix = handles.mix;
-filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+filtro = designfilt('bandpassfir','FilterOrder',2,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
 wah = filter(filtro,x);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
     LFO_res = round(handles.fs/10);
@@ -74,7 +74,7 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   
             mix(n+1:n+LFO_res) = handles.LFO_3.x(n+1);
         end
         if handles.LFO_1.checkbox || handles.LFO_2.checkbox
-            filtro = designfilt('bandpassfir','FilterOrder',10,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
+            filtro = designfilt('bandpassfir','FilterOrder',6,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
             %fvtool(filtro)
             wah(n+1:n+LFO_res,:) = filter(filtro,x(n+1:n+LFO_res,:));
         end
@@ -85,7 +85,7 @@ end
 handles.y = (1-mix).*x + mix.*wah;
 
 z_interfaz_salida
-
+toc
 
 %% Parámetros
 % --- Executes on slider movement.

@@ -56,7 +56,7 @@ handles.limites = varargin{2};
 handles.fs = varargin{3};
 % Inicializacion de parametros
 handles.LFO.frecuencia = 2;
-set(handles.title,'String',strcat('Aplicar LFO al par�metro ',num2str(handles.par)))
+set(handles.title,'String',strcat('Aplicar LFO a parametro ',num2str(handles.par)))
 set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
 set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',0.1,'Max',10)
 set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
