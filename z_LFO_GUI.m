@@ -55,18 +55,32 @@ handles.par = varargin{1};
 handles.limites = varargin{2};
 handles.fs = varargin{3};
 % Inicializacion de parametros
-handles.LFO.frecuencia = 2;
-set(handles.title,'String',strcat('Aplicar LFO a parametro ',num2str(handles.par)))
-set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
-set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',0.1,'Max',10)
-set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
+if handles.par == 0
+    handles.LFO.frecuencia = 440;
+    handles.LFO.frecuencia_Min = 20;
+    handles.LFO.frecuencia_Max = 20000;
+    handles.LFO.offset = 0;
+    set(handles.title,'String','Generador de audio mediante el LFO')
+    set(handles.offset,'Enable','Off')
+    set(handles.offset_value,'Enable','Off')
+    set(handles.externa,'Enable','Off')
+else
+    handles.LFO.frecuencia = 2;
+    handles.LFO.frecuencia_Min = 0.1;
+    handles.LFO.frecuencia_Max = 10;
+    set(handles.title,'String',strcat('Aplicar LFO a parametro ',num2str(handles.par)))
+    handles.LFO.offset = handles.delta+handles.limites.Min;
+    set(handles.offset,'Enable','On','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
+    set(handles.offset_value,'Enable','On','String',handles.LFO.offset)
+end
+set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
+set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',handles.LFO.frecuencia_Min,'Max',handles.LFO.frecuencia_Max)
+set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
 handles.LFO.amplitud = handles.delta/2;
 set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.delta/100,'Max',handles.delta)
 set(handles.amplitud_value,'String',handles.LFO.amplitud)
-handles.LFO.offset = handles.delta+handles.limites.Min;
-set(handles.offset,'Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
-set(handles.offset_value,'String',handles.LFO.offset)
+
 handles.LFO.submit = 0;
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
@@ -132,7 +146,7 @@ function frecuencia_value_Callback(hObject, eventdata, handles)
 % hObject    handle to frecuencia_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=0.1 & str2double(get(hObject,'String'))<=10
+if str2double(get(hObject,'String'))>=handles.LFO.frecuencia_Min & str2double(get(hObject,'String'))<=handles.LFO.frecuencia_Max
     handles.LFO.frecuencia = str2double(get(hObject,'String'));
     set(handles.frecuencia,'Value',handles.LFO.frecuencia)
 else
@@ -358,3 +372,14 @@ z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of cuadrada
+
+
+% --- Executes on button press in externa.
+function externa_Callback(hObject, eventdata, handles)
+% hObject    handle to cuadrada (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of externa

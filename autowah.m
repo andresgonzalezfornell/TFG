@@ -14,6 +14,7 @@ function varargout = autowah(varargin)
 %       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
+
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -87,7 +88,7 @@ handles.y = (1-mix).*x + mix.*wah;
 z_interfaz_salida
 toc
 
-%% Parámetros
+%% Parametros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
@@ -385,8 +386,30 @@ z_interfaz_entrada_lista_Callback
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
 
+% --- Executes on button press in entrada_oscilador.
+function entrada_oscilador_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_oscilador (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,0);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of entrada_oscilador
+
+
+% --- Executes on selection change in entrada_lista.
+function entrada_length_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_lista (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Interfaz
+z_entrada_length
+% Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from entrada_lista
+
+
 % --- Outputs from this function are returned to the command line.
-function varargout = autowah_OutputFcn(hObject, eventdata, handles) 
+function varargout = autowah_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -457,7 +480,7 @@ function pause_salida_Callback(hObject, eventdata, handles)
 pause(handles.y_audio)
 
 
-%% Ampliar gráficas
+%% Ampliar graficas
 % --- Executes on button press in entrada_L_open.
 function entrada_L_open_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_L_open (see GCBO)
@@ -522,7 +545,7 @@ function comparar_Callback(hObject, eventdata, handles)
 z_comparar
 
 
-%% Controles de parámetros
+%% Controles de parametros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
@@ -716,13 +739,13 @@ if handles.LFO_1.checkbox && handles.LFO_2.checkbox     % LFO 1 y 2
     f_0 = handles.LFO_2.offset;
     % BW medio
     BW = handles.LFO_1.offset;
-    % f_1 m�nimo
+    % f_1 minimo
     f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
-    % f_2 m�ximo
+    % f_2 maximo
     f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
-    % BW m�nimo
+    % BW minimo
     BW_Min = BW-handles.LFO_1.amplitud;
-    % BW m�ximo
+    % BW maximo
     BW_Max = BW+handles.LFO_1.amplitud;
     set(line([f_1_Min f_1_Min],[0 2],'LineStyle',':'),'parent',handles.graf)
     set(line([f_2_Max f_2_Max],[0 2],'LineStyle',':'),'parent',handles.graf)
@@ -735,12 +758,12 @@ if handles.LFO_1.checkbox && handles.LFO_2.checkbox     % LFO 1 y 2
 elseif handles.LFO_1.checkbox                           % LFO 1
     % BW medio
     BW = handles.LFO_1.offset;
-    % BW m�nimo
+    % BW minimo
     BW_Min = BW-handles.LFO_1.amplitud;
     set(line([f_0-BW_Min/2 f_0+BW_Min/2],[1.2 1.2]),'parent',handles.graf)
     set(line([f_0-BW_Min/2 f_0-BW_Min/2],[1.18 1.2]),'parent',handles.graf)
     set(line([f_0+BW_Min/2 f_0+BW_Min/2],[1.18 1.2]),'parent',handles.graf)
-    % BW m�ximo
+    % BW maximo
     BW_Max = BW+handles.LFO_1.amplitud;
     set(line([f_0-BW_Max/2 f_0+BW_Max/2],[1.1 1.1]),'parent',handles.graf)
     set(line([f_0-BW_Max/2 f_0-BW_Max/2],[1.08 1.1]),'parent',handles.graf)
@@ -748,10 +771,10 @@ elseif handles.LFO_1.checkbox                           % LFO 1
 elseif handles.LFO_2.checkbox                           % LFO 2
     % f_0 medio
     f_0 = handles.LFO_2.offset;
-    % f_1 m�nimo
+    % f_1 minimo
     f_1_Min = round(f_0-handles.LFO_2.amplitud-BW/2);
     set(line([f_1_Min f_1_Min],[0 2],'LineStyle','--'),'parent',handles.graf)
-    % f_2 m�ximo
+    % f_2 maximo
     f_2_Max = round(f_0+handles.LFO_2.amplitud+BW/2);
     set(line([f_2_Max f_2_Max],[0 2],'LineStyle','--'),'parent',handles.graf)
 end

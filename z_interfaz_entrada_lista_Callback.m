@@ -1,6 +1,6 @@
-%% Acciones de navegación entre directorios
+%% Acciones de navegacion entre directorios
 
-% Navegación de directorios
+% Navegacion de directorios
 get(handles.figure1,'SelectionType');
 % If double click
 if strcmp(get(handles.figure1,'SelectionType'),'open')
@@ -36,26 +36,30 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                 % Open FIG-file with guide command.
                 guide (filename)
             otherwise
+                wb = waitbar(0,'Cargando audio...');
+                set(handles.play_entrada,'Enable','Off')
+                set(handles.stop_entrada,'Enable','Off')
+                set(handles.pause_entrada,'Enable','Off')
                 try
                     % Use open for other file types.
                     b = strfind(filename,'.');
                     format = filename(b(end)+1:end);
+                    waitbar(1/4,wb,'Cargando audio...');
                     % Si el formato es wav
                     if strcmp(format,'wav')
                         file = importdata(strcat(handles.path,'/',filename));
                     % Si el formato es mp3
                     elseif strcmp(format,'mp3')
-                        file.data = audioread(strcat(handles.path,'/',filename)); 
+                        file.data = audioread(strcat(handles.path,'/',filename));
                         file.fs = 44100;
                     end
+                    waitbar(2/4,wb,'Cargando audio...');
                     handles.x = file.data;
                     handles.fs = file.fs;
-                    handles.x_audio = audioplayer(file.data,file.fs);
-                    n = 1:length(handles.x(:,1));
-                    t = n/file.fs;
-                    f = 0+file.fs/length(n):file.fs/length(n):file.fs/2;
-                    
+                    z_entrada
+                    waitbar(3/4,wb,'Cargando audio...');
                     % LFO
+                    handles.LFO_0.checkbox = 0;
                     handles.LFO_1.checkbox = 0;
                     handles.LFO_2.checkbox = 0;
                     handles.LFO_3.checkbox = 0;
@@ -80,27 +84,17 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     set(handles.par_4_LFO,'Enable','on','Value',0)
                     set(handles.par_5_LFO,'Enable','on','Value',0)
                     set(handles.par_6_LFO,'Enable','on','Value',0)
-                    for i = 1:6
-                        handles.limites(i).longitud = length(handles.x(:,1))/handles.fs;
-                    end
                     
-                    % Mono
-                    if length(handles.x(1,:)) == 1
-                        x(:,2) = 0;
+                    waitbar(4/4,wb,'Cargando audio...');
+                    set(handles.entrada_archivo,'String',filename)
+                    set(handles.entrada_length,'String',length(handles.x(:,1))/handles.fs)
+                    % Dialogo de espera
+                    if exist('wb')
+                        close(wb)
                     end
-                    X_L = fft(handles.x(:,1))/length(n);
-                    X_R = fft(handles.x(:,2))/length(n);
-                    handles.X_L = X_L(1:length(n)/2);
-                    handles.X_R = X_R(1:length(n)/2);
-                    %handles.X = (handles.X_L+handles.X_R)/2;
-                    cla(handles.entrada_espectro)
-                    hold(handles.entrada_espectro,'on')
-                    loglog(handles.entrada_espectro,f,abs(handles.X_R),'red')
-                    loglog(handles.entrada_espectro,f,abs(handles.X_L),'green')
-                    set(handles.entrada_espectro,'XLim',[20 20000],'XGrid','on')
-                    hold(handles.entrada_espectro,'off')
-                    xlabel(handles.entrada_espectro,'Frecuencia [Hz]')
-                    set(handles.entrada_archivo,'String',filename);
+                    set(handles.play_entrada,'Enable','On')
+                    set(handles.stop_entrada,'Enable','On')
+                    set(handles.pause_entrada,'Enable','On')
                 catch ex
                     errordlg(...
                       ex.getReport('basic'),'File Type Error','modal')
@@ -108,6 +102,7 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
         end
     end
 end
+
 
 % Update handles structure
 guidata(hObject, handles);

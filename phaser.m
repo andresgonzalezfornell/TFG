@@ -366,6 +366,28 @@ z_interfaz_entrada_lista_Callback
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
 
+% --- Executes on button press in entrada_oscilador.
+function entrada_oscilador_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_oscilador (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,0);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of entrada_oscilador
+
+
+% --- Executes on selection change in entrada_lista.
+function entrada_length_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_lista (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Interfaz
+z_entrada_length
+% Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from entrada_lista
+
+
 % --- Outputs from this function are returned to the command line.
 function varargout = phaser_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);

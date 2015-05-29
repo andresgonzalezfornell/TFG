@@ -47,7 +47,11 @@ if isfield(handles,'limites')
     end
 end
 
+% Longitud de oscilador de entrada
+set(handles.entrada_length,'String',2)
+
 % LFO
+handles.LFO_0.checkbox = 0;
 handles.LFO_1.checkbox = 0;
 handles.LFO_2.checkbox = 0;
 handles.LFO_3.checkbox = 0;
@@ -75,5 +79,5 @@ set(handles.directorio,'String',handles.path)
 % Update handles structure
 guidata(hObject, handles);
 
-% Espera a la aplicación del filtro para devolver la salida de la interfaz
+% Espera a la aplicacion del filtro para devolver la salida de la interfaz
 uiwait

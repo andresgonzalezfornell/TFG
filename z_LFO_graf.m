@@ -1,4 +1,4 @@
-%% Creación y graficacion de las señales de LFO
+%% Creacion y graficacion de las senales de LFO
 
 % Limpieza de variables
 if isfield(handles.LFO,'n')
@@ -28,7 +28,7 @@ switch tipo.String
             m = -m;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
-    case '(DA) Diente sierra ascendente'
+    case '(DA) Diente sierra asc'
         n = 1:floor(L/2);
         i = 1;
         x(1:floor(L/2)) = 2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
@@ -38,7 +38,7 @@ switch tipo.String
             i = i+2;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
-    case '(DD) Diente sierra descendente'
+    case '(DD) Diente sierra desc'
         n = 1:floor(L/2);
         i = 1;
         x(1:floor(L/2)) = -2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
@@ -57,6 +57,27 @@ switch tipo.String
             i = i+1;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
+    case 'Externa'
+        [filename path] = uigetfile({'Audios/*'}, 'Select File');
+        % Use open for other file types.
+        b = strfind(filename,'.');
+        format = filename(b(end)+1:end);
+        % Si el formato es wav
+        if strcmp(format,'wav')
+            file = importdata(strcat(path,'/',filename));
+        % Si el formato es mp3
+        elseif strcmp(format,'mp3')
+            file.data = audioread(strcat(path,'/',filename)); 
+            file.fs = 44100;
+        end
+        if length(file.data) < handles.limites.longitud
+            for i = 1:length(handles.LFO.n)\length(file.data)
+                handles.LFO.x((i-1)*length(file.data)+1:i*length(file.data)) = file.data;
+            end
+            handles.LFO.x(i*length(file.data)+1:length(handles.LFO.n)) = file.data;
+        else
+            handles.LFO.x = file.data(1:length(handles.LFO.n),1);
+        end
 end
 plot(handles.graf,handles.LFO.n,handles.LFO.x)
 xlabel(handles.graf,'Tiempo [s]')

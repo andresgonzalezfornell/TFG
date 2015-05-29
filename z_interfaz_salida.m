@@ -1,8 +1,8 @@
-%% Reproducción y representación de la salida
+%% Reproduccion y representacion de la salida
 
-% Generación de reproducción
+% Generacion de reproduccion
 handles.y_audio = audioplayer(handles.y,handles.fs);
-% Gráficos
+% Graficos
 cla(handles.salida_L)
 cla(handles.salida_R)
 cla(handles.salida_espectro)
@@ -26,10 +26,13 @@ hold(handles.salida_espectro,'off')
 xlabel(handles.salida_L,'Tiempo [s] (canal L)')
 xlabel(handles.salida_R,'Tiempo [s] (canal R)')
 xlabel(handles.salida_espectro,'Frecuencia [Hz]')
-% Diálogo de espera
+% Dialogo de espera
 if exist('wb')
     close(wb)
 end
+set(handles.play_salida,'Enable','On')
+set(handles.stop_salida,'Enable','On')
+set(handles.pause_salida,'Enable','On')
 % Update handles structure
 guidata(hObject, handles);
 

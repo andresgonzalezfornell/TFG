@@ -7,8 +7,8 @@ function varargout = overdrive(varargin)
 %
 %      La variable devuelta "y" se corresponde con un array
 %      multidimensional formado por las siguientes señales
-%       y(:,1) señal canal L
-%       y(:,2) señal canal R
+%       y(:,1) senal canal L
+%       y(:,2) senal canal R
 %       y(:,3) espectro de senal canal L
 %       y(:,4) espectro de senal canal R
 %       y(:,5) espectro de senal media entre ambos canales
@@ -228,7 +228,7 @@ handles.limites(1).Min = 0;
 handles.limites(1).Max = 1;
 set(handles.par_1,'Visible','on','Value',handles.k,'Min',handles.limites(1).Min,'Max',handles.limites(1).Max)
 set(handles.par_1_value,'Visible','on','String',handles.k)
-set(handles.par_1_title,'Visible','on','String','Umbral de no linealidad')
+set(handles.par_1_title,'Visible','on','String','Nivel de overdrive')
 set(handles.par_1_LFO,'Visible','on')
 % LFO (necesario para el grafico del efecto)
 handles.LFO_1.checkbox = 0;
@@ -250,6 +250,28 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Interfaz
 z_interfaz_entrada_lista_Callback
+% Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from entrada_lista
+
+
+% --- Executes on button press in entrada_oscilador.
+function entrada_oscilador_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_oscilador (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,0);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of entrada_oscilador
+
+
+% --- Executes on selection change in entrada_lista.
+function entrada_length_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_lista (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Interfaz
+z_entrada_length
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 

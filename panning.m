@@ -7,10 +7,10 @@ function varargout = panning(varargin)
 %
 %      La variable devuelta "y" se corresponde con un array
 %      multidimensional formado por las siguientes señales
-%       y(:,1) señal canal L
-%       y(:,2) señal canal R
-%       y(:,3) espectro de señal canal L
-%       y(:,4) espectro de señal canal R
+%       y(:,1) senal canal L
+%       y(:,2) senal canal R
+%       y(:,3) espectro de senal canal L
+%       y(:,4) espectro de senal canal R
 %       y(:,5) espectro de señal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
@@ -85,7 +85,7 @@ end
 z_interfaz_salida
 
 
-%% Parámetros
+%% Parametros
 % --- Executes on slider movement.
 function par_1_Callback(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)
@@ -334,11 +334,30 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Interfaz
 z_interfaz_entrada_lista_Callback
+% Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
 
+% --- Executes on button press in entrada_oscilador.
+function entrada_oscilador_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_oscilador (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,0);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of entrada_oscilador
+
+
+% --- Executes on selection change in entrada_lista.
+function entrada_length_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_lista (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Interfaz
+z_entrada_length
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -349,7 +368,6 @@ function varargout = panning_OutputFcn(hObject, eventdata, handles)
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Get default command line output from handles structure
 z_interfaz_OutputFcn
 
@@ -359,7 +377,6 @@ function entrada_lista_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
@@ -375,7 +392,7 @@ function play_entrada_Callback(hObject, eventdata, handles)
 resume(handles.x_audio)
 
 
-%% Controles de reproducción
+%% Controles de reproduccion
 % --- Executes on button press in stop_entrada.
 function stop_entrada_Callback(hObject, eventdata, handles)
 % hObject    handle to stop_entrada (see GCBO)

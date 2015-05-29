@@ -1,4 +1,4 @@
-%% Acciones de devolución de la salida de la función de la interfaz
+%% Acciones de devolucion de la salida de la funcion de la interfaz
 
 if isfield(handles,'y')
     y(:,1) = handles.y(:,1);

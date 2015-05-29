@@ -7,11 +7,11 @@ function varargout = delay(varargin)
 %
 %      La variable devuelta "y" se corresponde con un array
 %      multidimensional formado por las siguientes señales
-%       y(:,1) señal canal L
-%       y(:,2) señal canal R
-%       y(:,3) espectro de señal canal L
-%       y(:,4) espectro de señal canal R
-%       y(:,5) espectro de señal media entre ambos canales
+%       y(:,1) senal canal L
+%       y(:,2) senal canal R
+%       y(:,3) espectro de senal canal L
+%       y(:,4) espectro de senal canal R
+%       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 
@@ -51,18 +51,41 @@ original(1:L,:) = handles.x;
 original(L+1:L+handles.M,:) = zeros(handles.M,2);
 delay(1:handles.M,:) = zeros(handles.M,2);
 delay(handles.M+1:L+handles.M,:) = handles.x;
-if handles.LFO_2.checkbox                               % Con LFO
+if handles.LFO_1.checkbox || handles.LFO_2.checkbox        % Con LFO
     d = delay;
     LFO_res = round(handles.fs/100);
     wb = waitbar(0,'Processing...');                       % Dialogo de espera
     for n = 0:LFO_res:handles.LFO_N-LFO_res
-        d(n+1:n+LFO_res,:) = handles.LFO_2.x(n+1);
+        if handles.LFO_1.checkbox
+            M = round(handles.LFO_1.x(n+1)*handles.fs);
+            if n-M <= 0
+                delay(n+1:M,:) = zeros(M-n,2);
+                delay(M+1:n+LFO_res,:) = original(1:n+LFO_res-M,:);
+            else
+                delay(n+1:n+LFO_res,:) = original(n+1-M:n+LFO_res-M,:);
+            end
+        end
+        if handles.LFO_2.checkbox
+            d(n+1:n+LFO_res,:) = handles.LFO_2.x(n+1);
+        end
         waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
     end
-    d(n+LFO_res+1:length(handles.x(:,1)),:) = handles.LFO_2.x(n+1);
-    handles.y = (original + d.*delay)./(1+(handles.LFO_2.amplitud+handles.LFO_2.offset)/2);     % Valor cuadrático medio en el peor caso (cuadrada)
+    if handles.LFO_1.checkbox
+        if n+LFO_res-M <= 0
+            delay(n+LFO_res+1:M,:) = zeros(M-n,2);
+            delay(M+1:length(handles.x(:,1)),:) = original(1:length(handles.x(:,1))-M,:);
+        else
+            delay(n+LFO_res+1:length(handles.x(:,1)),:) = original(n+LFO_res+1:length(handles.x(:,1)),:);
+        end
+        rms = handles.d;
+    end
+    if handles.LFO_2.checkbox
+        d(n+LFO_res+1:length(handles.x(:,1)),:) = handles.LFO_2.x(n+1);
+        rms = (handles.LFO_2.amplitud+handles.LFO_2.offset)/2;      % Valor cuadratico medio en el peor caso (cuadrada)
+    end
+    handles.y = (1-d).*original + d.*delay;
 else                                                    % Sin LFO
-    handles.y = (original + handles.d.*delay)./(1+handles.d);
+    handles.y = (1-handles.d).*original + handles.d.*delay;
 end
 
 z_interfaz_salida
@@ -232,13 +255,14 @@ set(handles.titulo,'String','Delay')
 set(handles.des,'String','Mezcla el audio original junto con el mismo audio retardado. Ambos audios coinciden en volumen cuando el nivel de delay es "1".')
 % Inicializacion de parametros
 handles.fs = 44100;
-handles.d = 0.3;
 handles.limites(1).Min = 0;
 handles.limites(1).Max = 2;
-handles.M = 0.5*handles.fs;
-set(handles.par_1,'Visible','on','Value',round(handles.M/handles.fs))
-set(handles.par_1_value,'Visible','on','String',round(handles.M/handles.fs))
+handles.M = round(1*handles.fs);
+set(handles.par_1,'Visible','on','Value',handles.M/handles.fs)
+set(handles.par_1_value,'Visible','on','String',handles.M/handles.fs)
 set(handles.par_1_title,'Visible','on','String','Tiempo de delay [s]')
+set(handles.par_1_LFO,'Visible','on')
+handles.d = 0.3;
 handles.limites(2).Min = 0;
 handles.limites(2).Max = 1;
 set(handles.par_2,'Visible','on','Value',handles.d)
@@ -255,11 +279,30 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Interfaz
 z_interfaz_entrada_lista_Callback
+% Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
 
+% --- Executes on button press in entrada_oscilador.
+function entrada_oscilador_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_oscilador (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,0);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of entrada_oscilador
+
+
+% --- Executes on selection change in entrada_lista.
+function entrada_length_Callback(hObject, eventdata, handles)
+% hObject    handle to entrada_lista (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Interfaz
+z_entrada_length
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -270,7 +313,6 @@ function varargout = delay_OutputFcn(hObject, eventdata, handles)
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 % Get default command line output from handles structure
 z_interfaz_OutputFcn
 
@@ -280,7 +322,6 @@ function entrada_lista_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to entrada_lista (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
-
 % Hint: listbox controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
