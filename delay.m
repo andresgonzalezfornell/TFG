@@ -48,19 +48,24 @@ z_interfaz_limpieza
 % Delay
 L = length(handles.x(:,1));
 original(1:L,:) = handles.x;
-original(L+1:L+handles.M,:) = zeros(handles.M,2);
 delay(1:handles.M,:) = zeros(handles.M,2);
-delay(handles.M+1:L+handles.M,:) = handles.x;
+delay(handles.M+1:L,:) = original(1:L-handles.M,:);
 if handles.LFO_1.checkbox || handles.LFO_2.checkbox        % Con LFO
-    d = delay;
-    LFO_res = round(handles.fs/100);
-    wb = waitbar(0,'Processing...');                       % Dialogo de espera
-    for n = 0:LFO_res:handles.LFO_N-LFO_res
+    M = handles.M;
+    d(1:L,1) = handles.d;
+    d(1:L,2) = handles.d;
+    LFO_res = 100;
+    wb = waitbar(0,'Processing...','Name','Delay');                  % Dialogo de espera
+    for n = 0:LFO_res:L-LFO_res
         if handles.LFO_1.checkbox
             M = round(handles.LFO_1.x(n+1)*handles.fs);
             if n-M <= 0
-                delay(n+1:M,:) = zeros(M-n,2);
-                delay(M+1:n+LFO_res,:) = original(1:n+LFO_res-M,:);
+                if M > n+LFO_res
+                    delay(n+1:n+LFO_res,:) = zeros(LFO_res,2);
+                else
+                    delay(n+1:M,:) = zeros(M-n,2);        
+                    delay(M+1:n+LFO_res,:) = original(1:n+LFO_res-M,:);
+                end
             else
                 delay(n+1:n+LFO_res,:) = original(n+1-M:n+LFO_res-M,:);
             end
@@ -68,26 +73,23 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox        % Con LFO
         if handles.LFO_2.checkbox
             d(n+1:n+LFO_res,:) = handles.LFO_2.x(n+1);
         end
-        waitbar(n/handles.LFO_N,wb,'Processing...');       % Dialogo de espera
+        waitbar(n/L,wb,'Processing...');       % Dialogo de espera
     end
     if handles.LFO_1.checkbox
         if n+LFO_res-M <= 0
-            delay(n+LFO_res+1:M,:) = zeros(M-n,2);
-            delay(M+1:length(handles.x(:,1)),:) = original(1:length(handles.x(:,1))-M,:);
+            delay(n+LFO_res+1:M,:) = zeros(M-(n+LFO_res),2);
+            delay(M+1:L,:) = original(1:L-M,:);
         else
-            delay(n+LFO_res+1:length(handles.x(:,1)),:) = original(n+LFO_res+1:length(handles.x(:,1)),:);
+            delay(n+LFO_res+1:L,:) = original(n+LFO_res-M+1:L-M,:);
         end
-        rms = handles.d;
     end
     if handles.LFO_2.checkbox
-        d(n+LFO_res+1:length(handles.x(:,1)),:) = handles.LFO_2.x(n+1);
-        rms = (handles.LFO_2.amplitud+handles.LFO_2.offset)/2;      % Valor cuadratico medio en el peor caso (cuadrada)
+        d(n+LFO_res+1:L+M,:) = handles.LFO_2.x(n+1);
     end
     handles.y = (1-d).*original + d.*delay;
 else                                                    % Sin LFO
     handles.y = (1-handles.d).*original + handles.d.*delay;
 end
-
 z_interfaz_salida
 
 

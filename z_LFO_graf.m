@@ -16,6 +16,12 @@ handles.LFO.n = Ts:Ts:handles.limites.longitud;
 switch tipo.String
     case '(S) Sinusoidal'
         handles.LFO.x = handles.LFO.amplitud*sin(2*pi*handles.LFO.frecuencia*handles.LFO.n) + handles.LFO.offset;
+        set(handles.frecuencia,'Enable','On')
+        set(handles.frecuencia_value,'Enable','On')
+        set(handles.amplitud,'Enable','On')
+        set(handles.amplitud_value,'Enable','On')
+        set(handles.offset,'Enable','On')
+        set(handles.offset_value,'Enable','On')
     case '(T) Triangular'
         n = 1:floor(L/4);
         i = 1;
@@ -28,6 +34,12 @@ switch tipo.String
             m = -m;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
+        set(handles.frecuencia,'Enable','On')
+        set(handles.frecuencia_value,'Enable','On')
+        set(handles.amplitud,'Enable','On')
+        set(handles.amplitud_value,'Enable','On')
+        set(handles.offset,'Enable','On')
+        set(handles.offset_value,'Enable','On')
     case '(DA) Diente sierra asc'
         n = 1:floor(L/2);
         i = 1;
@@ -38,6 +50,12 @@ switch tipo.String
             i = i+2;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
+        set(handles.frecuencia,'Enable','On')
+        set(handles.frecuencia_value,'Enable','On')
+        set(handles.amplitud,'Enable','On')
+        set(handles.amplitud_value,'Enable','On')
+        set(handles.offset,'Enable','On')
+        set(handles.offset_value,'Enable','On')
     case '(DD) Diente sierra desc'
         n = 1:floor(L/2);
         i = 1;
@@ -48,6 +66,12 @@ switch tipo.String
             i = i+2;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
+        set(handles.frecuencia,'Enable','On')
+        set(handles.frecuencia_value,'Enable','On')
+        set(handles.amplitud,'Enable','On')
+        set(handles.amplitud_value,'Enable','On')
+        set(handles.offset,'Enable','On')
+        set(handles.offset_value,'Enable','On')
     case '(C) Cuadrada'
         n = 1:floor(L/2);
         i = 1;
@@ -57,6 +81,12 @@ switch tipo.String
             i = i+1;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
+        set(handles.frecuencia,'Enable','On')
+        set(handles.frecuencia_value,'Enable','On')
+        set(handles.amplitud,'Enable','On')
+        set(handles.amplitud_value,'Enable','On')
+        set(handles.offset,'Enable','On')
+        set(handles.offset_value,'Enable','On')
     case 'Externa'
         [filename path] = uigetfile({'Audios/*'}, 'Select File');
         % Use open for other file types.
@@ -70,14 +100,21 @@ switch tipo.String
             file.data = audioread(strcat(path,'/',filename)); 
             file.fs = 44100;
         end
-        if length(file.data) < handles.limites.longitud
-            for i = 1:length(handles.LFO.n)\length(file.data)
-                handles.LFO.x((i-1)*length(file.data)+1:i*length(file.data)) = file.data;
+        if length(file.data(:,1)) < length(handles.LFO.n)
+            for i = 1:floor(length(handles.LFO.n)/length(file.data(:,1)))
+                handles.LFO.x((i-1)*length(file.data)+1:i*length(file.data)) = file.data(:,1);
             end
-            handles.LFO.x(i*length(file.data)+1:length(handles.LFO.n)) = file.data;
+            handles.LFO.x(i*length(file.data)+1:length(handles.LFO.n)) = file.data(1:length(handles.LFO.n)-i*length(file.data),1);
         else
             handles.LFO.x = file.data(1:length(handles.LFO.n),1);
         end
+        handles.LFO.x = (handles.LFO.x+1)*(handles.limites.Max-handles.limites.Min)/2+handles.limites.Min;
+        set(handles.frecuencia,'Enable','Off')
+        set(handles.frecuencia_value,'Enable','Off')
+        set(handles.amplitud,'Enable','Off')
+        set(handles.amplitud_value,'Enable','Off')
+        set(handles.offset,'Enable','Off')
+        set(handles.offset_value,'Enable','Off')
 end
 plot(handles.graf,handles.LFO.n,handles.LFO.x)
 xlabel(handles.graf,'Tiempo [s]')

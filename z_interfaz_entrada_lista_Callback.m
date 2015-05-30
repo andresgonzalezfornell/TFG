@@ -36,7 +36,7 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                 % Open FIG-file with guide command.
                 guide (filename)
             otherwise
-                wb = waitbar(0,'Cargando audio...');
+                wb = waitbar(0,'Cargando audio...','Name','Audio de entrada');
                 set(handles.play_entrada,'Enable','Off')
                 set(handles.stop_entrada,'Enable','Off')
                 set(handles.pause_entrada,'Enable','Off')
@@ -53,11 +53,11 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                         file.data = audioread(strcat(handles.path,'/',filename));
                         file.fs = 44100;
                     end
-                    waitbar(2/4,wb,'Cargando audio...');
+                    waitbar(2/4,wb,'Cargando audio...','Name','Audio de entrada');
                     handles.x = file.data;
                     handles.fs = file.fs;
                     z_entrada
-                    waitbar(3/4,wb,'Cargando audio...');
+                    waitbar(3/4,wb,'Cargando audio...','Name','Audio de entrada');
                     % LFO
                     handles.LFO_0.checkbox = 0;
                     handles.LFO_1.checkbox = 0;
@@ -85,7 +85,7 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                     set(handles.par_5_LFO,'Enable','on','Value',0)
                     set(handles.par_6_LFO,'Enable','on','Value',0)
                     
-                    waitbar(4/4,wb,'Cargando audio...');
+                    waitbar(4/4,wb,'Cargando audio...','Name','Audio de entrada');
                     set(handles.entrada_archivo,'String',filename)
                     set(handles.entrada_length,'String',length(handles.x(:,1))/handles.fs)
                     % Dialogo de espera
