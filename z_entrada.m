@@ -10,8 +10,8 @@ if length(handles.x(1,:)) == 1
 end
 X_L = fft(handles.x(:,1))/length(n);
 X_R = fft(handles.x(:,2))/length(n);
-handles.X_L = X_L(1:length(n)/2);
-handles.X_R = X_R(1:length(n)/2);
+handles.X_L = X_L(1:floor(length(n)/2));
+handles.X_R = X_R(1:floor(length(n)/2));
 %handles.X = (handles.X_L+handles.X_R)/2;
 cla(handles.entrada_espectro)
 hold(handles.entrada_espectro,'on')
