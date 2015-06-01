@@ -13,32 +13,34 @@ Ts = 1/handles.fs;              % Periodo de muestreo
 T = 1/handles.LFO.frecuencia;   % Periodo de senal
 L = floor(T/Ts);                % Numero de muestras de un periodo de senal
 handles.LFO.n = Ts:Ts:handles.limites.longitud;
+frecuencia = handles.LFO.frecuencia;
+amplitud = handles.LFO.amplitud;
 % Modulador
-if exist('modulador')
-    if modulador.LFO_frecuencia.checkbox || modulador.LFO_amplitud.checkbox
+if isfield(handles,'modulador')
+    if handles.modulador.LFO_frecuencia.checkbox || handles.modulador.LFO_amplitud.checkbox
         LFO_res = 10;
-        wb = waitbar(0,'Processing...');                        % Dialogo de espera
         for n = 0:LFO_res:length(handles.LFO.n)-LFO_res
-            if modulador.LFO_frecuencia.checkbox
-                frecuencia(n+1:n+LFO_res,1) = modulador.LFO_frecuencia.x(n+1);
+            if handles.modulador.LFO_frecuencia.checkbox
+                frecuencia(n+1:n+LFO_res,1) = handles.modulador.LFO_frecuencia.x(n+1);
             end
-            if modulador.LFO_amplitud.checkbox
-                amplitud(n+1:n+LFO_res,1) = modulador.LFO_amplitud.x(n+1);
+            if handles.modulador.LFO_amplitud.checkbox
+                amplitud(n+1:n+LFO_res,1) = handles.modulador.LFO_amplitud.x(n+1);
             end
-            waitbar(n/L,wb,'Processing...');        % Dialogo de espera
         end
-        if modulador.LFO_frecuencia.checkbox
-            frecuencia(n+LFO_res+1:length(handles.LFO.n)) = modulador.LFO_frecuencia.x(n+1);
+        if handles.modulador.LFO_frecuencia.checkbox
+            frecuencia(n+LFO_res+1:length(handles.LFO.n)) = handles.modulador.LFO_frecuencia.x(n+1);
         end
-        if modulador.LFO_amplitud.checkbox
-            amplitud(n+LFO_res+1:length(handles.LFO.n)) = modulador.LFO_amplitud.x(n+1);
+        if handles.modulador.LFO_amplitud.checkbox
+            amplitud(n+LFO_res+1:length(handles.LFO.n)) = handles.modulador.LFO_amplitud.x(n+1);
         end
-        close(wb)
     end
 end
 switch tipo.String
     case '(S) Sinusoidal'
-        handles.LFO.x = handles.LFO.amplitud.*sin(2.*pi.*handles.LFO.frecuencia.*handles.LFO.n) + handles.LFO.offset;
+        length( sin(2.*pi.*frecuencia.*handles.LFO.n))
+        length(amplitud)
+        handles.LFO.x(1:length(handles.LFO.n)) = amplitud.*sin(2.*pi.*frecuencia.*handles.LFO.n);
+        handles.LFO.x = amplitud.*sin(2.*pi.*frecuencia.*handles.LFO.n) + handles.LFO.offset;
         set(handles.frecuencia,'Enable','On')
         set(handles.frecuencia_value,'Enable','On')
         set(handles.amplitud,'Enable','On')
@@ -104,6 +106,21 @@ switch tipo.String
             i = i+1;
         end
         handles.LFO.x = x(1:length(handles.LFO.n));
+        set(handles.frecuencia,'Enable','On')
+        set(handles.frecuencia_value,'Enable','On')
+        set(handles.amplitud,'Enable','On')
+        set(handles.amplitud_value,'Enable','On')
+        set(handles.offset,'Enable','On')
+        set(handles.offset_value,'Enable','On')
+    case '(N) Ruido AWGN'
+        handles.LFO.x = handles.LFO.amplitud.*randn(length(handles.LFO.n),1)/2 + handles.LFO.offset;
+        for n = 1:length(handles.LFO.n)
+            if handles.LFO.x(n) < handles.limites.Min
+                handles.LFO.x(n) = handles.limites.Min;
+            elseif handles.LFO.x(n) > handles.limites.Max
+                handles.LFO.x(n) = handles.limites.Max;                
+            end
+        end
         set(handles.frecuencia,'Enable','On')
         set(handles.frecuencia_value,'Enable','On')
         set(handles.amplitud,'Enable','On')

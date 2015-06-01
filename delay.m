@@ -84,7 +84,7 @@ if handles.LFO_1.checkbox || handles.LFO_2.checkbox        % Con LFO
         end
     end
     if handles.LFO_2.checkbox
-        d(n+LFO_res+1:L+M,:) = handles.LFO_2.x(n+1);
+        d(n+LFO_res+1:L,:) = handles.LFO_2.x(n+1);
     end
     handles.y = (1-d).*original + d.*delay;
 else                                                    % Sin LFO

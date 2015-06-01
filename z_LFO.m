@@ -64,6 +64,8 @@ if checkbox        % Si LFO habilitado
                 tipo_abreviado = '(DD)';
             case '(C) Cuadrada'
                 tipo_abreviado = '(C)';
+            case '(N) Ruido AWGN'
+                tipo_abreviado = '(N)';
             case 'Externa'
                 tipo_abreviado = 'Externa';
         end

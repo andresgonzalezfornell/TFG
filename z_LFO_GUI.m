@@ -22,7 +22,7 @@ function varargout = z_LFO_GUI(varargin)
 
 % Edit the above text to modify the response to help z_LFO_GUI
 
-% Last Modified by GUIDE v2.5 31-May-2015 18:56:16
+% Last Modified by GUIDE v2.5 01-Jun-2015 18:27:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -84,8 +84,8 @@ set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.LFO.amplitud_Min
 set(handles.amplitud_value,'String',handles.LFO.amplitud)
 handles.LFO.submit = 0;
 % Modulador
-modulador.LFO_frecuencia.checkbox = 0;
-modulador.LFO_amplitud.checkbox = 0;
+handles.modulador.LFO_frecuencia.checkbox = 0;
+handles.modulador.LFO_amplitud.checkbox = 0;
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
@@ -378,6 +378,17 @@ guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of cuadrada
 
 
+% --- Executes on button press in ruido.
+function ruido_Callback(hObject, eventdata, handles)
+% hObject    handle to ruido (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of ruido
+
+
 % --- Executes on button press in externa.
 function externa_Callback(hObject, eventdata, handles)
 % hObject    handle to cuadrada (see GCBO)
@@ -394,8 +405,10 @@ function frecuencia_LFO_Callback(hObject, eventdata, handles)
 % hObject    handle to frecuencia_LFO (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-modulador = z_modulador(handles,1);
+handles.modulador.LFO_frecuencia = z_modulador(handles,1);
 z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of frecuencia_LFO
 
 
@@ -405,6 +418,8 @@ function amplitud_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 % modulador = z_modulador(handles,2)
-modulador = z_modulador(handles,2);
+handles.modulador.LFO_amplitud = z_modulador(handles,2);
 z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of amplitud_LFO

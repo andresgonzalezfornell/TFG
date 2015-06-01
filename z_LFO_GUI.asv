@@ -1,5 +1,5 @@
-function varargout = z_modulador_GUI(varargin)
-% Z_LFO_GUI MATLAB code for z_modulador_GUI.fig
+function varargout = z_LFO_GUI(varargin)
+% Z_LFO_GUI MATLAB code for z_LFO_GUI.fig
 %      Z_LFO_GUI, by itself, creates a new Z_LFO_GUI or raises the existing
 %      singleton*.
 %
@@ -11,25 +11,25 @@ function varargout = z_modulador_GUI(varargin)
 %
 %      Z_LFO_GUI('Property','Value',...) creates a new Z_LFO_GUI or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before z_modulador_GUI_OpeningFcn gets called.  An
+%      applied to the GUI before z_LFO_GUI_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to z_modulador_GUI_OpeningFcn via varargin.
+%      stop.  All inputs are passed to z_LFO_GUI_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help z_modulador_GUI
+% Edit the above text to modify the response to help z_LFO_GUI
 
-% Last Modified by GUIDE v2.5 31-May-2015 18:56:16
+% Last Modified by GUIDE v2.5 01-Jun-2015 18:27:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @z_modulador_GUI_OpeningFcn, ...
-                   'gui_OutputFcn',  @z_modulador_GUI_OutputFcn, ...
+                   'gui_OpeningFcn', @z_LFO_GUI_OpeningFcn, ...
+                   'gui_OutputFcn',  @z_LFO_GUI_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,13 +44,13 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before z_modulador_GUI is made visible.
-function z_modulador_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before z_LFO_GUI is made visible.
+function z_LFO_GUI_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to z_modulador_GUI (see VARARGIN)
+% varargin   command line arguments to z_LFO_GUI (see VARARGIN)
 handles.par = varargin{1};
 handles.limites = varargin{2};
 handles.fs = varargin{3};
@@ -58,18 +58,24 @@ handles.fs = varargin{3};
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
 handles.LFO.amplitud_Min = handles.delta/100;
 handles.LFO.amplitud_Max = handles.delta;
-handles.LFO.frecuencia = 2;
-handles.LFO.frecuencia_Min = 0.1;
-handles.LFO.frecuencia_Max = 10;
-switch handles.par
-    case 1
-        set(handles.title,'String','Modular en frecuencia el LFO')
-    case 2
-        set(handles.title,'String','Modular en amplitud el LFO')
+if handles.par == 0
+    handles.LFO.frecuencia = 440;
+    handles.LFO.frecuencia_Min = 20;
+    handles.LFO.frecuencia_Max = 20000;
+    handles.LFO.offset = 0;
+    set(handles.title,'String','Generador de audio mediante el LFO')
+    set(handles.offset,'Enable','Off')
+    set(handles.offset_value,'Enable','Off')
+    set(handles.externa,'Enable','Off')
+else
+    handles.LFO.frecuencia = 2;
+    handles.LFO.frecuencia_Min = 0.1;
+    handles.LFO.frecuencia_Max = 10;
+    set(handles.title,'String',strcat('Aplicar LFO a parametro ',num2str(handles.par)))
+    handles.LFO.offset = handles.delta+handles.limites.Min;
+    set(handles.offset,'Enable','On','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
+    set(handles.offset_value,'Enable','On','String',handles.LFO.offset)
 end
-handles.LFO.offset = handles.delta+handles.limites.Min;
-set(handles.offset,'Enable','On','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
-set(handles.offset_value,'Enable','On','String',handles.LFO.offset)
 set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
 set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',handles.LFO.frecuencia_Min,'Max',handles.LFO.frecuencia_Max)
 set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
@@ -77,6 +83,9 @@ handles.LFO.amplitud = handles.delta/2;
 set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.LFO.amplitud_Min,'Max',handles.LFO.amplitud_Max)
 set(handles.amplitud_value,'String',handles.LFO.amplitud)
 handles.LFO.submit = 0;
+% Modulador
+handles.modulador.LFO_frecuencia.checkbox = 0;
+handles.modulador.LFO_amplitud.checkbox = 0;
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
@@ -85,12 +94,12 @@ z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
 uiwait
-% UIWAIT makes z_modulador_GUI wait for user response (see UIRESUME)
+% UIWAIT makes z_LFO_GUI wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = z_modulador_GUI_OutputFcn(hObject, eventdata, handles) 
+function varargout = z_LFO_GUI_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -358,17 +367,6 @@ guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of sierra_desc
 
 
-% --- Executes on button press in ruido.
-function ruido_Callback(hObject, eventdata, handles)
-% hObject    handle to ruido (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-z_LFO_graf
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of ruido
-
-
 % --- Executes on button press in cuadrada.
 function cuadrada_Callback(hObject, eventdata, handles)
 % hObject    handle to cuadrada (see GCBO)
@@ -380,6 +378,17 @@ guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of cuadrada
 
 
+% --- Executes on button press in ruido.
+function ruido_Callback(hObject, eventdata, handles)
+% hObject    handle to ruido (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of ruido
+
+
 % --- Executes on button press in externa.
 function externa_Callback(hObject, eventdata, handles)
 % hObject    handle to cuadrada (see GCBO)
@@ -389,3 +398,25 @@ z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of externa
+
+
+% --- Executes on button press in frecuencia_LFO.
+function frecuencia_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to frecuencia_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+modulador = z_modulador(handles,1);
+handles.modulador.LFO_amplitud
+z_LFO_graf
+% Hint: get(hObject,'Value') returns toggle state of frecuencia_LFO
+
+
+% --- Executes on button press in amplitud_LFO.
+function amplitud_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to amplitud_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% modulador = z_modulador(handles,2)
+handles.modulador = z_modulador(handles,2);
+z_LFO_graf
+% Hint: get(hObject,'Value') returns toggle state of amplitud_LFO
