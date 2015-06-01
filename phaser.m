@@ -53,14 +53,14 @@ LFO_res = 1000;
 wb = waitbar(0,'Processing...','Name','Phaser');                        % Dialogo de espera
 % Filto paso banda
 y = zeros(length(x(:,1)),2);
-% Inicialización de memorias
+% Inicializacion de memorias
 M_x1 = [0 0];
 M_x2 = [0 0];
 M_y1 = [0 0];
 M_y2 = [0 0];
 % Coeficientes
 a = -cos(2*pi*f_c/fs);
-    b = (tan(pi*BW/fs)-1)/(tan(pi*BW/fs)+1);
+b = (tan(pi*BW/fs)-1)/(tan(pi*BW/fs)+1);
 for n = 3:length(x)
     if (handles.LFO_1.checkbox || handles.LFO_2.checkbox) && mod(n-1,LFO_res) == 0
         if handles.LFO_1.checkbox
@@ -684,4 +684,4 @@ set(area(n,x,'FaceColor',[0.667 0.875 0.71]),'EdgeColor','none','parent',handles
 set(handles.graf,'XLim',[20 20000],'YLim',[0 1.25],'YTick',[],'XGrid','on')
 handles.graf.XLabel.String = 'Frecuencia [Hz]';
 handles.graf.Title.String = 'Filtros de phaser';
-hold(handles.graf,'off')
+hold(handles.graf,'off') 

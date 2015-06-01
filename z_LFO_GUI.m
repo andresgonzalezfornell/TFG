@@ -22,7 +22,7 @@ function varargout = z_LFO_GUI(varargin)
 
 % Edit the above text to modify the response to help z_LFO_GUI
 
-% Last Modified by GUIDE v2.5 05-Apr-2015 15:04:05
+% Last Modified by GUIDE v2.5 31-May-2015 18:56:16
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,6 +56,8 @@ handles.limites = varargin{2};
 handles.fs = varargin{3};
 % Inicializacion de parametros
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
+handles.LFO.amplitud_Min = handles.delta/100;
+handles.LFO.amplitud_Max = handles.delta;
 if handles.par == 0
     handles.LFO.frecuencia = 440;
     handles.LFO.frecuencia_Min = 20;
@@ -78,10 +80,12 @@ set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
 set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',handles.LFO.frecuencia_Min,'Max',handles.LFO.frecuencia_Max)
 set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
 handles.LFO.amplitud = handles.delta/2;
-set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.delta/100,'Max',handles.delta)
+set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.LFO.amplitud_Min,'Max',handles.LFO.amplitud_Max)
 set(handles.amplitud_value,'String',handles.LFO.amplitud)
-
 handles.LFO.submit = 0;
+% Modulador
+modulador.LFO_frecuencia.checkbox = 0;
+modulador.LFO_amplitud.checkbox = 0;
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
@@ -166,7 +170,7 @@ function amplitud_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.LFO.amplitud = get(hObject,'Value');
 set(handles.amplitud_value,'String',handles.LFO.amplitud)
-if handles.LFO.amplitud == handles.delta
+if handles.LFO.amplitud == handles.LFO.amplitud_Max
     set(handles.offset,'Enable','off')
 else
     set(handles.offset,'Enable','on')
@@ -192,10 +196,10 @@ function amplitud_value_Callback(hObject, eventdata, handles)
 % hObject    handle to amplitud_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-if str2double(get(hObject,'String'))>=handles.delta/100 & str2double(get(hObject,'String'))<=handles.delta
+if str2double(get(hObject,'String'))>=handles.LFO.amplitud_Min & str2double(get(hObject,'String'))<=handles.LFO.amplitud_Max
     handles.LFO.amplitud = str2double(get(hObject,'String'));
     set(handles.amplitud,'Value',handles.LFO.amplitud)
-    if handles.LFO.amplitud == handles.delta
+    if handles.LFO.amplitud == handles.LFO.amplitud_Max
         set(handles.offset,'Enable','off')
     else
         set(handles.offset,'Enable','on')
@@ -383,3 +387,24 @@ z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of externa
+
+
+% --- Executes on button press in frecuencia_LFO.
+function frecuencia_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to frecuencia_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+modulador = z_modulador(handles,1);
+z_LFO_graf
+% Hint: get(hObject,'Value') returns toggle state of frecuencia_LFO
+
+
+% --- Executes on button press in amplitud_LFO.
+function amplitud_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to amplitud_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% modulador = z_modulador(handles,2)
+modulador = z_modulador(handles,2);
+z_LFO_graf
+% Hint: get(hObject,'Value') returns toggle state of amplitud_LFO

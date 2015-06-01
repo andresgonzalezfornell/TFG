@@ -60,7 +60,7 @@ if handles.LFO_1.checkbox                               % Con LFO
             g(n+1:n+LFO_res,:,1) = k;
             g(n+1:n+LFO_res,:,2) = 1;
         end
-        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
+        waitbar(n/length(handles.x(:,1)),wb,'Processing...');        % Dialogo de espera
     end
     if k>1
         g(n+LFO_res+1:length(handles.x(:,1)),1) = 1;

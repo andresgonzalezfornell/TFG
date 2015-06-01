@@ -13,9 +13,32 @@ Ts = 1/handles.fs;              % Periodo de muestreo
 T = 1/handles.LFO.frecuencia;   % Periodo de senal
 L = floor(T/Ts);                % Numero de muestras de un periodo de senal
 handles.LFO.n = Ts:Ts:handles.limites.longitud;
+% Modulador
+if exist('modulador')
+    if modulador.LFO_frecuencia.checkbox || modulador.LFO_amplitud.checkbox
+        LFO_res = 10;
+        wb = waitbar(0,'Processing...');                        % Dialogo de espera
+        for n = 0:LFO_res:length(handles.LFO.n)-LFO_res
+            if modulador.LFO_frecuencia.checkbox
+                frecuencia(n+1:n+LFO_res,1) = modulador.LFO_frecuencia.x(n+1);
+            end
+            if modulador.LFO_amplitud.checkbox
+                amplitud(n+1:n+LFO_res,1) = modulador.LFO_amplitud.x(n+1);
+            end
+            waitbar(n/L,wb,'Processing...');        % Dialogo de espera
+        end
+        if modulador.LFO_frecuencia.checkbox
+            frecuencia(n+LFO_res+1:length(handles.LFO.n)) = modulador.LFO_frecuencia.x(n+1);
+        end
+        if modulador.LFO_amplitud.checkbox
+            amplitud(n+LFO_res+1:length(handles.LFO.n)) = modulador.LFO_amplitud.x(n+1);
+        end
+        close(wb)
+    end
+end
 switch tipo.String
     case '(S) Sinusoidal'
-        handles.LFO.x = handles.LFO.amplitud*sin(2*pi*handles.LFO.frecuencia*handles.LFO.n) + handles.LFO.offset;
+        handles.LFO.x = handles.LFO.amplitud.*sin(2.*pi.*handles.LFO.frecuencia.*handles.LFO.n) + handles.LFO.offset;
         set(handles.frecuencia,'Enable','On')
         set(handles.frecuencia_value,'Enable','On')
         set(handles.amplitud,'Enable','On')
