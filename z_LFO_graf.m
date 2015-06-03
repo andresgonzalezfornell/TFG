@@ -12,63 +12,84 @@ handles.LFO.tipo = tipo.String;
 Ts = 1/handles.fs;              % Periodo de muestreo
 T = 1/handles.LFO.frecuencia;   % Periodo de senal
 L = floor(T/Ts);                % Numero de muestras de un periodo de senal
-handles.LFO.n = Ts:Ts:handles.limites.longitud;
-frecuencia(1:length(handles.LFO.n)) = handles.LFO.frecuencia;
-amplitud(1:length(handles.LFO.n)) = handles.LFO.amplitud;
+handles.LFO.n = transpose(Ts:Ts:handles.limites.longitud);
+frecuencia(1:length(handles.LFO.n),1) = handles.LFO.frecuencia;
+amplitud(1:length(handles.LFO.n),1) = handles.LFO.amplitud;
 offset = handles.LFO.offset;
 % Modulador
-if isfield(handles,'modulador')
-    if handles.modulador.LFO_frecuencia.checkbox || handles.modulador.LFO_amplitud.checkbox
+if isfield(handles.LFO,'modulador')
+    anymodulador = 0;
+    for i = 1:length(handles.LFO.modulador)
+        anymodulador = anymodulador || handles.LFO.modulador(i).checkbox;
+    end
+    if anymodulador
         LFO_res = 10;
         for n = 0:LFO_res:length(handles.LFO.n)-LFO_res
-            if handles.modulador.LFO_frecuencia.checkbox
-                frecuencia(n+1:n+LFO_res,1) = handles.modulador.LFO_frecuencia.x(n+1);
+            if handles.LFO.modulador(1).checkbox        % FM
+                frecuencia(n+1:n+LFO_res,1) = handles.LFO.modulador(1).x(n+1);
             end
-            if handles.modulador.LFO_amplitud.checkbox
-                amplitud(n+1:n+LFO_res,1) = handles.modulador.LFO_amplitud.x(n+1);
+            if handles.LFO.modulador(2).checkbox        % AM
+                amplitud(n+1:n+LFO_res,1) = handles.LFO.modulador(2).x(n+1);
             end
         end
-        if handles.modulador.LFO_frecuencia.checkbox
-            frecuencia(n+LFO_res+1:length(handles.LFO.n)) = handles.modulador.LFO_frecuencia.x(n+1);
+        if handles.LFO.modulador(1).checkbox            % FM ultima vuelta incompleta
+            frecuencia(n+LFO_res+1:length(handles.LFO.n)) = handles.LFO.modulador(1).x(n+1);
         end
-        if handles.modulador.LFO_amplitud.checkbox
-            amplitud(n+LFO_res+1:length(handles.LFO.n)) = handles.modulador.LFO_amplitud.x(n+1);
+        if handles.LFO.modulador(2).checkbox            % AM ultima vuelta incompleta
+            amplitud(n+LFO_res+1:length(handles.LFO.n)) = handles.LFO.modulador(2).x(n+1);
         end
     end
 end
 switch tipo.String
     case '(S) Sinusoidal'
-        length(amplitud)
-        length(handles.LFO.n)
-        length(frecuencia)
         handles.LFO.x = amplitud.*sin(2.*pi.*frecuencia.*handles.LFO.n) + offset;
     case '(T) Triangular'
-        n = 0;
         m = 1;
+        n = 0;
+        j = 1;
+        k = 0;
         for i = 1:length(handles.LFO.n)
-            handles.LFO.x(i) = 4*amplitud(i)*frecuencia(i)*n*Ts + offset;
-            if mod(i+floor(L/4),floor(L/2)) == 0
-                m = -m;
+            L = floor(1/(4*Ts*frecuencia(i)));
+            if j > L
+                if mod(k,2) == 0
+                    m = -m;
+                    k = 0;
+                end
+                j = 1;
+                k = k+1;
+            else
+                j = j+1;
             end
+            handles.LFO.x(i) = amplitud(i)/L*n + offset;
             n = n+m;
         end
     case '(DA) Diente sierra asc'
-        n = - floor(L/2);
+        n = -floor(1/(2*Ts*frecuencia(1)));
+        j = 1;
         for i = 1:length(handles.LFO.n)
-            handles.LFO.x(i) = 2*amplitud(i)*frecuencia(i)*n*Ts + offset;
-            if mod(i,L) == 0
-                n = - floor(L/2);
+            L = floor(1/(Ts*frecuencia(i)));
+            if j > L
+                n = -floor(L/2);
+                j = 1;
+            else
+                j = j+1;
             end
+            handles.LFO.x(i) = 2*amplitud(i)/L*n + offset;
             n = n+1;
         end
     case '(DD) Diente sierra desc'
-        n = floor(L/2);
+        n = -floor(1/(2*Ts*frecuencia(1)));
+        j = 1;
         for i = 1:length(handles.LFO.n)
-            handles.LFO.x(i) = 2*amplitud(i)*frecuencia(i)*n*Ts + offset;
-            if mod(i,L) == 0
-                n = floor(L/2);
+            L = floor(1/(Ts*frecuencia(i)));
+            if j > L
+                n = -floor(L/2);
+                j = 1;
+            else
+                j = j+1;
             end
-            n = n-1;
+            handles.LFO.x(i) = -2*amplitud(i)/L*n + offset;
+            n = n+1;
         end
     case '(C) Cuadrada'
         m = 1;

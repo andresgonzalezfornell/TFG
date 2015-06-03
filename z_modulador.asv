@@ -7,14 +7,13 @@ switch par
         handles.LFO.modulador(par).checkbox = get(handles.frecuencia_LFO,'Value');
     case 2
         handles.LFO.modulador(par).checkbox = get(handles.amplitud_LFO,'Value');
+    case 3
+        handles.LFO.modulador(par).checkbox = get(handles.offset_LFO,'Value');
 end
 
 if handles.LFO.modulador(par).checkbox        % Si LFO habilitado
     limites.longitud = handles.limites.longitud;
     switch par
-        case 1          % FM
-            limites.Min = handles.LFO.frecuencia_Min;
-            limites.Max = handles.LFO.frecuencia_Max;
         case 2          % AM
             limites.Min = handles.LFO.amplitud_Min;
             limites.Max = handles.LFO.amplitud_Max;

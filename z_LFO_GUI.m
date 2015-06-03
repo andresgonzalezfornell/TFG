@@ -22,7 +22,7 @@ function varargout = z_LFO_GUI(varargin)
 
 % Edit the above text to modify the response to help z_LFO_GUI
 
-% Last Modified by GUIDE v2.5 02-Jun-2015 17:09:21
+% Last Modified by GUIDE v2.5 03-Jun-2015 12:30:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,10 +85,8 @@ set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.LFO.amplitud_Min
 set(handles.amplitud_value,'String',handles.LFO.amplitud)
 handles.LFO.submit = 0;
 % Modulador
-handles.modulador.LFO_frecuencia.checkbox = 0;
-handles.modulador.LFO_amplitud.checkbox = 0;
-handles.LFO.FM = 0;
-handles.LFO.AM = 0;
+handles.LFO.modulador(1).checkbox = 0;      % FM
+handles.LFO.modulador(2).checkbox = 0;      % AM
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
@@ -412,8 +410,7 @@ function frecuencia_LFO_Callback(hObject, eventdata, handles)
 % hObject    handle to frecuencia_LFO (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.modulador.LFO_frecuencia = z_modulador(handles,1);
-handles.LFO.FM = get(hObject,'Value');
+handles = z_modulador(handles,1);
 z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
@@ -425,8 +422,7 @@ function amplitud_LFO_Callback(hObject, eventdata, handles)
 % hObject    handle to amplitud_LFO (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.modulador.LFO_amplitud = z_modulador(handles,2);
-handles.LFO.AM = get(hObject,'Value');
+handles = z_modulador(handles,2);
 z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);

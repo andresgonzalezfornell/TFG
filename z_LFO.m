@@ -81,18 +81,21 @@ if checkbox        % Si LFO habilitado
                 handles.fs = 44100;
                 z_entrada
                 handles.LFO_0.checkbox = 1;
-                handles.LFO_N = length(handles.LFO_0.x);
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.entrada_archivo,'String',tipo_abreviado)
-                elseif LFO.FM || LFO.AM
-                    a = tipo_abreviado;
-                    if LFO.FM
+                anymodulador = 0;
+                for i = 1:length(handles.LFO_0.modulador)
+                    anymodulador = anymodulador || handles.LFO_0.modulador(i).checkbox;
+                end
+                if anymodulador
+                    a = '';
+                    if handles.LFO_0.modulador(1).checkbox
                         a = strcat(a,' FM');
                     end
-                    if LFO.AM
+                    if handles.LFO_0.modulador(2).checkbox
                         a = strcat(a,' AM');
                     end
                     set(handles.entrada_archivo,'String',a)
+                elseif strcmp(tipo_abreviado,'Externa')
+                    set(handles.entrada_archivo,'String',tipo_abreviado)
                 else
                     set(handles.entrada_archivo,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -108,20 +111,23 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_6_LFO,'Enable','on','Value',0)
             case 1
                 handles.LFO_1.checkbox = 1;
-                handles.LFO_N = length(handles.LFO_1.x);
                 set(handles.par_1,'Enable','off')
                 set(handles.par_1_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_1_value,'String',tipo_abreviado)
-                elseif LFO.FM || LFO.AM
-                    a = tipo_abreviado;
-                    if LFO.FM
+                anymodulador = 0;
+                a = '';
+                for i = 1:length(handles.LFO_1.modulador)
+                    anymodulador = anymodulador || handles.LFO_1.modulador(i).checkbox;
+                end
+                if anymodulador
+                    if handles.LFO_1.modulador(1).checkbox
                         a = strcat(a,' FM');
                     end
-                    if LFO.AM
+                    if handles.LFO_1.modulador(2).checkbox
                         a = strcat(a,' AM');
                     end
                     set(handles.par_1_value,'String',a)
+                elseif strcmp(tipo_abreviado,'Externa')
+                    set(handles.par_1_value,'String',tipo_abreviado)
                 else
                     set(handles.par_1_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -134,17 +140,21 @@ if checkbox        % Si LFO habilitado
                 handles.LFO_N = length(handles.LFO_2.x);
                 set(handles.par_2,'Enable','off')
                 set(handles.par_2_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_2_value,'String',tipo_abreviado)
-                elseif LFO.FM || LFO.AM
-                    a = tipo_abreviado;
-                    if LFO.FM
+                anymodulador = 0;
+                a = '';
+                for i = 1:length(handles.LFO_2.modulador)
+                    anymodulador = anymodulador || handles.LFO_2.modulador(i).checkbox;
+                end
+                if anymodulador
+                    if handles.LFO_2.modulador(1).checkbox
                         a = strcat(a,' FM');
                     end
-                    if LFO.AM
+                    if handles.LFO_2.modulador(2).checkbox
                         a = strcat(a,' AM');
                     end
                     set(handles.par_2_value,'String',a)
+                elseif strcmp(tipo_abreviado,'Externa')
+                    set(handles.par_2_value,'String',tipo_abreviado)
                 else
                     set(handles.par_2_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -157,17 +167,21 @@ if checkbox        % Si LFO habilitado
                 handles.LFO_N = length(handles.LFO_3.x);
                 set(handles.par_3,'Enable','off')
                 set(handles.par_3_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_3_value,'String',tipo_abreviado)
-                elseif LFO.FM || LFO.AM
-                    a = tipo_abreviado;
-                    if LFO.FM
+                anymodulador = 0;
+                a = '';
+                for i = 1:length(handles.LFO_3.modulador)
+                    anymodulador = anymodulador || handles.LFO_3.modulador(i).checkbox;
+                end
+                if anymodulador
+                    if handles.LFO_3.modulador(1).checkbox
                         a = strcat(a,' FM');
                     end
-                    if LFO.AM
+                    if handles.LFO_3.modulador(2).checkbox
                         a = strcat(a,' AM');
                     end
                     set(handles.par_3_value,'String',a)
+                elseif strcmp(tipo_abreviado,'Externa')
+                    set(handles.par_3_value,'String',tipo_abreviado)
                 else
                     set(handles.par_3_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -180,17 +194,21 @@ if checkbox        % Si LFO habilitado
                 handles.LFO_N = length(handles.LFO_4.x);
                 set(handles.par_4,'Enable','off')
                 set(handles.par_4_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_4_value,'String',tipo_abreviado)
-                elseif LFO.FM || LFO.AM
-                    a = tipo_abreviado;
-                    if LFO.FM
+                anymodulador = 0;
+                a = '';
+                for i = 1:length(handles.LFO_4.modulador)
+                    anymodulador = anymodulador || handles.LFO_4.modulador(i).checkbox;
+                end
+                if anymodulador
+                    if handles.LFO_4.modulador(1).checkbox
                         a = strcat(a,' FM');
                     end
-                    if LFO.AM
+                    if handles.LFO_4.modulador(2).checkbox
                         a = strcat(a,' AM');
                     end
                     set(handles.par_4_value,'String',a)
+                elseif strcmp(tipo_abreviado,'Externa')
+                    set(handles.par_4_value,'String',tipo_abreviado)
                 else
                     set(handles.par_4_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -203,17 +221,21 @@ if checkbox        % Si LFO habilitado
                 handles.LFO_N = length(handles.LFO_5.x);
                 set(handles.par_5,'Enable','off')
                 set(handles.par_5_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_5_value,'String',tipo_abreviado)
-                elseif LFO.FM || LFO.AM
-                    a = tipo_abreviado;
-                    if LFO.FM
+                anymodulador = 0;
+                a = '';
+                for i = 1:length(handles.LFO_5.modulador)
+                    anymodulador = anymodulador || handles.LFO_5.modulador(i).checkbox;
+                end
+                if anymodulador
+                    if handles.LFO_5.modulador(1).checkbox
                         a = strcat(a,' FM');
                     end
-                    if LFO.AM
+                    if handles.LFO_5.modulador(2).checkbox
                         a = strcat(a,' AM');
                     end
                     set(handles.par_5_value,'String',a)
+                elseif strcmp(tipo_abreviado,'Externa')
+                    set(handles.par_5_value,'String',tipo_abreviado)
                 else
                     set(handles.par_5_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -226,17 +248,21 @@ if checkbox        % Si LFO habilitado
                 handles.LFO_N = length(handles.LFO_6.x);
                 set(handles.par_6,'Enable','off')
                 set(handles.par_6_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_6_value,'String',tipo_abreviado)
-                elseif LFO.FM || LFO.AM
-                    a = tipo_abreviado;
-                    if LFO.FM
+                anymodulador = 0;
+                a = '';
+                for i = 1:length(handles.LFO_6.modulador)
+                    anymodulador = anymodulador || handles.LFO_6.modulador(i).checkbox;
+                end
+                if anymodulador
+                    if handles.LFO_6.modulador(1).checkbox
                         a = strcat(a,' FM');
                     end
-                    if LFO.AM
+                    if handles.LFO_6.modulador(2).checkbox
                         a = strcat(a,' AM');
                     end
                     set(handles.par_6_value,'String',a)
+                elseif strcmp(tipo_abreviado,'Externa')
+                    set(handles.par_6_value,'String',tipo_abreviado)
                 else
                     set(handles.par_6_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
