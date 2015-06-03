@@ -56,7 +56,7 @@ handles.limites = varargin{2};
 handles.fs = varargin{3};
 % Inicializacion de parametros
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
-handles.LFO.amplitud_Min = handles.delta/100;
+handles.LFO.amplitud_Min = 0;
 handles.LFO.amplitud_Max = handles.delta;
 handles.LFO.frecuencia = 2;
 handles.LFO.frecuencia_Min = 0.1;

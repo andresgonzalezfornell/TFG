@@ -84,6 +84,15 @@ if checkbox        % Si LFO habilitado
                 handles.LFO_N = length(handles.LFO_0.x);
                 if strcmp(tipo_abreviado,'Externa')
                     set(handles.entrada_archivo,'String',tipo_abreviado)
+                elseif LFO.FM || LFO.AM
+                    a = tipo_abreviado;
+                    if LFO.FM
+                        a = strcat(a,' FM');
+                    end
+                    if LFO.AM
+                        a = strcat(a,' AM');
+                    end
+                    set(handles.entrada_archivo,'String',a)
                 else
                     set(handles.entrada_archivo,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -104,6 +113,15 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_1_value,'Enable','off')
                 if strcmp(tipo_abreviado,'Externa')
                     set(handles.par_1_value,'String',tipo_abreviado)
+                elseif LFO.FM || LFO.AM
+                    a = tipo_abreviado;
+                    if LFO.FM
+                        a = strcat(a,' FM');
+                    end
+                    if LFO.AM
+                        a = strcat(a,' AM');
+                    end
+                    set(handles.par_1_value,'String',a)
                 else
                     set(handles.par_1_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -118,6 +136,15 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_2_value,'Enable','off')
                 if strcmp(tipo_abreviado,'Externa')
                     set(handles.par_2_value,'String',tipo_abreviado)
+                elseif LFO.FM || LFO.AM
+                    a = tipo_abreviado;
+                    if LFO.FM
+                        a = strcat(a,' FM');
+                    end
+                    if LFO.AM
+                        a = strcat(a,' AM');
+                    end
+                    set(handles.par_2_value,'String',a)
                 else
                     set(handles.par_2_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -132,6 +159,15 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_3_value,'Enable','off')
                 if strcmp(tipo_abreviado,'Externa')
                     set(handles.par_3_value,'String',tipo_abreviado)
+                elseif LFO.FM || LFO.AM
+                    a = tipo_abreviado;
+                    if LFO.FM
+                        a = strcat(a,' FM');
+                    end
+                    if LFO.AM
+                        a = strcat(a,' AM');
+                    end
+                    set(handles.par_3_value,'String',a)
                 else
                     set(handles.par_3_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -146,6 +182,15 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_4_value,'Enable','off')
                 if strcmp(tipo_abreviado,'Externa')
                     set(handles.par_4_value,'String',tipo_abreviado)
+                elseif LFO.FM || LFO.AM
+                    a = tipo_abreviado;
+                    if LFO.FM
+                        a = strcat(a,' FM');
+                    end
+                    if LFO.AM
+                        a = strcat(a,' AM');
+                    end
+                    set(handles.par_4_value,'String',a)
                 else
                     set(handles.par_4_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -160,6 +205,15 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_5_value,'Enable','off')
                 if strcmp(tipo_abreviado,'Externa')
                     set(handles.par_5_value,'String',tipo_abreviado)
+                elseif LFO.FM || LFO.AM
+                    a = tipo_abreviado;
+                    if LFO.FM
+                        a = strcat(a,' FM');
+                    end
+                    if LFO.AM
+                        a = strcat(a,' AM');
+                    end
+                    set(handles.par_5_value,'String',a)
                 else
                     set(handles.par_5_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...
@@ -174,6 +228,15 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_6_value,'Enable','off')
                 if strcmp(tipo_abreviado,'Externa')
                     set(handles.par_6_value,'String',tipo_abreviado)
+                elseif LFO.FM || LFO.AM
+                    a = tipo_abreviado;
+                    if LFO.FM
+                        a = strcat(a,' FM');
+                    end
+                    if LFO.AM
+                        a = strcat(a,' AM');
+                    end
+                    set(handles.par_6_value,'String',a)
                 else
                     set(handles.par_6_value,'String',strcat(tipo_abreviado,...
                         ' [',num2str(LFO.offset-LFO.amplitud,2),...

@@ -22,7 +22,7 @@ function varargout = z_LFO_GUI(varargin)
 
 % Edit the above text to modify the response to help z_LFO_GUI
 
-% Last Modified by GUIDE v2.5 01-Jun-2015 18:27:03
+% Last Modified by GUIDE v2.5 02-Jun-2015 17:09:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,25 +56,26 @@ handles.limites = varargin{2};
 handles.fs = varargin{3};
 % Inicializacion de parametros
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
-handles.LFO.amplitud_Min = handles.delta/100;
+handles.LFO.amplitud_Min = 0;
 handles.LFO.amplitud_Max = handles.delta;
+handles.LFO.amplitud_Max;
 if handles.par == 0
     handles.LFO.frecuencia = 440;
     handles.LFO.frecuencia_Min = 20;
     handles.LFO.frecuencia_Max = 20000;
     handles.LFO.offset = 0;
     set(handles.title,'String','Generador de audio mediante el LFO')
-    set(handles.offset,'Enable','Off')
-    set(handles.offset_value,'Enable','Off')
-    set(handles.externa,'Enable','Off')
+    set(handles.offset,'Enable','off')
+    set(handles.offset_value,'Enable','off')
+    set(handles.externa,'Enable','off')
 else
     handles.LFO.frecuencia = 2;
     handles.LFO.frecuencia_Min = 0.1;
     handles.LFO.frecuencia_Max = 10;
     set(handles.title,'String',strcat('Aplicar LFO a parametro ',num2str(handles.par)))
     handles.LFO.offset = handles.delta+handles.limites.Min;
-    set(handles.offset,'Enable','On','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
-    set(handles.offset_value,'Enable','On','String',handles.LFO.offset)
+    set(handles.offset,'Enable','on','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
+    set(handles.offset_value,'Enable','on','String',handles.LFO.offset)
 end
 set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
 set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',handles.LFO.frecuencia_Min,'Max',handles.LFO.frecuencia_Max)
@@ -86,6 +87,8 @@ handles.LFO.submit = 0;
 % Modulador
 handles.modulador.LFO_frecuencia.checkbox = 0;
 handles.modulador.LFO_amplitud.checkbox = 0;
+handles.LFO.FM = 0;
+handles.LFO.AM = 0;
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
@@ -173,7 +176,9 @@ set(handles.amplitud_value,'String',handles.LFO.amplitud)
 if handles.LFO.amplitud == handles.LFO.amplitud_Max
     set(handles.offset,'Enable','off')
 else
-    set(handles.offset,'Enable','on')
+    if handles.par ~= 0
+        set(handles.offset,'Enable','on')
+    end
 end
 if handles.LFO.offset < (handles.limites.Min+handles.LFO.amplitud)
     handles.LFO.offset = handles.limites.Min+handles.LFO.amplitud;
@@ -202,7 +207,9 @@ if str2double(get(hObject,'String'))>=handles.LFO.amplitud_Min & str2double(get(
     if handles.LFO.amplitud == handles.LFO.amplitud_Max
         set(handles.offset,'Enable','off')
     else
-        set(handles.offset,'Enable','on')
+        if handles.par ~= 0
+            set(handles.offset,'Enable','on')
+        end
     end
     if handles.LFO.offset < (handles.limites.Min+handles.LFO.amplitud)
         handles.LFO.offset = handles.limites.Min+handles.LFO.amplitud;
@@ -406,6 +413,7 @@ function frecuencia_LFO_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles.modulador.LFO_frecuencia = z_modulador(handles,1);
+handles.LFO.FM = get(hObject,'Value');
 z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
@@ -417,8 +425,8 @@ function amplitud_LFO_Callback(hObject, eventdata, handles)
 % hObject    handle to amplitud_LFO (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% modulador = z_modulador(handles,2)
 handles.modulador.LFO_amplitud = z_modulador(handles,2);
+handles.LFO.AM = get(hObject,'Value');
 z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
