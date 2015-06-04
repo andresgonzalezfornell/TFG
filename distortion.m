@@ -49,7 +49,7 @@ z_interfaz_limpieza
 if handles.LFO_1.checkbox                               % Con LFO
     LFO_res = round(handles.fs/10);
     wb = waitbar(0,'Processing...');                        % Dialogo de espera
-    for n = 0:LFO_res:handles.LFO_N-LFO_res
+    for n = 0:LFO_res:length(handles.x(:,1))-LFO_res
         k = handles.LFO_1.x(n+1);
         if k > 0.99
             k = 0.99;
