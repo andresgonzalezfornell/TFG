@@ -11,109 +11,116 @@ tipo = get(handles.tipo_panel,'SelectedObject');
 handles.LFO.tipo = tipo.String;
 Ts = 1/handles.fs;              % Periodo de muestreo
 T = 1/handles.LFO.frecuencia;   % Periodo de senal
-L = floor(T/Ts);                % Numero de muestras de un periodo de senal
-handles.LFO.n = Ts:Ts:handles.limites.longitud;
-frecuencia = handles.LFO.frecuencia;
-amplitud = handles.LFO.amplitud;
+handles.LFO.n = transpose(Ts:Ts:handles.limites.longitud);
+frecuencia(1:length(handles.LFO.n),1) = handles.LFO.frecuencia;
+amplitud(1:length(handles.LFO.n),1) = handles.LFO.amplitud;
+fase(1:length(handles.LFO.n),1) = handles.LFO.fase;
+offset = handles.LFO.offset;
 % Modulador
-if isfield(handles,'modulador')
-    if handles.modulador.LFO_frecuencia.checkbox || handles.modulador.LFO_amplitud.checkbox
+if isfield(handles.LFO,'modulador')
+    anymodulador = 0;
+    for i = 1:length(handles.LFO.modulador)
+        anymodulador = anymodulador || handles.LFO.modulador(i).checkbox;
+    end
+    if anymodulador
         LFO_res = 10;
         for n = 0:LFO_res:length(handles.LFO.n)-LFO_res
-            if handles.modulador.LFO_frecuencia.checkbox
-                frecuencia(n+1:n+LFO_res,1) = handles.modulador.LFO_frecuencia.x(n+1);
+            if handles.LFO.modulador(1).checkbox        % FM
+                frecuencia(n+1:n+LFO_res,1) = handles.LFO.modulador(1).x(n+1);
             end
-            if handles.modulador.LFO_amplitud.checkbox
-                amplitud(n+1:n+LFO_res,1) = handles.modulador.LFO_amplitud.x(n+1);
+            if handles.LFO.modulador(2).checkbox        % AM
+                amplitud(n+1:n+LFO_res,1) = handles.LFO.modulador(2).x(n+1);
+            end
+            if handles.LFO.modulador(3).checkbox        % PM
+                fase(n+1:n+LFO_res,1) = handles.LFO.modulador(3).x(n+1);
             end
         end
-        if handles.modulador.LFO_frecuencia.checkbox
-            frecuencia(n+LFO_res+1:length(handles.LFO.n)) = handles.modulador.LFO_frecuencia.x(n+1);
+        if handles.LFO.modulador(1).checkbox            % FM ultima vuelta incompleta
+            frecuencia(n+LFO_res+1:length(handles.LFO.n)) = handles.LFO.modulador(1).x(n+1);
         end
-        if handles.modulador.LFO_amplitud.checkbox
-            amplitud(n+LFO_res+1:length(handles.LFO.n)) = handles.modulador.LFO_amplitud.x(n+1);
+        if handles.LFO.modulador(2).checkbox            % AM ultima vuelta incompleta
+            amplitud(n+LFO_res+1:length(handles.LFO.n)) = handles.LFO.modulador(2).x(n+1);
+        end
+        if handles.LFO.modulador(3).checkbox            % AM ultima vuelta incompleta
+            fase(n+LFO_res+1:length(handles.LFO.n)) = handles.LFO.modulador(3).x(n+1);
         end
     end
 end
+L = 1/(Ts*frecuencia(1));
+faseanterior = fase(1);
 switch tipo.String
     case '(S) Sinusoidal'
-        length( sin(2.*pi.*frecuencia.*handles.LFO.n))
-        length(amplitud)
-        handles.LFO.x(1:length(handles.LFO.n)) = amplitud.*sin(2.*pi.*frecuencia.*handles.LFO.n);
-        handles.LFO.x = amplitud.*sin(2.*pi.*frecuencia.*handles.LFO.n) + handles.LFO.offset;
-        set(handles.frecuencia,'Enable','On')
-        set(handles.frecuencia_value,'Enable','On')
-        set(handles.amplitud,'Enable','On')
-        set(handles.amplitud_value,'Enable','On')
-        set(handles.offset,'Enable','On')
-        set(handles.offset_value,'Enable','On')
+        handles.LFO.x = amplitud.*sin(2.*pi.*frecuencia.*handles.LFO.n + fase) + offset;
     case '(T) Triangular'
-        n = 1:floor(L/4);
-        i = 1;
-        m = -1;
-        x(1:floor(L/4)) = 4*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
-        n = -floor(L/4)+1:floor(L/4);
-        while i*floor(L/4) < length(handles.LFO.n)
-            x(i*floor(L/4)+1:(i+2)*floor(L/4)) = 4*m*handles.LFO.amplitud*handles.LFO.frecuencia*n*Ts + handles.LFO.offset;
-            i = i+2;
-            m = -m;
+        j = mod(floor(L)*(fase(1)+pi/2)/2/pi,floor(L/2));
+        if fase(1) < pi/2 || fase(1) >= 3*pi/2
+            m = 1;
+        else
+            m = -1;
         end
-        handles.LFO.x = x(1:length(handles.LFO.n));
-        set(handles.frecuencia,'Enable','On')
-        set(handles.frecuencia_value,'Enable','On')
-        set(handles.amplitud,'Enable','On')
-        set(handles.amplitud_value,'Enable','On')
-        set(handles.offset,'Enable','On')
-        set(handles.offset_value,'Enable','On')
+        n = m*(mod(floor(L)*(fase(1)+pi/2)/2/pi,floor(L/2)) - L/4);
+        for i = 1:length(handles.LFO.n)
+            L = 1/(Ts*frecuencia(i));
+            if j > floor(L/2)
+                j = 1;
+                m = -m;
+            else
+                j = j+1+L*(fase(i)-faseanterior)/2/pi;
+            end
+            handles.LFO.x(i) = 4*amplitud(i)/L*n + offset;
+            n = n+m*(1+L*(fase(i)-faseanterior)/2/pi);
+            faseanterior = fase(i);
+        end
     case '(DA) Diente sierra asc'
-        n = 1:floor(L/2);
-        i = 1;
-        x(1:floor(L/2)) = 2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
-        n = -floor(L/2)+1:floor(L/2);
-        while i*floor(L/2) < length(handles.LFO.n)
-            x(i*floor(L/2)+1:(i+2)*floor(L/2)) = 2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
-            i = i+2;
+        j = mod(floor(L)*fase(1)/2/pi,floor(L)) + 1;
+        n = mod(floor(L)*fase(1)/2/pi,floor(L)) - floor(L/2);
+        for i = 1:length(handles.LFO.n)
+            L = 1/(Ts*frecuencia(i));
+            if j > floor(L)
+                j = 1;
+                n = -floor(L/2);
+            else
+                j = j+1+L*(fase(i)-faseanterior)/2/pi;
+            end
+            handles.LFO.x(i) = 2*amplitud(i)/L*n + offset;
+            n = n+1+L*(fase(i)-faseanterior)/2/pi;
+            faseanterior = fase(i);
         end
-        handles.LFO.x = x(1:length(handles.LFO.n));
-        set(handles.frecuencia,'Enable','On')
-        set(handles.frecuencia_value,'Enable','On')
-        set(handles.amplitud,'Enable','On')
-        set(handles.amplitud_value,'Enable','On')
-        set(handles.offset,'Enable','On')
-        set(handles.offset_value,'Enable','On')
     case '(DD) Diente sierra desc'
-        n = 1:floor(L/2);
-        i = 1;
-        x(1:floor(L/2)) = -2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
-        n = -floor(L/2)+1:floor(L/2);
-        while i*floor(L/2) < length(handles.LFO.n)
-            x(i*floor(L/2)+1:(i+2)*floor(L/2)) = -2*handles.LFO.frecuencia*handles.LFO.amplitud*n*Ts + handles.LFO.offset;
-            i = i+2;
+        j = mod(floor(L)*fase(1)/2/pi,floor(L)) + 1;
+        n = mod(floor(L)*fase(1)/2/pi,floor(L)) - floor(L/2);
+        for i = 1:length(handles.LFO.n)
+            L = 1/(Ts*frecuencia(i));
+            if j > floor(L)
+                j = 1;
+                n = -floor(L/2);
+            else
+                j = j+1+L*(fase(i)-faseanterior)/2/pi;
+            end
+            handles.LFO.x(i) = -2*amplitud(i)/L*n + offset;
+            n = n+1+L*(fase(i)-faseanterior)/2/pi;
+            faseanterior = fase(i);
         end
-        handles.LFO.x = x(1:length(handles.LFO.n));
-        set(handles.frecuencia,'Enable','On')
-        set(handles.frecuencia_value,'Enable','On')
-        set(handles.amplitud,'Enable','On')
-        set(handles.amplitud_value,'Enable','On')
-        set(handles.offset,'Enable','On')
-        set(handles.offset_value,'Enable','On')
     case '(C) Cuadrada'
-        n = 1:floor(L/2);
-        i = 1;
-        while i*floor(L/2) < length(handles.LFO.n)
-            x(n+(2*i-2)*floor(L/2)) = handles.LFO.amplitud + handles.LFO.offset;
-            x(n+(2*i-1)*floor(L/2)) = -handles.LFO.amplitud + handles.LFO.offset;
-            i = i+1;
+        if fase(1) < pi
+            m = 1;
+        else
+            m = -1;
         end
-        handles.LFO.x = x(1:length(handles.LFO.n));
-        set(handles.frecuencia,'Enable','On')
-        set(handles.frecuencia_value,'Enable','On')
-        set(handles.amplitud,'Enable','On')
-        set(handles.amplitud_value,'Enable','On')
-        set(handles.offset,'Enable','On')
-        set(handles.offset_value,'Enable','On')
+        j = mod(floor(L)*fase(1)/2/pi,floor(L/2)) + 1;
+        for i = 1:length(handles.LFO.n)
+            L = 1/(Ts*frecuencia(i));
+            if j > floor(L/2)
+                j = 1;
+                m = -m;
+            else
+                j = j+1+L*(fase(i)-faseanterior)/2/pi;
+            end
+            handles.LFO.x(i) = m*amplitud(i) + offset;
+            faseanterior = fase(i);
+        end
     case '(N) Ruido AWGN'
-        handles.LFO.x = handles.LFO.amplitud.*randn(length(handles.LFO.n),1)/2 + handles.LFO.offset;
+        handles.LFO.x = amplitud.*randn(length(handles.LFO.n),1)/2 + offset;
         for n = 1:length(handles.LFO.n)
             if handles.LFO.x(n) < handles.limites.Min
                 handles.LFO.x(n) = handles.limites.Min;
@@ -121,42 +128,66 @@ switch tipo.String
                 handles.LFO.x(n) = handles.limites.Max;                
             end
         end
-        set(handles.frecuencia,'Enable','On')
-        set(handles.frecuencia_value,'Enable','On')
-        set(handles.amplitud,'Enable','On')
-        set(handles.amplitud_value,'Enable','On')
-        set(handles.offset,'Enable','On')
-        set(handles.offset_value,'Enable','On')
     case 'Externa'
-        [filename path] = uigetfile({'Audios/*'}, 'Select File');
-        % Use open for other file types.
-        b = strfind(filename,'.');
-        format = filename(b(end)+1:end);
-        % Si el formato es wav
-        if strcmp(format,'wav')
-            file = importdata(strcat(path,'/',filename));
-        % Si el formato es mp3
-        elseif strcmp(format,'mp3')
-            file.data = audioread(strcat(path,'/',filename)); 
-            file.fs = 44100;
-        end
-        if length(file.data(:,1)) < length(handles.LFO.n)
-            for i = 1:floor(length(handles.LFO.n)/length(file.data(:,1)))
-                handles.LFO.x((i-1)*length(file.data)+1:i*length(file.data)) = file.data(:,1);
+        [filename,path] = uigetfile({'Audios/*'}, 'Select File');           % Use open for other file types.
+        if ischar(filename) && ischar(path)
+            b = strfind(filename,'.');
+            format = filename(b(end)+1:end);
+            if strcmp(format,'wav')             % Si el formato es wav
+                file = importdata(strcat(path,'/',filename));
+            elseif strcmp(format,'mp3')         % Si el formato es mp3
+                file.data = audioread(strcat(path,'/',filename)); 
+                file.fs = 44100;
             end
-            handles.LFO.x(i*length(file.data)+1:length(handles.LFO.n)) = file.data(1:length(handles.LFO.n)-i*length(file.data),1);
-        else
-            handles.LFO.x = file.data(1:length(handles.LFO.n),1);
+            if length(file.data(:,1)) < length(handles.LFO.n)
+                for i = 1:floor(length(handles.LFO.n)/length(file.data(:,1)))
+                    handles.LFO.x((i-1)*length(file.data)+1:i*length(file.data)) = file.data(:,1);
+                end
+                handles.LFO.x(i*length(file.data)+1:length(handles.LFO.n)) = file.data(1:length(handles.LFO.n)-i*length(file.data),1);
+            else
+                handles.LFO.x = file.data(1:length(handles.LFO.n),1);
+            end
+            handles.LFO.x = (handles.LFO.x+1)*(handles.limites.Max-handles.limites.Min)/2+handles.limites.Min;
         end
-        handles.LFO.x = (handles.LFO.x+1)*(handles.limites.Max-handles.limites.Min)/2+handles.limites.Min;
-        set(handles.frecuencia,'Enable','Off')
-        set(handles.frecuencia_value,'Enable','Off')
-        set(handles.amplitud,'Enable','Off')
-        set(handles.amplitud_value,'Enable','Off')
-        set(handles.offset,'Enable','Off')
-        set(handles.offset_value,'Enable','Off')
 end
-plot(handles.graf,handles.LFO.n,handles.LFO.x)
-xlabel(handles.graf,'Tiempo [s]')
-set(handles.graf,'XLim',[0 handles.limites.longitud])
-set(handles.graf,'YLim',[handles.limites.Min handles.limites.Max])
+if isfield(handles.LFO,'x')
+    if isfield(handles,'frecuencia_LFO') && isfield(handles,'amplitud_LFO')
+        if strcmp(tipo.String,'Externa')
+            set(handles.frecuencia,'Visible','Off')
+            set(handles.frecuencia_value,'Visible','Off')
+            set(handles.frecuencia_LFO,'Visible','Off')
+            set(handles.frecuencia_title,'Visible','Off')
+            set(handles.amplitud,'Visible','Off')
+            set(handles.amplitud_value,'Visible','Off')
+            set(handles.amplitud_LFO,'Visible','Off')
+            set(handles.amplitud_title,'Visible','Off')
+            set(handles.fase,'Visible','Off')
+            set(handles.fase_value,'Visible','Off')
+            set(handles.fase_LFO,'Visible','Off')
+            set(handles.fase_title,'Visible','Off')
+            set(handles.offset,'Visible','Off')
+            set(handles.offset_value,'Visible','Off')
+            set(handles.offset_title,'Visible','Off')
+        else
+            set(handles.frecuencia,'Visible','On')
+            set(handles.frecuencia_value,'Visible','On')
+            set(handles.frecuencia_LFO,'Visible','On')
+            set(handles.frecuencia_title,'Visible','On')
+            set(handles.amplitud,'Visible','On')
+            set(handles.amplitud_value,'Visible','On')
+            set(handles.amplitud_LFO,'Visible','On')
+            set(handles.amplitud_title,'Visible','On')
+            set(handles.fase,'Visible','On')
+            set(handles.fase_value,'Visible','On')
+            set(handles.fase_LFO,'Visible','On')
+            set(handles.fase_title,'Visible','On')
+            set(handles.offset,'Visible','On')
+            set(handles.offset_value,'Visible','On')
+            set(handles.offset_title,'Visible','On')
+        end
+    end
+    plot(handles.graf,handles.LFO.n,handles.LFO.x)
+    xlabel(handles.graf,'Tiempo [s]')
+    set(handles.graf,'XLim',[0 handles.limites.longitud])
+    set(handles.graf,'YLim',[handles.limites.Min handles.limites.Max])
+end

@@ -56,26 +56,33 @@ handles.limites = varargin{2};
 handles.fs = varargin{3};
 % Inicializacion de parametros
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
-handles.LFO.amplitud_Min = handles.delta/100;
-handles.LFO.amplitud_Max = handles.delta;
 handles.LFO.frecuencia = 2;
 handles.LFO.frecuencia_Min = 0.1;
-handles.LFO.frecuencia_Max = 10;
+handles.LFO.frecuencia_Max = 100;
+set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',handles.LFO.frecuencia_Min,'Max',handles.LFO.frecuencia_Max)
+set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
+handles.LFO.amplitud = handles.delta/2;
+handles.LFO.amplitud_Min = 0;
+handles.LFO.amplitud_Max = handles.delta;
+set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.LFO.amplitud_Min,'Max',handles.LFO.amplitud_Max)
+set(handles.amplitud_value,'String',handles.LFO.amplitud)
+handles.LFO.fase = 0;
+handles.LFO.fase_Min = 0;
+handles.LFO.fase_Max = 2*pi;
+set(handles.fase,'Value',handles.LFO.fase,'Min',handles.LFO.fase_Min,'Max',handles.LFO.fase_Max)
+set(handles.fase_value,'String',handles.LFO.fase)
 switch handles.par
     case 1
         set(handles.title,'String','Modular en frecuencia el LFO')
     case 2
         set(handles.title,'String','Modular en amplitud el LFO')
+    case 3
+        set(handles.title,'String','Modular en fase el LFO')
 end
 handles.LFO.offset = handles.delta+handles.limites.Min;
 set(handles.offset,'Enable','On','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
 set(handles.offset_value,'Enable','On','String',handles.LFO.offset)
 set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
-set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',handles.LFO.frecuencia_Min,'Max',handles.LFO.frecuencia_Max)
-set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
-handles.LFO.amplitud = handles.delta/2;
-set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.LFO.amplitud_Min,'Max',handles.LFO.amplitud_Max)
-set(handles.amplitud_value,'String',handles.LFO.amplitud)
 handles.LFO.submit = 0;
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
@@ -213,6 +220,37 @@ z_LFO_graf
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of amplitud_value as text
 %        str2double(get(hObject,'String')) returns contents of amplitud_value as a double
+
+
+% --- Executes on slider movement.
+function fase_Callback(hObject, eventdata, handles)
+% hObject    handle to fase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.LFO.fase = get(hObject,'Value');
+set(handles.fase_value,'String',handles.LFO.fase)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+function fase_value_Callback(hObject, eventdata, handles)
+% hObject    handle to fase_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if str2double(get(hObject,'String'))>=handles.LFO.fase_Min & str2double(get(hObject,'String'))<=handles.LFO.fase_Max
+    handles.LFO.fase = str2double(get(hObject,'String'));
+    set(handles.fase,'Value',handles.LFO.fase)
+else
+    set(handles.fase_value,'String',handles.LFO.fase)
+end
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of fase_value as text
+%        str2double(get(hObject,'String')) returns contents of fase_value as a double
 
 
 % --- Executes on slider movement.

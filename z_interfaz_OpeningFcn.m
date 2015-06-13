@@ -27,7 +27,7 @@ if isfield(handles,'y')
     clear handles.y
 end
 
-% Rango de parámetros
+% Rango de parametros
 if isfield(handles,'limites')
     for i = 1:length(handles.limites)
         switch i
@@ -47,6 +47,11 @@ if isfield(handles,'limites')
     end
 end
 
+% Reproductor de salida
+set(handles.pause_salida,'Enable','off')
+set(handles.play_salida,'Enable','off')
+set(handles.stop_salida,'Enable','off')
+
 % Longitud de oscilador de entrada
 set(handles.entrada_length,'String',2)
 
@@ -64,6 +69,11 @@ set(handles.par_3_LFO,'Enable','off')
 set(handles.par_4_LFO,'Enable','off')
 set(handles.par_5_LFO,'Enable','off')
 set(handles.par_6_LFO,'Enable','off')
+
+% Modulador
+handles.modulador(1).checkbox = 0;
+handles.modulador(2).checkbox = 0;
+handles.modulador(3).checkbox = 0;
 
 % Cargador de ficheros de entrada
 dir_struct = dir(handles.path);

@@ -14,6 +14,7 @@ function varargout = phaser(varargin)
 %       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
+
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
@@ -51,21 +52,25 @@ BW = f_c/Q;
 mix = handles.mix;
 LFO_res = 1000;
 wb = waitbar(0,'Processing...','Name','Phaser');                        % Dialogo de espera
-% Filto paso banda
+% Filto banda eliminada
 y = zeros(length(x(:,1)),2);
 % Inicializacion de memorias
-M_x1 = [0 0];
-M_x2 = [0 0];
-M_y1 = [0 0];
-M_y2 = [0 0];
+xh = zeros(2,2,3);
+ap_y = zeros(1,2,3);
 % Coeficientes
-a = -cos(2*pi*f_c/fs);
-b = (tan(pi*BW/fs)-1)/(tan(pi*BW/fs)+1);
-for n = 3:length(x)
+c(1) = (tan(pi*BW/2/fs)-1) / (tan(pi*BW/2/fs)+1);
+c(2) = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
+c(3) = (tan(pi*BW*2/fs)-1) / (tan(pi*BW*2/fs)+1);
+d(1) = -cos(2*pi*f_c/2/fs);
+d(2) = -cos(2*pi*f_c/fs);
+d(3) = -cos(2*pi*f_c*2/fs);
+for n = 1:length(x)
     if (handles.LFO_1.checkbox || handles.LFO_2.checkbox) && mod(n-1,LFO_res) == 0
         if handles.LFO_1.checkbox
             f_c = handles.LFO_1.x(n);
-            d = -cos(2*pi*f_c/fs);
+            d(1) = -cos(2*pi*f_c/fs);
+            d(2) = -cos(2*pi*f_c/fs);
+            d(3) = -cos(2*pi*f_c*2/fs);
         end
         if handles.LFO_2.checkbox
             mix(n:n+LFO_res-1,1) = handles.LFO_2.x(n);
@@ -73,18 +78,20 @@ for n = 3:length(x)
         end
     end
     % Filtro
-    
-    %y(n,:) = (- c.*x(n,:) - d.*(1-c).*M_x1 + d.*(1-c).*M_x1 - c* M_y2 + M_x2)./2;
-    % Actualizacion de memorias
-    M_x2 = M_x1;
-    M_x1 = x(n,:);
-    M_y2 = M_y1;
-    M_y1 = y(n,:);
+    for i = 1:3
+        if i > 1
+            x(n,:) = y(n,:,i-1);
+        end
+        xh_new = x(n,:) - d(i).*(1-c(i)).*xh(1,:,i) + c(i).*xh(2,:,i);
+        ap_y(:,:,i) = -c(i) .* xh_new + d(i).*(1-c(i)).*xh(1,:,i) + xh(2,:,i);
+        xh(:,:,i) = [xh_new; xh(1,:,i)];
+        y(n,:,i) = x(n,:) + ap_y(:,:,i);
+    end
     if mod(n,20000) == 0
        waitbar(n/length(handles.x(:,1)),wb,'Processing...');        % Dialogo de espera
     end
 end
-handles.y = (1-mix).*x + mix.*y;
+handles.y = (1-mix).*handles.x - mix.*y(:,:,1);
 
 z_interfaz_salida
 
@@ -309,7 +316,7 @@ function phaser_OpeningFcn(hObject, eventdata, handles, varargin)
 set(handles.titulo,'String','Phaser')
 set(handles.des,'String','Conjunto de filtros de banda eliminada estrecha (notch filter) con frecuencia central variable controlado por un oscilador de baja frecuencia. El fuerte cambio de fase existente alrededor de la banda eliminada se combina con las fases de la se�al directa y causa cancelaciones o refuerzos de fase.')
 % Inicializacion de parametros
-handles.Q = 100;
+handles.Q = 10  ;
 handles.f_c = 2000;
 handles.limites(1).Min = 100;
 handles.limites(1).Max = 19900;
@@ -319,7 +326,7 @@ set(handles.par_1_title,'Visible','on','String','Frecuencia central')
 set(handles.par_1_LFO,'Visible','on')
 set(handles.graf,'Visible','on')
 set(handles.graf_open,'Visible','on')
-handles.mix = 0.7;
+handles.mix = 0.9;
 handles.limites(2).Min = 0;
 handles.limites(2).Max = 1;
 set(handles.par_2,'Visible','on','Value',handles.mix)
@@ -347,6 +354,7 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Interfaz
 z_interfaz_entrada_lista_Callback
+handles = LFO_plot(handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -357,6 +365,7 @@ function entrada_oscilador_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,0);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of entrada_oscilador

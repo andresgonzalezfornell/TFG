@@ -41,52 +41,56 @@ function aplicar_Callback(hObject, eventdata, handles)
 % hObject    handle to aplicar (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
- tic
 % Limpieza de salida
 z_interfaz_limpieza
 
 % Autowah
 x = handles.x;
+fs = handles.fs;
 BW = handles.BW;
-f_1 = handles.f_0-BW/2;
-if f_1 <= 0
-    f_1 = 1;
-end
-f_2 = handles.f_0+BW/2;
+f_c = handles.f_c;
 mix = handles.mix;
-filtro = designfilt('bandpassfir','FilterOrder',2,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-wah = filter(filtro,x);
-if handles.LFO_1.checkbox || handles.LFO_2.checkbox || handles.LFO_3.checkbox   % Con LFO
-    LFO_res = round(handles.fs/10);
-    wb = waitbar(0,'Processing...');                        % Dialogo de espera
-    for n = 0:LFO_res:handles.LFO_N-LFO_res
-        if handles.LFO_1.checkbox                                               % LFO 1
-            BW = handles.LFO_1.x(n+1);
+LFO_res = 1000;
+wb = waitbar(0,'Processing...','Name','Autowah');                        % Dialogo de espera
+% Filto banda eliminada
+y = zeros(length(x(:,1)),2);
+% Inicializacion de memorias
+xh = zeros(2,2,3);
+ap_y = zeros(1,2,3);
+% Coeficientes
+c(1) = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
+c(2) = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
+c(3) = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
+d(1) = -cos(2*pi*f_c/fs);
+d(2) = -cos(2*pi*f_c/fs);
+d(3) = -cos(2*pi*f_c/fs);
+for n = 1:length(x)
+    if (handles.LFO_1.checkbox || handles.LFO_2.checkbox) && mod(n-1,LFO_res) == 0
+        if handles.LFO_1.checkbox
+            BW = handles.LFO_1.x(n);
+            c = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
         end
-        if handles.LFO_2.checkbox                                               % LFO 2
-            f_0 = handles.LFO_2.x(n+1);
-            f_1 = f_0-BW/2;
-            if f_1 <= 0
-                f_1 = 1;
-            end
-            f_2 = f_0+BW/2;
+        if handles.LFO_2.checkbox
+            f_c = handles.LFO_2.x(n);
+            d = -cos(2*pi*f_c/fs);
         end
-        if handles.LFO_3.checkbox                                               % LFO 3
-            mix(n+1:n+LFO_res) = handles.LFO_3.x(n+1);
+        if handles.LFO_3.checkbox
+            mix(n:n+LFO_res-1,1) = handles.LFO_3.x(n);
+            mix(n:n+LFO_res-1,2) = handles.LFO_3.x(n);
         end
-        if handles.LFO_1.checkbox || handles.LFO_2.checkbox
-            filtro = designfilt('bandpassfir','FilterOrder',6,'CutoffFrequency1',f_1,'CutoffFrequency2',f_2,'SampleRate',handles.fs);
-            %fvtool(filtro)
-            wah(n+1:n+LFO_res,:) = filter(filtro,x(n+1:n+LFO_res,:));
-        end
-        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
     end
-    wah(n+LFO_res+1:length(handles.x(:,1)),:) = filter(filtro,x(n+LFO_res+1:length(handles.x(:,1)),:));
+    % Filtro
+    xh_new = x(n,:) - d.*(1-c).*xh(1,:) + c.*xh(2,:);
+    ap_y = -c .* xh_new + d.*(1-c).*xh(1,:) + xh(2,:);
+    xh = [xh_new; xh(1,:)];
+    y(n,:) = x(n,:) - ap_y;
+    if mod(n,20000) == 0
+       waitbar(n/length(handles.x(:,1)),wb,'Processing...');        % Dialogo de espera
+    end
 end
-handles.y = (1-mix).*x + mix.*wah;
+handles.y = (1-mix).*x - mix.*y;
 
 z_interfaz_salida
-toc
 
 %% Parametros
 % --- Executes on slider movement.
@@ -98,16 +102,16 @@ handles.BW = get(hObject,'Value');
 set(handles.par_1_value,'String',handles.BW)
 handles.limites(2).Min = handles.BW/2;
 handles.limites(2).Max = 20000-handles.BW/2;
-if handles.f_0 < handles.limites(2).Min
-    handles.f_0 = handles.limites(2).Min;
-    set(handles.par_2,'Value',handles.f_0)
-    set(handles.par_2_value,'String',handles.f_0)
-elseif handles.f_0 > handles.limites(2).Max
-    handles.f_0 = handles.limites(2).Max;
-    set(handles.par_2,'Value',handles.f_0)
-    set(handles.par_2_value,'String',handles.f_0)
+if handles.f_c < handles.limites(2).Min
+    handles.f_c = handles.limites(2).Min;
+    set(handles.par_2,'Value',handles.f_c)
+    set(handles.par_2_value,'String',handles.f_c)
+elseif handles.f_c > handles.limites(2).Max
+    handles.f_c = handles.limites(2).Max;
+    set(handles.par_2,'Value',handles.f_c)
+    set(handles.par_2_value,'String',handles.f_c)
 end
-set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+set(handles.par_2,'Visible','on','Value',handles.f_c,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
 handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
@@ -124,16 +128,16 @@ if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(h
     set(handles.par_1,'Value',handles.BW)
     handles.limites(2).Min = round(handles.BW/2);
     handles.limites(2).Max = round(20000-handles.BW/2);
-    if handles.f_0 < handles.limites(2).Min 
-        handles.f_0 = handles.limites(2).Min;
-        set(handles.par_2,'Value',handles.f_0)
-        set(handles.par_2_value,'String',handles.f_0)
-    elseif handles.f_0 > handles.limites(2).Max
-        handles.f_0 = handles.limites(2).Max;
-        set(handles.par_2,'Value',handles.f_0)
-        set(handles.par_2_value,'String',handles.f_0)
+    if handles.f_c < handles.limites(2).Min 
+        handles.f_c = handles.limites(2).Min;
+        set(handles.par_2,'Value',handles.f_c)
+        set(handles.par_2_value,'String',handles.f_c)
+    elseif handles.f_c > handles.limites(2).Max
+        handles.f_c = handles.limites(2).Max;
+        set(handles.par_2,'Value',handles.f_c)
+        set(handles.par_2_value,'String',handles.f_c)
     end
-    set(handles.par_2,'Visible','on','Value',handles.f_0,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+    set(handles.par_2,'Visible','on','Value',handles.f_c,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
 else
     set(handles.par_1_value,'String',handles.BW)
 end
@@ -164,8 +168,8 @@ function par_2_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.f_0 = get(hObject,'Value');
-set(handles.par_2_value,'String',handles.f_0)
+handles.f_c = get(hObject,'Value');
+set(handles.par_2_value,'String',handles.f_c)
 handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
@@ -177,10 +181,10 @@ function par_2_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(2).Min && str2double(get(hObject,'String'))<=handles.limites(2).Max
-    handles.f_0 = str2double(get(hObject,'String'));
-    set(handles.par_2,'Value',handles.f_0)
+    handles.f_c = str2double(get(hObject,'String'));
+    set(handles.par_2,'Value',handles.f_c)
 else
-    set(handles.par_2_value,'String',handles.f_0)
+    set(handles.par_2_value,'String',handles.f_c)
 end
 handles = LFO_plot(handles);
 % Update handles structure
@@ -344,11 +348,11 @@ set(handles.par_1,'Visible','on','Value',handles.BW)
 set(handles.par_1_value,'Visible','on','String',handles.BW)
 set(handles.par_1_title,'Visible','on','String','Ancho de banda del filtro')
 set(handles.par_1_LFO,'Visible','on')
-handles.f_0 = 1000;
+handles.f_c = 1000;
 handles.limites(2).Min = handles.BW/2;
 handles.limites(2).Max = 20000-handles.BW/2;
-set(handles.par_2,'Visible','on','Value',handles.f_0)
-set(handles.par_2_value,'Visible','on','String',handles.f_0)
+set(handles.par_2,'Visible','on','Value',handles.f_c)
+set(handles.par_2_value,'Visible','on','String',handles.f_c)
 set(handles.par_2_title,'Visible','on','String','Frecuencia central filtro [Hz]')
 set(handles.par_2_LFO,'Visible','on')
 set(handles.graf,'Visible','on')
@@ -382,6 +386,7 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Interfaz
 z_interfaz_entrada_lista_Callback
+handles = LFO_plot(handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -392,6 +397,7 @@ function entrada_oscilador_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,0);
+handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of entrada_oscilador
@@ -701,7 +707,7 @@ function [handles] = LFO_plot(handles)
 cla(handles.graf)
 n = 0:20000;
 lfo(1:20001) = 0;
-f_0 = handles.f_0;
+f_0 = handles.f_c;
 BW = handles.BW;
 hold(handles.graf,'on')
 set(rectangle('Position',[0 1 20000 0.25],'FaceColor',[1 1 1]),'EdgeColor','none','parent',handles.graf)

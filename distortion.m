@@ -7,8 +7,8 @@ function varargout = distortion(varargin)
 %
 %      La variable devuelta "y" se corresponde con un array
 %      multidimensional formado por las siguientes senales
-%       y(:,1) señal canal L
-%       y(:,2) señal canal R
+%       y(:,1) senal canal L
+%       y(:,2) senal canal R
 %       y(:,3) espectro de senal canal L
 %       y(:,4) espectro de senal canal R
 %       y(:,5) espectro de senal media entre ambos canales
@@ -49,14 +49,14 @@ z_interfaz_limpieza
 if handles.LFO_1.checkbox                               % Con LFO
     LFO_res = round(handles.fs/10);
     wb = waitbar(0,'Processing...');                        % Dialogo de espera
-    for n = 0:LFO_res:handles.LFO_N-LFO_res
+    for n = 0:LFO_res:length(handles.x(:,1))-LFO_res
         k = handles.LFO_1.x(n+1);
         if k > 0.99
             k = 0.99;
         end
         l = 1/(1-k);
         handles.y(n+1:n+LFO_res,:) = sign(handles.x(n+1:n+LFO_res,:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(handles.x(n+1:n+LFO_res,:))));
-        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
+        waitbar(n/length(handles.x(:,1)),wb,'Processing...');        % Dialogo de espera
     end
     handles.y(n+LFO_res+1:length(handles.x(:,1)),:) = sign(handles.x(n+LFO_res+1:length(handles.x(:,1)),:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(handles.x(n+LFO_res+1:length(handles.x(:,1)),:))));
 else                                                    % Sin LFO
@@ -234,6 +234,7 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Interfaz
 z_interfaz_entrada_lista_Callback
+handles = distortion_plot(handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -244,6 +245,7 @@ function entrada_oscilador_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,0);
+handles = distortion_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of entrada_oscilador

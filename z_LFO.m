@@ -53,22 +53,7 @@ if checkbox        % Si LFO habilitado
             LFO = handles.LFO_6;
     end
     if LFO.submit       % Si se ha seleccionado a aplicar
-        switch LFO.tipo
-            case '(S) Sinusoidal'
-                tipo_abreviado = '(S)';
-            case '(T) Triangular'
-                tipo_abreviado = '(T)';
-            case '(DA) Diente sierra asc'
-                tipo_abreviado = '(DA)';
-            case '(DD) Diente sierra desc'
-                tipo_abreviado = '(DD)';
-            case '(C) Cuadrada'
-                tipo_abreviado = '(C)';
-            case '(N) Ruido AWGN'
-                tipo_abreviado = '(N)';
-            case 'Externa'
-                tipo_abreviado = 'Externa';
-        end
+        indicador = LFO_indicador(LFO);
         switch par
             case 0
                 % Limpieza de variables
@@ -81,16 +66,27 @@ if checkbox        % Si LFO habilitado
                 handles.fs = 44100;
                 z_entrada
                 handles.LFO_0.checkbox = 1;
-                handles.LFO_N = length(handles.LFO_0.x);
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.entrada_archivo,'String',tipo_abreviado)
-                else
-                    set(handles.entrada_archivo,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(LFO.offset-LFO.amplitud,2),...
-                        ',',num2str(LFO.offset+LFO.amplitud,2),...
-                        '] f = ',num2str(LFO.frecuencia,2),...
-                        'Hz'))
-                end
+                set(handles.entrada_archivo,'String',indicador)
+                % LFO
+                handles.LFO_0.checkbox = 0;
+                handles.LFO_1.checkbox = 0;
+                handles.LFO_2.checkbox = 0;
+                handles.LFO_3.checkbox = 0;
+                handles.LFO_4.checkbox = 0;
+                handles.LFO_5.checkbox = 0;
+                handles.LFO_6.checkbox = 0;
+                set(handles.par_1,'Enable','on')
+                set(handles.par_2,'Enable','on')
+                set(handles.par_3,'Enable','on')
+                set(handles.par_4,'Enable','on')
+                set(handles.par_5,'Enable','on')
+                set(handles.par_6,'Enable','on')
+                set(handles.par_1_value,'Enable','on','String',get(handles.par_1,'Value'))
+                set(handles.par_2_value,'Enable','on','String',get(handles.par_2,'Value'))
+                set(handles.par_3_value,'Enable','on','String',get(handles.par_3,'Value'))
+                set(handles.par_4_value,'Enable','on','String',get(handles.par_4,'Value'))
+                set(handles.par_5_value,'Enable','on','String',get(handles.par_5,'Value'))
+                set(handles.par_6_value,'Enable','on','String',get(handles.par_6,'Value'))
                 set(handles.par_1_LFO,'Enable','on','Value',0)
                 set(handles.par_2_LFO,'Enable','on','Value',0)
                 set(handles.par_3_LFO,'Enable','on','Value',0)
@@ -99,88 +95,39 @@ if checkbox        % Si LFO habilitado
                 set(handles.par_6_LFO,'Enable','on','Value',0)
             case 1
                 handles.LFO_1.checkbox = 1;
-                handles.LFO_N = length(handles.LFO_1.x);
                 set(handles.par_1,'Enable','off')
                 set(handles.par_1_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_1_value,'String',tipo_abreviado)
-                else
-                    set(handles.par_1_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(LFO.offset-LFO.amplitud,2),...
-                        ',',num2str(LFO.offset+LFO.amplitud,2),...
-                        '] f = ',num2str(LFO.frecuencia,2),...
-                        'Hz'))
-                end
+                set(handles.par_1_value,'String',indicador)
             case 2
                 handles.LFO_2.checkbox = 1;
                 handles.LFO_N = length(handles.LFO_2.x);
                 set(handles.par_2,'Enable','off')
                 set(handles.par_2_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_2_value,'String',tipo_abreviado)
-                else
-                    set(handles.par_2_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(LFO.offset-LFO.amplitud,2),...
-                        ',',num2str(LFO.offset+LFO.amplitud,2),...
-                        '] f = ',num2str(LFO.frecuencia,2),...
-                        'Hz'))
-                end
+                set(handles.par_2_value,'String',indicador)
             case 3
                 handles.LFO_3.checkbox = 1;
                 handles.LFO_N = length(handles.LFO_3.x);
                 set(handles.par_3,'Enable','off')
                 set(handles.par_3_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_3_value,'String',tipo_abreviado)
-                else
-                    set(handles.par_3_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(LFO.offset-LFO.amplitud,2),...
-                        ',',num2str(LFO.offset+LFO.amplitud,2),...
-                        '] f = ',num2str(LFO.frecuencia,2),...
-                        'Hz'))
-                end
+                set(handles.par_3_value,'String',indicador)
             case 4
                 handles.LFO_4.checkbox = 1;
                 handles.LFO_N = length(handles.LFO_4.x);
                 set(handles.par_4,'Enable','off')
                 set(handles.par_4_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_4_value,'String',tipo_abreviado)
-                else
-                    set(handles.par_4_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(LFO.offset-LFO.amplitud,2),...
-                        ',',num2str(LFO.offset+LFO.amplitud,2),...
-                        '] f = ',num2str(LFO.frecuencia,2),...
-                        'Hz'))
-                end
+                set(handles.par_4_value,'String',indicador)
             case 5
                 handles.LFO_5.checkbox = 1;
                 handles.LFO_N = length(handles.LFO_5.x);
                 set(handles.par_5,'Enable','off')
                 set(handles.par_5_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_5_value,'String',tipo_abreviado)
-                else
-                    set(handles.par_5_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(LFO.offset-LFO.amplitud,2),...
-                        ',',num2str(LFO.offset+LFO.amplitud,2),...
-                        '] f = ',num2str(LFO.frecuencia,2),...
-                        'Hz'))
-                end
+                set(handles.par_5_value,'String',indicador)
             case 6
                 handles.LFO_6.checkbox = 1;
                 handles.LFO_N = length(handles.LFO_6.x);
                 set(handles.par_6,'Enable','off')
                 set(handles.par_6_value,'Enable','off')
-                if strcmp(tipo_abreviado,'Externa')
-                    set(handles.par_6_value,'String',tipo_abreviado)
-                else
-                    set(handles.par_6_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(LFO.offset-LFO.amplitud,2),...
-                        ',',num2str(LFO.offset+LFO.amplitud,2),...
-                        '] f = ',num2str(LFO.frecuencia,2),...
-                        'Hz'))
-                end
+                set(handles.par_6_value,'String',indicador)
         end
     else        % Si se ha seleccionado cancelar
         switch par
@@ -211,6 +158,16 @@ if checkbox        % Si LFO habilitado
 else                                % Si LFO deshabilitado
     switch par
         case 0
+            if isfield(handles,'x')
+                clear handles.x
+                cla(handles.entrada_espectro)
+            end
+            if isfield(handles,'y')
+                clear handles.y
+                cla(handles.salida_L)
+                cla(handles.salida_R)
+                cla(handles.salida_espectro)
+            end
             handles.LFO_0.checkbox = 0;
             handles.LFO_1.checkbox = 0;
             handles.LFO_2.checkbox = 0;
@@ -259,3 +216,96 @@ else                                % Si LFO deshabilitado
 end
 end
 
+function [indicador] = LFO_indicador(LFO)
+    switch LFO.tipo
+        case '(S) Sinusoidal'
+            indicador = '(S)';
+        case '(T) Triangular'
+            indicador = '(T)';
+        case '(DA) Diente sierra asc'
+            indicador = '(DA)';
+        case '(DD) Diente sierra desc'
+            indicador = '(DD)';
+        case '(C) Cuadrada'
+            indicador = '(C)';
+        case '(N) Ruido AWGN'
+            indicador = '(N)';
+        case 'Externa'
+            indicador = 'Externa';
+    end
+    if isfield(LFO.modulador(1),'tipo')
+        if ischar(LFO.modulador(1).tipo)
+            switch LFO.modulador(1).tipo
+                case '(S) Sinusoidal'
+                    modulador1_tipo = '(S)';
+                case '(T) Triangular'
+                    modulador1_tipo = '(T)';
+                case '(DA) Diente sierra asc'
+                    modulador1_tipo = '(DA)';
+                case '(DD) Diente sierra desc'
+                    modulador1_tipo = '(DD)';
+                case '(C) Cuadrada'
+                    modulador1_tipo = '(C)';
+                case '(N) Ruido AWGN'
+                    modulador1_tipo = '(N)';
+                case 'Externa'
+                    modulador1_tipo = 'Externa';
+            end
+        end
+    end
+    if isfield(LFO.modulador(2),'tipo')
+        if ischar(LFO.modulador(2).tipo)
+            switch LFO.modulador(2).tipo
+                case '(S) Sinusoidal'
+                    modulador2_tipo = '(S)';
+                case '(T) Triangular'
+                    modulador2_tipo = '(T)';
+                case '(DA) Diente sierra asc'
+                    modulador2_tipo = '(DA)';
+                case '(DD) Diente sierra desc'
+                    modulador2_tipo = '(DD)';
+                case '(C) Cuadrada'
+                    modulador2_tipo = '(C)';
+                case '(N) Ruido AWGN'
+                    modulador2_tipo = '(N)';
+                case 'Externa'
+                    modulador2_tipo = 'Externa';
+            end
+        end
+    end
+    if isfield(LFO.modulador(3),'tipo')
+        if ischar(LFO.modulador(3).tipo)
+            switch LFO.modulador(3).tipo
+                case '(S) Sinusoidal'
+                    modulador3_tipo = '(S)';
+                case '(T) Triangular'
+                    modulador3_tipo = '(T)';
+                case '(DA) Diente sierra asc'
+                    modulador3_tipo = '(DA)';
+                case '(DD) Diente sierra desc'
+                    modulador3_tipo = '(DD)';
+                case '(C) Cuadrada'
+                    modulador3_tipo = '(C)';
+                case '(N) Ruido AWGN'
+                    modulador3_tipo = '(N)';
+                case 'Externa'
+                    modulador3_tipo = 'Externa';
+            end
+        end
+    end
+    if ~strcmp(LFO.tipo,'Externa')
+        if LFO.modulador(1).checkbox
+            indicador = strcat(indicador,' FM ',modulador1_tipo);
+        else
+            indicador = strcat(indicador,' f = ',num2str(LFO.frecuencia,2),'Hz');
+        end
+        if LFO.modulador(2).checkbox
+            indicador = strcat(indicador,' AM ',modulador2_tipo);
+        else
+            indicador = strcat(indicador,' [',num2str(LFO.offset-LFO.amplitud,2),',',num2str(LFO.offset+LFO.amplitud,2),']');
+        end
+        if LFO.modulador(3).checkbox
+            indicador = strcat(indicador,' PM ',modulador3_tipo);
+        end
+    end
+end

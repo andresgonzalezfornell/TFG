@@ -22,7 +22,7 @@ function varargout = z_LFO_GUI(varargin)
 
 % Edit the above text to modify the response to help z_LFO_GUI
 
-% Last Modified by GUIDE v2.5 01-Jun-2015 18:27:03
+% Last Modified by GUIDE v2.5 05-Jun-2015 12:46:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -56,7 +56,7 @@ handles.limites = varargin{2};
 handles.fs = varargin{3};
 % Inicializacion de parametros
 handles.delta = (handles.limites.Max-handles.limites.Min)/2;
-handles.LFO.amplitud_Min = handles.delta/100;
+handles.LFO.amplitud_Min = 0;
 handles.LFO.amplitud_Max = handles.delta;
 if handles.par == 0
     handles.LFO.frecuencia = 440;
@@ -64,17 +64,17 @@ if handles.par == 0
     handles.LFO.frecuencia_Max = 20000;
     handles.LFO.offset = 0;
     set(handles.title,'String','Generador de audio mediante el LFO')
-    set(handles.offset,'Enable','Off')
-    set(handles.offset_value,'Enable','Off')
-    set(handles.externa,'Enable','Off')
+    set(handles.offset,'Enable','off')
+    set(handles.offset_value,'Enable','off')
+    set(handles.externa,'Enable','off')
 else
     handles.LFO.frecuencia = 2;
     handles.LFO.frecuencia_Min = 0.1;
     handles.LFO.frecuencia_Max = 10;
     set(handles.title,'String',strcat('Aplicar LFO a parametro ',num2str(handles.par)))
     handles.LFO.offset = handles.delta+handles.limites.Min;
-    set(handles.offset,'Enable','On','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
-    set(handles.offset_value,'Enable','On','String',handles.LFO.offset)
+    set(handles.offset,'Enable','on','Value',handles.LFO.offset,'Min',handles.limites.Min+handles.delta/2,'Max',handles.limites.Max-handles.delta/2)
+    set(handles.offset_value,'Enable','on','String',handles.LFO.offset)
 end
 set(handles.tipo_panel,'SelectedObject',handles.sinusoidal)
 set(handles.frecuencia,'Value',handles.LFO.frecuencia,'Min',handles.LFO.frecuencia_Min,'Max',handles.LFO.frecuencia_Max)
@@ -82,10 +82,16 @@ set(handles.frecuencia_value,'String',handles.LFO.frecuencia)
 handles.LFO.amplitud = handles.delta/2;
 set(handles.amplitud,'Value',handles.LFO.amplitud,'Min',handles.LFO.amplitud_Min,'Max',handles.LFO.amplitud_Max)
 set(handles.amplitud_value,'String',handles.LFO.amplitud)
+handles.LFO.fase = 0;
+handles.LFO.fase_Min = 0;
+handles.LFO.fase_Max = 2*pi;
+set(handles.fase,'Value',handles.LFO.fase,'Min',handles.LFO.fase_Min,'Max',handles.LFO.fase_Max)
+set(handles.fase_value,'String',handles.LFO.fase)
 handles.LFO.submit = 0;
 % Modulador
-handles.modulador.LFO_frecuencia.checkbox = 0;
-handles.modulador.LFO_amplitud.checkbox = 0;
+handles.LFO.modulador(1).checkbox = 0;      % FM
+handles.LFO.modulador(2).checkbox = 0;      % AM
+handles.LFO.modulador(3).checkbox = 0;      %PM
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
@@ -173,7 +179,9 @@ set(handles.amplitud_value,'String',handles.LFO.amplitud)
 if handles.LFO.amplitud == handles.LFO.amplitud_Max
     set(handles.offset,'Enable','off')
 else
-    set(handles.offset,'Enable','on')
+    if handles.par ~= 0
+        set(handles.offset,'Enable','on')
+    end
 end
 if handles.LFO.offset < (handles.limites.Min+handles.LFO.amplitud)
     handles.LFO.offset = handles.limites.Min+handles.LFO.amplitud;
@@ -202,7 +210,9 @@ if str2double(get(hObject,'String'))>=handles.LFO.amplitud_Min & str2double(get(
     if handles.LFO.amplitud == handles.LFO.amplitud_Max
         set(handles.offset,'Enable','off')
     else
-        set(handles.offset,'Enable','on')
+        if handles.par ~= 0
+            set(handles.offset,'Enable','on')
+        end
     end
     if handles.LFO.offset < (handles.limites.Min+handles.LFO.amplitud)
         handles.LFO.offset = handles.limites.Min+handles.LFO.amplitud;
@@ -222,6 +232,37 @@ z_LFO_graf
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of amplitud_value as text
 %        str2double(get(hObject,'String')) returns contents of amplitud_value as a double
+
+
+% --- Executes on slider movement.
+function fase_Callback(hObject, eventdata, handles)
+% hObject    handle to fase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles.LFO.fase = get(hObject,'Value');
+set(handles.fase_value,'String',handles.LFO.fase)
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+function fase_value_Callback(hObject, eventdata, handles)
+% hObject    handle to fase_value (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+if str2double(get(hObject,'String'))>=handles.LFO.fase_Min & str2double(get(hObject,'String'))<=handles.LFO.fase_Max
+    handles.LFO.fase = str2double(get(hObject,'String'));
+    set(handles.fase,'Value',handles.LFO.fase)
+else
+    set(handles.fase_value,'String',handles.LFO.fase)
+end
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hints: get(hObject,'String') returns contents of fase_value as text
+%        str2double(get(hObject,'String')) returns contents of fase_value as a double
 
 
 % --- Executes on slider movement.
@@ -298,6 +339,18 @@ function amplitud_value_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function fase_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to fase (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
 
@@ -405,7 +458,7 @@ function frecuencia_LFO_Callback(hObject, eventdata, handles)
 % hObject    handle to frecuencia_LFO (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-handles.modulador.LFO_frecuencia = z_modulador(handles,1);
+handles = z_modulador(handles,1);
 z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
@@ -417,9 +470,20 @@ function amplitud_LFO_Callback(hObject, eventdata, handles)
 % hObject    handle to amplitud_LFO (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% modulador = z_modulador(handles,2)
-handles.modulador.LFO_amplitud = z_modulador(handles,2);
+handles = z_modulador(handles,2);
 z_LFO_graf
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of amplitud_LFO
+
+
+% --- Executes on button press in fase_LFO.
+function fase_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to fase_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_modulador(handles,3);
+z_LFO_graf
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of fase_LFO

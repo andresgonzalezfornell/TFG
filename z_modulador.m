@@ -1,29 +1,37 @@
-function [modulador] = z_modulador(handles,par)
+function [handles] = z_modulador(handles,par)
 %z_moduladors Control del modulador del LFO
 
 % Obtencion del estado del LFO
 switch par
     case 1
-        modulador.LFO_frecuencia.checkbox = get(handles.frecuencia_LFO,'Value');
-        checkbox = modulador.LFO_frecuencia.checkbox;
+        handles.LFO.modulador(par).checkbox = get(handles.frecuencia_LFO,'Value');
     case 2
-        modulador.LFO_amplitud.checkbox = get(handles.amplitud_LFO,'Value');
-        checkbox = modulador.LFO_amplitud.checkbox;
+        handles.LFO.modulador(par).checkbox = get(handles.amplitud_LFO,'Value');
+    case 3
+        handles.LFO.modulador(par).checkbox = get(handles.fase_LFO,'Value');
 end
-if checkbox        % Si LFO habilitado
+
+if handles.LFO.modulador(par).checkbox        % Si LFO habilitado
     limites.longitud = handles.limites.longitud;
     switch par
-        case 1
+        case 1          % FM
             limites.Min = handles.LFO.frecuencia_Min;
             limites.Max = handles.LFO.frecuencia_Max;
-        case 2
+        case 2          % AM
             limites.Min = handles.LFO.amplitud_Min;
             limites.Max = handles.LFO.amplitud_Max;
+        case 3          % PM
+            limites.Min = handles.LFO.fase_Min;
+            limites.Max = handles.LFO.fase_Max;
     end
-    modulador = z_modulador_GUI(par,limites,handles.fs);
-    if modulador.submit       % Si se ha seleccionado a aplicar
-        modulador.checkbox = 1;
-        switch modulador.tipo
+    LFO = z_modulador_GUI(par,limites,handles.fs);
+    field_LFO = fieldnames(LFO);
+    for i = 1:length(field_LFO)
+        handles.LFO.modulador(par).(field_LFO{i}) = LFO.(field_LFO{i});
+    end
+    if handles.LFO.modulador(par).submit       % Si se ha seleccionado a aplicar
+        handles.LFO.modulador(par).checkbox = 1;
+        switch handles.LFO.modulador(par).tipo
             case '(S) Sinusoidal'
                 tipo_abreviado = '(S)';
             case '(T) Triangular'
@@ -47,9 +55,9 @@ if checkbox        % Si LFO habilitado
                     set(handles.frecuencia_value,'String',tipo_abreviado)
                 else
                     set(handles.frecuencia_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(handles.LFO.offset-modulador.amplitud,2),...
-                        ',',num2str(handles.LFO.offset+modulador.amplitud,2),...
-                        '] f = ',num2str(modulador.frecuencia,2),...
+                        ' [',num2str(handles.LFO.offset-handles.LFO.modulador(par).amplitud,2),...
+                        ',',num2str(handles.LFO.offset+handles.LFO.modulador(par).amplitud,2),...
+                        '] f = ',num2str(handles.LFO.modulador(par).frecuencia,2),...
                         'Hz'))
                 end
             case 2
@@ -59,23 +67,37 @@ if checkbox        % Si LFO habilitado
                     set(handles.amplitud_value,'String',tipo_abreviado)
                 else
                     set(handles.amplitud_value,'String',strcat(tipo_abreviado,...
-                        ' [',num2str(handles.LFO.offset-modulador.amplitud,2),...
-                        ',',num2str(handles.LFO.offset+modulador.amplitud,2),...
-                        '] f = ',num2str(modulador.frecuencia,2),...
+                        ' [',num2str(handles.LFO.offset-handles.LFO.modulador(par).amplitud,2),...
+                        ',',num2str(handles.LFO.offset+handles.LFO.modulador(par).amplitud,2),...
+                        '] f = ',num2str(handles.LFO.modulador(par).frecuencia,2),...
+                        'Hz'))
+                end
+            case 3
+                set(handles.fase,'Enable','off')
+                set(handles.fase_value,'Enable','off')
+                if strcmp(tipo_abreviado,'Externa')
+                    set(handles.fase_value,'String',tipo_abreviado)
+                else
+                    set(handles.fase_value,'String',strcat(tipo_abreviado,...
+                        ' [',num2str(handles.LFO.offset-handles.LFO.modulador(par).amplitud,2),...
+                        ',',num2str(handles.LFO.offset+handles.LFO.modulador(par).amplitud,2),...
+                        '] f = ',num2str(handles.LFO.modulador(par).frecuencia,2),...
                         'Hz'))
                 end
         end
     else        % Si se ha seleccionado cancelar
-        modulador.checkbox = 0;
+        handles.LFO.modulador(par).checkbox = 0;
         switch par
             case 1
                 set(handles.frecuencia_LFO,'Value',0);
             case 2
                 set(handles.amplitud_LFO,'Value',0);
+            case 3
+                set(handles.fase_LFO,'Value',0);
         end
     end
 else                                % Si LFO deshabilitado
-    modulador.checkbox = 0;
+    handles.LFO.modulador(par).checkbox = 0;
     switch par
         case 1
             set(handles.frecuencia_value,'String',get(handles.frecuencia,'Value'))
@@ -85,6 +107,10 @@ else                                % Si LFO deshabilitado
             set(handles.amplitud_value,'String',get(handles.amplitud,'Value'))
             set(handles.amplitud,'Enable','on')
             set(handles.amplitud_value,'Enable','on')
+        case 3
+            set(handles.fase_value,'String',get(handles.fase,'Value'))
+            set(handles.fase,'Enable','on')
+            set(handles.fase_value,'Enable','on')
     end
 end
 end

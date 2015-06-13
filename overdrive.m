@@ -49,14 +49,14 @@ z_interfaz_limpieza
 if handles.LFO_1.checkbox                               % Con LFO
     LFO_res = round(handles.fs/10);
     wb = waitbar(0,'Processing...');                        % Dialogo de espera
-    for n = 0:LFO_res:handles.LFO_N-LFO_res
+    for n = 0:LFO_res:length(handles.x(:,1))-LFO_res
         k = handles.LFO_1.x(n+1);
         if k < 0.01
             k = 0.01;
         end
         l = (1/(1-k*0.9)-1)*15;
         handles.y(n+1:n+LFO_res,:) = atan(l*handles.x(n+1:n+LFO_res,:))/atan(l);
-        waitbar(n/handles.LFO_N,wb,'Processing...');        % Dialogo de espera
+        waitbar(n/length(handles.x(:,1)),wb,'Processing...');        % Dialogo de espera
     end
     handles.y(n+LFO_res+1:length(handles.x(:,1)),:) = atan(l*handles.x(n+LFO_res+1:length(handles.x(:,1)),:))/atan(l);
 else                                                    % Sin LFO
@@ -250,6 +250,7 @@ function entrada_lista_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Interfaz
 z_interfaz_entrada_lista_Callback
+handles = overdrive_plot(handles);
 % Hints: contents = cellstr(get(hObject,'String')) returns entrada_lista contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from entrada_lista
 
@@ -260,6 +261,7 @@ function entrada_oscilador_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 handles = z_LFO(handles,0);
+handles = overdrive_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
 % Hint: get(hObject,'Value') returns toggle state of entrada_oscilador

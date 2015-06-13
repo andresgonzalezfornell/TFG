@@ -11,7 +11,7 @@ function varargout = panning(varargin)
 %       y(:,2) senal canal R
 %       y(:,3) espectro de senal canal L
 %       y(:,4) espectro de senal canal R
-%       y(:,5) espectro de señal media entre ambos canales
+%       y(:,5) espectro de senal media entre ambos canales
 %      Nota: puede cambiar el nombre de la variable "y" por la que desee.
 
 
