@@ -50,8 +50,7 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
                         file = importdata(strcat(handles.path,'/',filename));
                     % Si el formato es mp3
                     elseif strcmp(format,'mp3')
-                        file.data = audioread(strcat(handles.path,'/',filename));
-                        file.fs = 44100;
+                        [file.data, file.fs] = audioread(strcat(handles.path,'/',filename));
                     end
                     waitbar(2/4,wb,'Cargando audio...','Name','Audio de entrada');
                     handles.x = file.data;

@@ -50,20 +50,15 @@ fs = handles.fs;
 BW = handles.BW;
 f_c = handles.f_c;
 mix = handles.mix;
-LFO_res = 1000;
-wb = waitbar(0,'Processing...','Name','Autowah');                        % Dialogo de espera
 % Filto banda eliminada
 y = zeros(length(x(:,1)),2);
 % Inicializacion de memorias
-xh = zeros(2,2,3);
-ap_y = zeros(1,2,3);
+xh = zeros(2,2);
 % Coeficientes
-c(1) = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
-c(2) = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
-c(3) = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
-d(1) = -cos(2*pi*f_c/fs);
-d(2) = -cos(2*pi*f_c/fs);
-d(3) = -cos(2*pi*f_c/fs);
+c = (tan(pi*BW/fs)-1) / (tan(pi*BW/fs)+1);
+d = -cos(2*pi*f_c/fs);
+LFO_res = 1000;
+wb = waitbar(0,'Processing...','Name','Autowah');                        % Dialogo de espera
 for n = 1:length(x)
     if (handles.LFO_1.checkbox || handles.LFO_2.checkbox) && mod(n-1,LFO_res) == 0
         if handles.LFO_1.checkbox
@@ -357,7 +352,7 @@ set(handles.par_2_title,'Visible','on','String','Frecuencia central filtro [Hz]'
 set(handles.par_2_LFO,'Visible','on')
 set(handles.graf,'Visible','on')
 set(handles.graf_open,'Visible','on')
-handles.mix = 0.7;
+handles.mix = 0.9;
 handles.limites(3).Min = 0;
 handles.limites(3).Max = 1;
 set(handles.par_3,'Visible','on','Value',handles.mix)

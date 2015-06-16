@@ -86,7 +86,7 @@ function par_1_Callback(hObject, eventdata, handles)
 %
 % Obtencion del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parametro al controlador numérico
+% Paso del parametro al controlador numerico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -100,7 +100,7 @@ function par_1_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
-    % Obtención del valor
+    % Obtencion del valor
     %   handles.parametro = str2double(get(hObject,'String'));
     % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
@@ -114,26 +114,15 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_1_value as a double
 
 
-% --- Executes on button press in par_1_LFO.
-function par_1_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_1_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,1);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
-
-
 % --- Executes on slider movement.
 function par_2_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %
-% Obtención del valor
+% Obtencion del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parametro al controlador numérico
+% Paso del parametro al controlador numerico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -141,17 +130,18 @@ guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
+
 function par_2_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_2_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
-    % Obtención del valor
+    % Obtencion del valor
     %   handles.parametro = str2double(get(hObject,'String'));
     % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
-    % Vuelta al último valor
+    % Vuelta al ultimo valor
     %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
@@ -160,26 +150,15 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_2_value as a double
 
 
-% --- Executes on button press in par_2_LFO.
-function par_2_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_2_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,2);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
-
-
 % --- Executes on slider movement.
 function par_3_Callback(hObject, eventdata, handles)
 % hObject    handle to par_3 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %
-% Obtención del valor
+% Obtencion del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parametro al controlador numérico
+% Paso del parametro al controlador numerico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -187,17 +166,18 @@ guidata(hObject, handles);
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
 
+
 function par_3_value_Callback(hObject, eventdata, handles)
 % hObject    handle to par_3_value (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
-    % Obtención del valor
+    % Obtencion del valor
     %   handles.parametro = str2double(get(hObject,'String'));
     % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
-    % Vuelta al último valor
+    % Vuelta al ultimo valor
     %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
@@ -206,26 +186,15 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_3_value as a double
 
 
-% --- Executes on button press in par_3_LFO.
-function par_3_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_3_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,3);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
-
-
 % --- Executes on slider movement.
 function par_4_Callback(hObject, eventdata, handles)
 % hObject    handle to par_4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %
-% Obtención del valor
+% Obtencion del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parametro al controlador numérico
+% Paso del parametro al controlador numerico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -239,12 +208,12 @@ function par_4_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
-    % Obtención del valor
+    % Obtencion del valor
     %   handles.parametro = str2double(get(hObject,'String'));
     % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
-    % Vuelta al último valor
+    % Vuelta al ultimo valor
     %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
@@ -253,26 +222,15 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_4_value as a double
 
 
-% --- Executes on button press in par_4_LFO.
-function par_4_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_4_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,4);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
-
-
 % --- Executes on slider movement.
 function par_5_Callback(hObject, eventdata, handles)
 % hObject    handle to par_5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %
-% Obtención del valor
+% Obtencion del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parámetro al controlador numérico
+% Paso del parametro al controlador numerico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -286,12 +244,12 @@ function par_5_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
-    % Obtención del valor
+    % Obtencion del valor
     %   handles.parametro = str2double(get(hObject,'String'));
-    % Paso del parámetro al slider
+    % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
-    % Vuelta al último valor
+    % Vuelta al ultimo valor
     %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
@@ -300,26 +258,15 @@ guidata(hObject, handles);
 %        str2double(get(hObject,'String')) returns contents of par_5_value as a double
 
 
-% --- Executes on button press in par_5_LFO.
-function par_5_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_5_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,5);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
-
-
 % --- Executes on slider movement.
 function par_6_Callback(hObject, eventdata, handles)
 % hObject    handle to par_6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 %
-% Obtención del valor
+% Obtencion del valor
 %   handles.parametro = get(hObject,'Value');
-% Paso del parámetro al controlador numérico
+% Paso del parametro al controlador numerico
 %   set(handles.par_1_value,'String',handles.k)
 %
 % Update handles structure
@@ -333,29 +280,18 @@ function par_6_value_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(hObject,'String'))<=handles.limites(1).Max
-    % Obtención del valor
+    % Obtencion del valor
     %   handles.parametro = str2double(get(hObject,'String'));
-    % Paso del parámetro al slider
+    % Paso del parametro al slider
     %   set(handles.par_1,'Value',handles.parametro)
 else
-    % Vuelta al último valor
+    % Vuelta al ultimo valor
     %   set(handles.par_1_value,'String',handles.parametro)
 end
 % Update handles structure
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of par_6_value as text
 %        str2double(get(hObject,'String')) returns contents of par_6_value as a double
-
-
-% --- Executes on button press in par_6_LFO.
-function par_6_LFO_Callback(hObject, eventdata, handles)
-% hObject    handle to par_6_LFO (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-handles = z_LFO(handles,6);
-% Update handles structure
-guidata(hObject, handles);
-% Hint: get(hObject,'Value') returns toggle state of par_6_LFO
 
 
 %% Controles de interfaz
@@ -377,6 +313,73 @@ set(handles.des,'String','<Descripcion>')
 % Interfaz
 z_interfaz_OpeningFcn
 % UIWAIT makes <efecto> wait for user response (see UIRESUME)
+
+
+%% Automatizacion de parametros mediante LFO
+% --- Executes on button press in par_1_LFO.
+function par_1_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_1_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,1);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_1_LFO
+
+
+% --- Executes on button press in par_2_LFO.
+function par_2_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_2_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,2);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_2_LFO
+
+
+% --- Executes on button press in par_3_LFO.
+function par_3_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_3_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,3);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_3_LFO
+
+
+% --- Executes on button press in par_4_LFO.
+function par_4_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_4_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,4);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_4_LFO
+
+
+% --- Executes on button press in par_5_LFO.
+function par_5_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_5_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,5);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_5_LFO
+
+
+% --- Executes on button press in par_6_LFO.
+function par_6_LFO_Callback(hObject, eventdata, handles)
+% hObject    handle to par_6_LFO (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles = z_LFO(handles,6);
+% Update handles structure
+guidata(hObject, handles);
+% Hint: get(hObject,'Value') returns toggle state of par_6_LFO
 
 
 % --- Executes on selection change in entrada_lista.
