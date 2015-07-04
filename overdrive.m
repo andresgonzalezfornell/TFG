@@ -54,7 +54,7 @@ if handles.LFO_1.checkbox                               % Con LFO
         if k < 0.01
             k = 0.01;
         end
-        l = (1/(1-k*0.9)-1)*15;
+        l = (1/(1-k*0.9)-1)*10;
         handles.y(n+1:n+LFO_res,:) = atan(l*handles.x(n+1:n+LFO_res,:))/atan(l);
         waitbar(n/length(handles.x(:,1)),wb,'Processing...');        % Dialogo de espera
     end
@@ -64,7 +64,7 @@ else                                                    % Sin LFO
     if k < 0.01
         k = 0.01;
     end
-    l = (1/(1-k*0.9)-1)*15;
+    l = (1/(1-k*0.9)-1)*10;
     handles.y = atan(l*handles.x)/atan(l);
 end
 

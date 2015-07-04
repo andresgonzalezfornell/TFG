@@ -54,7 +54,7 @@ if handles.LFO_1.checkbox                               % Con LFO
         if k > 0.99
             k = 0.99;
         end
-        l = 1/(1-k);
+        l = 4/(1-k);
         handles.y(n+1:n+LFO_res,:) = sign(handles.x(n+1:n+LFO_res,:)).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(handles.x(n+1:n+LFO_res,:))));
         waitbar(n/length(handles.x(:,1)),wb,'Processing...');        % Dialogo de espera
     end
@@ -64,7 +64,7 @@ else                                                    % Sin LFO
     if k > 0.99
         k = 0.99;
     end
-    l = 1/(1-k);
+    l = 4/(1-k);
     handles.y = sign(handles.x).*exp(l)./(exp(l)-1).*(1-exp(-l.*abs(handles.x)));
 end
 
