@@ -1,4 +1,4 @@
-%% Ampliación del gráfico de la salida
+%% Ampliacion del grafico de la salida
 
 if isfield(handles,'y')
     figure('name','Salida canal R')

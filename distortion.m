@@ -205,7 +205,7 @@ end
 function distortion_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripcion del efecto
 set(handles.titulo,'String','Efecto de distortion')
-set(handles.des,'String','El efecto no lineal empleado sigue la funcion:    y(n) = signo(x)∑ (e^(l)/(e^(l)-1))∑ (1-e^(-l∑|x|)     l = 1/(1-k)')
+set(handles.des,'String',{'El efecto no lineal empleado sigue la funcion:','','y(n) = signo(x) ∑ (e^(l)/(e^(l)-1)) ∑ (1-e^(-l∑|x|)','','l = 4/(1-k)'})
 % Inicializacion de parametros
 handles.k = 0.7;
 handles.limites(1).Min = 0;
@@ -333,7 +333,7 @@ function pause_salida_Callback(hObject, eventdata, handles)
 pause(handles.y_audio)
 
 
-%% Ampliar gr√°ficas
+%% Ampliar graficas
 % --- Executes on button press in entrada_L_open.
 function entrada_L_open_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_L_open (see GCBO)
@@ -398,7 +398,7 @@ function comparar_Callback(hObject, eventdata, handles)
 z_comparar
 
 
-%% Controles de par√°metros
+%% Controles de parametros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)

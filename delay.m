@@ -252,9 +252,9 @@ end
 %% Controles de interfaz
 % --- Executes just before delay is made visible.
 function delay_OpeningFcn(hObject, eventdata, handles, varargin)
-% Descripción del efecto
+% Descripcion del efecto
 set(handles.titulo,'String','Delay')
-set(handles.des,'String','Mezcla el audio original junto con el mismo audio retardado. Ambos audios coinciden en volumen cuando el nivel de delay es "1".')
+set(handles.des,'String','Mezcla el audio original junto con el mismo audio retardado. El nivel de delay representa el porcentaje de nivel de senal retardada respecto a la suma total de las se�ales original y retardada.')
 % Inicializacion de parametros
 handles.fs = 44100;
 handles.limites(1).Min = 0;
@@ -339,7 +339,7 @@ function play_entrada_Callback(hObject, eventdata, handles)
 resume(handles.x_audio)
 
 
-%% Controles de reproducción
+%% Controles de reproduccion
 % --- Executes on button press in stop_entrada.
 function stop_entrada_Callback(hObject, eventdata, handles)
 % hObject    handle to stop_entrada (see GCBO)

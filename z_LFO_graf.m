@@ -129,7 +129,7 @@ switch tipo.String
             end
         end
     case 'Externa'
-        [filename,path] = uigetfile({'Audios/*'}, 'Select File');           % Use open for other file types.
+        [filename,path] = uigetfile({'Audios/*'}, 'Select File');
         if ischar(filename) && ischar(path)
             b = strfind(filename,'.');
             format = filename(b(end)+1:end);

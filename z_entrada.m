@@ -6,7 +6,7 @@ t = n/handles.fs;
 f = 0+handles.fs/length(n):handles.fs/length(n):handles.fs/2;
 % Mono
 if length(handles.x(1,:)) == 1
-    x(:,2) = handles(1,:);
+    x(:,2) = handles.x(1,:);
 end
 X_L = fft(handles.x(:,1))/length(n);
 X_R = fft(handles.x(:,2))/length(n);

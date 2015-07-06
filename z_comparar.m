@@ -1,4 +1,4 @@
-%% Comparaci�n entre espectros de entrada y salida
+%% Comparacion entre espectros de entrada y salida
 
 if isfield(handles,'Y_L') && isfield(handles,'Y_R') && isfield(handles,'X_L') && isfield(handles,'X_R')
     figure('name','Espectros de entrada y salida')

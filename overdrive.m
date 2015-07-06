@@ -221,7 +221,7 @@ end
 function overdrive_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripcion del efecto
 set(handles.titulo,'String','Overdrive')
-set(handles.des,'String','El efecto no lineal empleado sigue la funcion:    y(n) = atan(l*x) / atan(l)     l = (1/(1-k*0.9)-1)*15;')
+set(handles.des,'String',{'El efecto no lineal empleado sigue la funcion:','','y(n) = atan(l*x) / atan(l)','','l = (1/(1-k*0.9)-1)*10'})
 % Inicializacion de parametros
 handles.k = 0.7;
 handles.limites(1).Min = 0;
@@ -668,5 +668,5 @@ else                                                    % Sin LFO
     plot(handles.graf,x,y)
 end
 set(handles.graf,'XLim',[-1 1],'YLim',[-1 1],'XGrid','on','YGrid','on')
-handles.graf.XLabel.String = 'Señal de entrada x';
-handles.graf.Title.String = 'Señal de salida y(x)';
+handles.graf.XLabel.String = 'Senal de entrada x';
+handles.graf.Title.String = 'Senal de salida y(x)';

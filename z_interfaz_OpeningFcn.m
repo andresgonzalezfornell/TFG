@@ -6,7 +6,6 @@
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to overdrive (see VARARGIN)
 
-% Choose default command line output for overdrive
 handles.output = hObject;
 handles.fs = 44100;
 handles.path = strcat(pwd,'/Audios');

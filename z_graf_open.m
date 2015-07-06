@@ -1,4 +1,4 @@
-%% Ampliación del gráfico del efecto
+%% Ampliacion del grafico del efecto
 
 f = figure('name','Gráfico del efecto');
 copyobj(handles.graf,f)

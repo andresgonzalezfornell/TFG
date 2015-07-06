@@ -1,4 +1,4 @@
-%% Ampliación del grafico del espectro de salida
+%% Ampliacion del grafico del espectro de salida
 
 if isfield(handles,'Y_L') && isfield(handles,'Y_R')
     figure('name','Salida espectro')

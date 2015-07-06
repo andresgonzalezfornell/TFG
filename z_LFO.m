@@ -1,5 +1,5 @@
 function [handles] = z_LFO(handles,par)
-%LFO Control del LFO
+% LFO Control del LFO
 
 % Obtencion del estado del LFO
 switch par

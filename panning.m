@@ -433,7 +433,7 @@ function pause_salida_Callback(hObject, eventdata, handles)
 pause(handles.y_audio)
 
 
-%% Ampliar gráficas
+%% Ampliar graficas
 % --- Executes on button press in entrada_L_open.
 function entrada_L_open_Callback(hObject, eventdata, handles)
 % hObject    handle to entrada_L_open (see GCBO)
@@ -498,7 +498,7 @@ function comparar_Callback(hObject, eventdata, handles)
 z_comparar
 
 
-%% Controles de parámetros
+%% Controles de parametros
 % --- Executes during object creation, after setting all properties.
 function par_1_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to par_1 (see GCBO)

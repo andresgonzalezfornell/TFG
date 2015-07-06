@@ -334,7 +334,7 @@ guidata(hObject, handles);
 function autowah_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripcion del efecto
 set(handles.titulo,'String','Autowah')
-set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Para un autowah, configure un LFO para la frecuencia central del filtro.'})
+set(handles.des,'String',{'Filtro paso banda estrecho con una frecuencia central variable.','','Para un autowah real, configure un LFO para la frecuencia central del filtro.'})
 % Inicializacion de parametros
 handles.BW = 100;
 handles.limites(1).Min = 10;
@@ -440,7 +440,7 @@ function play_entrada_Callback(hObject, eventdata, handles)
 resume(handles.x_audio)
 
 
-%% Controles de reproducción
+%% Controles de reproduccion
 % --- Executes on button press in stop_entrada.
 function stop_entrada_Callback(hObject, eventdata, handles)
 % hObject    handle to stop_entrada (see GCBO)
@@ -720,12 +720,12 @@ if handles.LFO_3.checkbox                               % LFO 3
         f_0 = handles.LFO_2.offset;
     end
     f_2 = f_0 + BW/2;
-    if f_2 >= 18500     % Representaci�n en la izquierda
+    if f_2 >= 18500     % Representacion en la izquierda
         f_1 = f_0 - BW/2;
         set(line([f_1-1000 f_1-1000],[mix_Min mix_Max]),'parent',handles.graf)
         set(line([f_1-1000 f_1-500],[mix_Min mix_Min]),'parent',handles.graf)
         set(line([f_1-1000 f_1-500],[mix_Max mix_Max]),'parent',handles.graf)
-    else                % Representaci�n en la derecha
+    else                % Representacion en la derecha
         set(line([f_2+1000 f_2+1000],[mix_Min mix_Max]),'parent',handles.graf)
         set(line([f_2+500 f_2+1000],[mix_Min mix_Min]),'parent',handles.graf)
         set(line([f_2+500 f_2+1000],[mix_Max mix_Max]),'parent',handles.graf)

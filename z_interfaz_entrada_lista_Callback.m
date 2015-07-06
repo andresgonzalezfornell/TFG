@@ -1,14 +1,14 @@
-%% Acciones de navegacion entre directorios
+%% Acciones de navegacion entre directorios y carga de archivos
 
 % Navegacion de directorios
 get(handles.figure1,'SelectionType');
-% If double click
+% Si doble click
 if strcmp(get(handles.figure1,'SelectionType'),'open')
     index_selected = get(handles.entrada_lista,'Value');
     file_list = get(handles.entrada_lista,'String');
-    % Item selected in list box
+    % Archivo seleccionado
     filename = file_list{index_selected};
-    % If folder
+    % Si es un directorio
     if  handles.is_dir(handles.sorted_index(index_selected))
         if strcmp(filename,'.')
         elseif strcmp(filename,'..')
@@ -17,7 +17,6 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
         else
             handles.path = strcat(handles.path,'/',filename);
         end
-        % Load list box with new folder.
         % Cargador de ficheros de entrada
         dir_struct = dir(handles.path);
         [sorted_names,sorted_index] = sortrows({dir_struct.name}');
@@ -28,12 +27,11 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
         set(handles.entrada_lista,'String',handles.file_names,...
             'Value',1)
         set(handles.directorio,'String',handles.path)
-    % If file
+    % Si es un archivo
     else
         [path,name,ext] = fileparts(filename);
         switch ext
             case '.fig'
-                % Open FIG-file with guide command.
                 guide (filename)
             otherwise
                 wb = waitbar(0,'Cargando audio...','Name','Audio de entrada');

@@ -91,7 +91,7 @@ handles.LFO.submit = 0;
 % Modulador
 handles.LFO.modulador(1).checkbox = 0;      % FM
 handles.LFO.modulador(2).checkbox = 0;      % AM
-handles.LFO.modulador(3).checkbox = 0;      %PM
+handles.LFO.modulador(3).checkbox = 0;      % PM
 % Grafico
 xlabel(handles.graf,'Tiempo [s]')
 set(handles.graf,'XLim',[0 handles.limites.longitud])
