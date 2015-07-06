@@ -5,14 +5,13 @@ function varargout = index(varargin)
 %   parametros del efecto, eleccion y visualizacion del audio de entrada,reproducción y visualizacion
 %   del audio de salida, y representacion caracteristica del procesamiento que se esta realizando.
 %
-% Version v1.0 (01 de julio de 2015)
+% Version v1.0 (06 de julio de 2015)
 %   En esta version se encuentran disponibles los siguiente efectos:
 %       autowah
 %       delay
 %       distortion
 %       overdrive
 %       panning
-%       phaser
 %
 % Desarrollad por Andres Gonzalez Fornell bajo el Departamento de Señales y Sistemas de Radiocomunicacion
 % andresgonzalezfornell@gmail.com
@@ -120,12 +119,3 @@ function panning_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 close
 panning
-
-
-% --- Executes on button press in phaser.
-function phaser_Callback(hObject, eventdata, handles)
-% hObject    handle to phaser (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-close
-phaser
