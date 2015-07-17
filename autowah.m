@@ -107,6 +107,8 @@ elseif handles.f_c > handles.limites(2).Max
     set(handles.par_2_value,'String',handles.f_c)
 end
 set(handles.par_2,'Visible','on','Value',handles.f_c,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+set(handles.par_2_LFO,'Value',0)
+handles = z_LFO(handles,2);
 handles = LFO_plot(handles);
 % Update handles structure
 guidata(hObject, handles);
@@ -133,6 +135,8 @@ if str2double(get(hObject,'String'))>=handles.limites(1).Min && str2double(get(h
         set(handles.par_2_value,'String',handles.f_c)
     end
     set(handles.par_2,'Visible','on','Value',handles.f_c,'Min',handles.limites(2).Min,'Max',handles.limites(2).Max)
+    set(handles.par_2_LFO,'Value',0)
+    handles = z_LFO(handles,2);
 else
     set(handles.par_1_value,'String',handles.BW)
 end

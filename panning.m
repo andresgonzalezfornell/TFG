@@ -50,7 +50,7 @@ g = [1 ; 1];
 if handles.LFO_1.checkbox                               % Con LFO
     LFO_res = round(handles.fs/100);
     wb = waitbar(0,'Processing...');                        % Dialogo de espera
-    for n = 0:LFO_res:handles.LFO_N-LFO_res
+    for n = 0:LFO_res:length(handles.LFO_1.x)-LFO_res
         az_virtual = handles.LFO_1.x(n+1);
         k = (tand(handles.az_altavoz)-tand(az_virtual)) / (tand(handles.az_altavoz)+tand(az_virtual));
         if k>1
@@ -128,15 +128,15 @@ function par_2_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 handles.az_altavoz = get(hObject,'Value');
 set(handles.par_2_value,'String',handles.az_altavoz)
-if handles.LFO_1.checkbox       % Desactivación de LFO 1
+if handles.LFO_1.checkbox       % Desactivacion de LFO 1
     handles.LFO_1.checkbox = 0;
     set(handles.par_1_value,'String',get(handles.par_1,'Value'))
     set(handles.par_1,'Enable','on')
     set(handles.par_1_value,'Enable','on')
     set(handles.par_1_LFO,'Value',0)
 end
-suma_L = [15*sind(handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
-suma_R = [15*sind(-handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
+suma_L = [15*sind(-handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
+suma_R = [15*sind(handles.az_altavoz) 7.5*cosd(handles.az_altavoz) 0 0];
 set(handles.altavoz_L,'Position',suma_L+handles.p_0);
 set(handles.altavoz_R,'Position',suma_R+handles.p_0);
 if abs(handles.az_virtual) > handles.az_altavoz
@@ -163,7 +163,7 @@ function par_2_value_Callback(hObject, eventdata, handles)
 if str2double(get(hObject,'String'))>=handles.limites(2).Min & str2double(get(hObject,'String'))<=handles.limites(2).Max
     handles.az_altavoz = str2double(get(hObject,'String'));
     set(handles.par_2,'Value',handles.az_altavoz)
-    if handles.LFO_1.checkbox       % Desactivación de LFO 1
+    if handles.LFO_1.checkbox       % Desactivacion de LFO 1
         handles.LFO_1.checkbox = 0;
         set(handles.par_1_value,'String',get(handles.par_1,'Value'))
         set(handles.par_1,'Enable','on')
@@ -288,21 +288,21 @@ end
 function panning_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripcion del efecto
 set(handles.titulo,'String','Panning')
-set(handles.des,'String','Produce la ilusion al oyente de una direccion determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales estéreo y dos fuentes separadas suficientemente rodeando al oyente.')
+set(handles.des,'String','Produce la ilusion al oyente de una direccion determinada de origen del sonido, siempre y cuando se cuente con al menos dos canales estereo y dos fuentes separadas suficientemente rodeando al oyente.')
 % Inicializacion de parametros
 handles.az_virtual = 0;
 handles.limites(1).Min = -60;
 handles.limites(1).Max = 60;
 set(handles.par_1,'Visible','on','Value',handles.az_virtual)
 set(handles.par_1_value,'Visible','on','String',handles.az_virtual)
-set(handles.par_1_title,'Visible','on','String','Acimut virtual [�]')
+set(handles.par_1_title,'Visible','on','String','Acimut virtual [grados]')
 set(handles.par_1_LFO,'Visible','on')
 handles.az_altavoz = 60;
 handles.limites(2).Min = 1;
 handles.limites(2).Max = 89;
 set(handles.par_2,'Visible','on','Value',handles.az_altavoz)
 set(handles.par_2_value,'Visible','on','String',handles.az_altavoz)
-set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [�]')
+set(handles.par_2_title,'Visible','on','String','Acimut de los altavoces [grados]')
 % Dibujo
 oyente_im = imread('Images/oyente.png');
 axes(handles.oyente);
@@ -317,8 +317,8 @@ fuente_im = imread('Images/fuente.png');
 axes(handles.fuente);
 imshow(fuente_im);
 handles.p_0 = get(handles.oyente,'Position');
-suma_L = [15*sind(60) 7.5*cosd(60) 0 0];
-suma_R = [15*sind(-60) 7.5*cosd(60) 0 0];
+suma_L = [15*sind(-60) 7.5*cosd(-60) 0 0];
+suma_R = [15*sind(60) 7.5*cosd(60) 0 0];
 suma_fuente = [15*sind(0) 7.5*cosd(0) 0 0];
 set(handles.altavoz_L,'Position',suma_L+handles.p_0);
 set(handles.altavoz_R,'Position',suma_R+handles.p_0);

@@ -13,7 +13,12 @@ if strcmp(get(handles.figure1,'SelectionType'),'open')
         if strcmp(filename,'.')
         elseif strcmp(filename,'..')
             a = strfind(handles.path,'/');
-            handles.path = handles.path(1:a(end)-1);
+            if isempty(a)
+                a = strfind(handles.path,'\');
+            end
+            if length(strfind(handles.path,'/')) + length(strfind(handles.path,'\')) > 1
+                handles.path = handles.path(1:a(end)-1);
+            end
         else
             handles.path = strcat(handles.path,'/',filename);
         end
