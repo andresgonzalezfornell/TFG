@@ -81,7 +81,6 @@ function autowah_Callback(hObject, eventdata, handles)
 % hObject    handle to autowah (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-close
 autowah
 
 
@@ -90,7 +89,6 @@ function delay_Callback(hObject, eventdata, handles)
 % hObject    handle to delay (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-close
 delay
 
 
@@ -99,7 +97,6 @@ function distortion_Callback(hObject, eventdata, handles)
 % hObject    handle to distortion (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-close
 distortion
 
 
@@ -108,7 +105,6 @@ function overdrive_Callback(hObject, eventdata, handles)
 % hObject    handle to overdrive (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-close
 overdrive
 
 
@@ -117,5 +113,4 @@ function panning_Callback(hObject, eventdata, handles)
 % hObject    handle to panning (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-close
 panning

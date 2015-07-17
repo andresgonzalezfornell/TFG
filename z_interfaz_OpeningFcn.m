@@ -76,7 +76,11 @@ handles.modulador(2).checkbox = 0;
 handles.modulador(3).checkbox = 0;
 
 % Cargador de ficheros de entrada
-dir_struct = dir(handles.path);
+if isempty(dir(handles.path))
+    dir_struct = dir(pwd);
+else
+    dir_struct = dir(handles.path);
+end
 [sorted_names,sorted_index] = sortrows({dir_struct.name}');
 handles.file_names = sorted_names;
 handles.is_dir = [dir_struct.isdir];

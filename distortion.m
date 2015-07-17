@@ -205,7 +205,7 @@ end
 function distortion_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripcion del efecto
 set(handles.titulo,'String','Efecto de distortion')
-set(handles.des,'String','El efecto no lineal empleado sigue la funcion:    y(n) = signo(x)· (e^(l)/(e^(l)-1))· (1-e^(-l·|x|)     l = 1/(1-k)')
+set(handles.des,'String',{'El efecto no lineal empleado sigue la funcion:','','y(n) = signo(x)· (e^(l)/(e^(l)-1))· (1-e^(-l·|x|)','','l = 1/(1-k)'})
 % Inicializacion de parametros
 handles.k = 0.7;
 handles.limites(1).Min = 0;

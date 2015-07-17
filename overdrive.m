@@ -221,7 +221,7 @@ end
 function overdrive_OpeningFcn(hObject, eventdata, handles, varargin)
 % Descripcion del efecto
 set(handles.titulo,'String','Overdrive')
-set(handles.des,'String','El efecto no lineal empleado sigue la funcion:    y(n) = atan(l*x) / atan(l)     l = (1/(1-k*0.9)-1)*15;')
+set(handles.des,'String',{'El efecto no lineal empleado sigue la funcion:','','y(n) = atan(l*x) / atan(l)','','l = (1/(1-k*0.9)-1)*15'})
 % Inicializacion de parametros
 handles.k = 0.7;
 handles.limites(1).Min = 0;
